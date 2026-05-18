@@ -1,0 +1,12 @@
+{
+  "joint": "joint_0",
+  "link": "link_0",
+  "candidate_id": 9,
+  "candidate_name": "corner",
+  "local_point": [
+    -0.0808589980006218,
+    0.1022230014204979,
+    -0.187266007065773
+  ],
+  "source": "/teamspace/studios/this_studio/outputs/application_point_previews/101062/application_point_candidates.json"
+}

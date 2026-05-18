@@ -1,0 +1,3770 @@
+{
+  "metadata": {
+    "model_dir": "/teamspace/studios/this_studio/101062",
+    "video_output": "/teamspace/studios/this_studio/outputs/101062_output/final_video.mp4",
+    "fps": 30,
+    "seconds": 4.0,
+    "end_hold_seconds": 2.0,
+    "video_duration_seconds": 6.0,
+    "drawer": 0,
+    "joint": "joint_0",
+    "link": "link_0",
+    "force_magnitude_n": 0.5,
+    "direction_world": [
+      -1.0,
+      -7.450576617884508e-07,
+      0.0
+    ],
+    "generalized_drawer_force_n": 0.5,
+    "application_point_strategy": "manual candidate 9 from application_point_override.json",
+    "application_point_local_on_drawer": [
+      -0.0808589980006218,
+      0.1022230014204979,
+      -0.187266007065773
+    ],
+    "joint_limits_m": [
+      [
+        -0.4519999921321869,
+        0.515999972820282
+      ]
+    ],
+    "timestep_s": 0.004166666666666667,
+    "physics": {
+      "urdf_joint_dynamics": {},
+      "urdf_joint_dynamics_present": false,
+      "separate_static_dynamic_friction_present": false,
+      "air_friction_model_present": false,
+      "link_linear_damping_set_to": 0.0,
+      "link_angular_damping_set_to": 0.02,
+      "joint_drive_stiffness_damping_force_limit_set_to": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "links": [
+      {
+        "name": "base",
+        "mass": 9.999999974752427e-07,
+        "inertia": [
+          9.999999974752427e-07,
+          9.999999974752427e-07,
+          9.999999974752427e-07
+        ],
+        "cmass_local_pose": {
+          "p": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "q": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "linear_damping": 0.0,
+        "angular_damping": 0.019999999552965164,
+        "disable_gravity": true
+      },
+      {
+        "name": "link_1",
+        "mass": 60.58601379394531,
+        "inertia": [
+          16.263179779052734,
+          16.473052978515625,
+          0.2831062376499176
+        ],
+        "cmass_local_pose": {
+          "p": [
+            0.012967297807335854,
+            -0.0007172315963543952,
+            -0.05885486677289009
+          ],
+          "q": [
+            0.999811589717865,
+            -0.00028760969871655107,
+            -0.005237489007413387,
+            0.018691910430788994
+          ]
+        },
+        "linear_damping": 0.0,
+        "angular_damping": 0.019999999552965164,
+        "disable_gravity": true
+      },
+      {
+        "name": "link_0",
+        "mass": 8.853063583374023,
+        "inertia": [
+          0.3887770175933838,
+          0.39072537422180176,
+          0.02248772233724594
+        ],
+        "cmass_local_pose": {
+          "p": [
+            -0.008787770755589008,
+            0.032475780695676804,
+            0.08060724288225174
+          ],
+          "q": [
+            0.9995519518852234,
+            0.028777115046977997,
+            -0.0038841867353767157,
+            0.007261442020535469
+          ]
+        },
+        "linear_damping": 0.0,
+        "angular_damping": 0.019999999552965164,
+        "disable_gravity": true
+      }
+    ],
+    "joints": [
+      {
+        "name": "",
+        "limits_m": [],
+        "friction": 0.0,
+        "damping": null,
+        "drive_mode": null,
+        "drive_target": [],
+        "drive_velocity_target": [],
+        "force_limit": null
+      },
+      {
+        "name": "joint_1",
+        "limits_m": [],
+        "friction": 0.05000000074505806,
+        "damping": null,
+        "drive_mode": null,
+        "drive_target": [],
+        "drive_velocity_target": [],
+        "force_limit": null
+      },
+      {
+        "name": "joint_0",
+        "limits_m": [
+          [
+            -0.4519999921321869,
+            0.515999972820282
+          ]
+        ],
+        "friction": 0.05000000074505806,
+        "damping": 0.0,
+        "drive_mode": "force",
+        "drive_target": [
+          0.0
+        ],
+        "drive_velocity_target": [
+          0.0
+        ],
+        "force_limit": 0.0
+      }
+    ]
+  },
+  "samples": {
+    "no_force": [
+      {
+        "time_s": 0.0,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.03333333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.06666666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.1,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.13333333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.16666666666666666,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.2,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.23333333333333334,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.26666666666666666,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.3,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.3333333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.36666666666666664,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.4,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.43333333333333335,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.4666666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.5,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.5333333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.5666666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.6,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.6333333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.6666666666666666,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.7,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.7333333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.7666666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.8,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.8333333333333334,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.8666666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.9,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.9333333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.9666666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.0,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.0333333333333334,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.0666666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.1,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.1333333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.1666666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.2,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.2333333333333334,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.2666666666666666,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.3,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.3333333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.3666666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.4,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.4333333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.4666666666666666,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.5,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.5333333333333334,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.5666666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.6,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.6333333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.6666666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.7,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.7333333333333334,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.7666666666666666,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.8,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.8333333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.8666666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.9,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.9333333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.9666666666666666,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.0,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.033333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.066666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.1,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.1333333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.1666666666666665,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.2,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.2333333333333334,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.2666666666666666,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.3,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.3333333333333335,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.3666666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.4,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.433333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.466666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.5,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.533333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.566666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.6,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.6333333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.6666666666666665,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.7,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.7333333333333334,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.7666666666666666,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.8,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.8333333333333335,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.8666666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.9,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.933333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.966666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.0,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.033333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.066666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.1,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.1333333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.1666666666666665,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.2,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.2333333333333334,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.2666666666666666,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.3,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.3333333333333335,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.3666666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.4,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.433333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.466666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.5,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.533333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.566666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.6,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.6333333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.6666666666666665,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.7,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.7333333333333334,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.7666666666666666,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.8,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.8333333333333335,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.8666666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.9,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.933333333333333,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.966666666666667,
+        "drawer_displacement_m": 0.0,
+        "drawer_velocity_m_s": 0.0,
+        "application_point_world": [
+          0.18726599216461182,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    ],
+    "pulling_force": [
+      {
+        "time_s": 0.0,
+        "drawer_displacement_m": 3.357281821081415e-05,
+        "drawer_velocity_m_s": 0.0017790457932278514,
+        "application_point_world": [
+          0.18723243474960327,
+          0.08085905015468597,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.03333333333333333,
+        "drawer_displacement_m": 0.0001264469901798293,
+        "drawer_velocity_m_s": 0.003558080643415451,
+        "application_point_world": [
+          0.18713954091072083,
+          0.08085905760526657,
+          0.10222306102514267
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.06666666666666667,
+        "drawer_displacement_m": 0.0002786223776638508,
+        "drawer_velocity_m_s": 0.005337115377187729,
+        "application_point_world": [
+          0.18698737025260925,
+          0.08085905760526657,
+          0.10222306102514267
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.1,
+        "drawer_displacement_m": 0.0004900988424196839,
+        "drawer_velocity_m_s": 0.007116150110960007,
+        "application_point_world": [
+          0.18677587807178497,
+          0.08085905760526657,
+          0.10222306102514267
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.13333333333333333,
+        "drawer_displacement_m": 0.0007608768064528704,
+        "drawer_velocity_m_s": 0.008895212784409523,
+        "application_point_world": [
+          0.18650512397289276,
+          0.08085905015468597,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.16666666666666666,
+        "drawer_displacement_m": 0.0010909573175013065,
+        "drawer_velocity_m_s": 0.010674292221665382,
+        "application_point_world": [
+          0.18617503345012665,
+          0.08085906505584717,
+          0.10222306102514267
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.2,
+        "drawer_displacement_m": 0.001480340724810958,
+        "drawer_velocity_m_s": 0.012453371658921242,
+        "application_point_world": [
+          0.18578565120697021,
+          0.08085906505584717,
+          0.10222306102514267
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.23333333333333334,
+        "drawer_displacement_m": 0.0019290265627205372,
+        "drawer_velocity_m_s": 0.014232451096177101,
+        "application_point_world": [
+          0.18533697724342346,
+          0.08085905015468597,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.26666666666666666,
+        "drawer_displacement_m": 0.002437015064060688,
+        "drawer_velocity_m_s": 0.01601150818169117,
+        "application_point_world": [
+          0.184828981757164,
+          0.08085906505584717,
+          0.10222306102514267
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.3,
+        "drawer_displacement_m": 0.003004303900524974,
+        "drawer_velocity_m_s": 0.017790498211979866,
+        "application_point_world": [
+          0.18426167964935303,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.3333333333333333,
+        "drawer_displacement_m": 0.00363089214079082,
+        "drawer_velocity_m_s": 0.019569488242268562,
+        "application_point_world": [
+          0.18363510072231293,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.36666666666666664,
+        "drawer_displacement_m": 0.004316783044487238,
+        "drawer_velocity_m_s": 0.02134847827255726,
+        "application_point_world": [
+          0.1829492151737213,
+          0.08085905015468597,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.4,
+        "drawer_displacement_m": 0.005061970092356205,
+        "drawer_velocity_m_s": 0.023127468302845955,
+        "application_point_world": [
+          0.18220403790473938,
+          0.08085905015468597,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.43333333333333335,
+        "drawer_displacement_m": 0.005866451188921928,
+        "drawer_velocity_m_s": 0.02490645833313465,
+        "application_point_world": [
+          0.18139955401420593,
+          0.08085905760526657,
+          0.10222306102514267
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.4666666666666667,
+        "drawer_displacement_m": 0.006730234250426292,
+        "drawer_velocity_m_s": 0.026685448363423347,
+        "application_point_world": [
+          0.18053574860095978,
+          0.08085905015468597,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.5,
+        "drawer_displacement_m": 0.00765332393348217,
+        "drawer_velocity_m_s": 0.028464438393712044,
+        "application_point_world": [
+          0.1796126663684845,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.5333333333333333,
+        "drawer_displacement_m": 0.008635705336928368,
+        "drawer_velocity_m_s": 0.03024342842400074,
+        "application_point_world": [
+          0.1786302626132965,
+          0.08085906505584717,
+          0.10222306847572327
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.5666666666666667,
+        "drawer_displacement_m": 0.00967738963663578,
+        "drawer_velocity_m_s": 0.032022420316934586,
+        "application_point_world": [
+          0.17758861184120178,
+          0.08085905015468597,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.6,
+        "drawer_displacement_m": 0.010778380557894707,
+        "drawer_velocity_m_s": 0.03380141034722328,
+        "application_point_world": [
+          0.17648762464523315,
+          0.08085904270410538,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.6333333333333333,
+        "drawer_displacement_m": 0.011938672512769699,
+        "drawer_velocity_m_s": 0.03558040037751198,
+        "application_point_world": [
+          0.17532731592655182,
+          0.08085905015468597,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.6666666666666666,
+        "drawer_displacement_m": 0.013158257119357586,
+        "drawer_velocity_m_s": 0.037359390407800674,
+        "application_point_world": [
+          0.17410773038864136,
+          0.08085905760526657,
+          0.10222306102514267
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.7,
+        "drawer_displacement_m": 0.014437135308980942,
+        "drawer_velocity_m_s": 0.03913838043808937,
+        "application_point_world": [
+          0.17282885313034058,
+          0.08085905015468597,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.7333333333333333,
+        "drawer_displacement_m": 0.015775315463542938,
+        "drawer_velocity_m_s": 0.04091737046837807,
+        "application_point_world": [
+          0.17149068415164948,
+          0.08085905015468597,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.7666666666666667,
+        "drawer_displacement_m": 0.01717280223965645,
+        "drawer_velocity_m_s": 0.04269636049866676,
+        "application_point_world": [
+          0.17009317874908447,
+          0.08085905015468597,
+          0.10222306102514267
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.8,
+        "drawer_displacement_m": 0.018629591912031174,
+        "drawer_velocity_m_s": 0.04447535052895546,
+        "application_point_world": [
+          0.16863641142845154,
+          0.08085905760526657,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.8333333333333334,
+        "drawer_displacement_m": 0.020145678892731667,
+        "drawer_velocity_m_s": 0.046254340559244156,
+        "application_point_world": [
+          0.1671203076839447,
+          0.08085905015468597,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.8666666666666667,
+        "drawer_displacement_m": 0.02172105945646763,
+        "drawer_velocity_m_s": 0.04803333058953285,
+        "application_point_world": [
+          0.16554492712020874,
+          0.08085905015468597,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.9,
+        "drawer_displacement_m": 0.02335573546588421,
+        "drawer_velocity_m_s": 0.04981232061982155,
+        "application_point_world": [
+          0.16391025483608246,
+          0.08085905015468597,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.9333333333333333,
+        "drawer_displacement_m": 0.025049718096852303,
+        "drawer_velocity_m_s": 0.051591310650110245,
+        "application_point_world": [
+          0.16221627593040466,
+          0.08085904270410538,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.9666666666666667,
+        "drawer_displacement_m": 0.02680300734937191,
+        "drawer_velocity_m_s": 0.05337030068039894,
+        "application_point_world": [
+          0.16046297550201416,
+          0.08085905015468597,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.0,
+        "drawer_displacement_m": 0.028615593910217285,
+        "drawer_velocity_m_s": 0.05514929071068764,
+        "application_point_world": [
+          0.15865039825439453,
+          0.08085905015468597,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.0333333333333334,
+        "drawer_displacement_m": 0.03048747405409813,
+        "drawer_velocity_m_s": 0.056928280740976334,
+        "application_point_world": [
+          0.1567785143852234,
+          0.08085905015468597,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.0666666666666667,
+        "drawer_displacement_m": 0.03241865336894989,
+        "drawer_velocity_m_s": 0.05870727077126503,
+        "application_point_world": [
+          0.15484733879566193,
+          0.08085904270410538,
+          0.10222303867340088
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.1,
+        "drawer_displacement_m": 0.03440913185477257,
+        "drawer_velocity_m_s": 0.060486260801553726,
+        "application_point_world": [
+          0.15285685658454895,
+          0.08085904270410538,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.1333333333333333,
+        "drawer_displacement_m": 0.03645891696214676,
+        "drawer_velocity_m_s": 0.06226525083184242,
+        "application_point_world": [
+          0.15080708265304565,
+          0.08085904270410538,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.1666666666666667,
+        "drawer_displacement_m": 0.03856800124049187,
+        "drawer_velocity_m_s": 0.06404426693916321,
+        "application_point_world": [
+          0.14869798719882965,
+          0.08085905015468597,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.2,
+        "drawer_displacement_m": 0.04073638841509819,
+        "drawer_velocity_m_s": 0.06582328677177429,
+        "application_point_world": [
+          0.14652961492538452,
+          0.08085903525352478,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.2333333333333334,
+        "drawer_displacement_m": 0.042964063584804535,
+        "drawer_velocity_m_s": 0.06760230660438538,
+        "application_point_world": [
+          0.14430192112922668,
+          0.08085905015468597,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.2666666666666666,
+        "drawer_displacement_m": 0.045251037925481796,
+        "drawer_velocity_m_s": 0.06938132643699646,
+        "application_point_world": [
+          0.14201495051383972,
+          0.08085903525352478,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.3,
+        "drawer_displacement_m": 0.04759731888771057,
+        "drawer_velocity_m_s": 0.07116034626960754,
+        "application_point_world": [
+          0.13966867327690125,
+          0.08085902035236359,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.3333333333333333,
+        "drawer_displacement_m": 0.05000290647149086,
+        "drawer_velocity_m_s": 0.07293936610221863,
+        "application_point_world": [
+          0.13726307451725006,
+          0.08085905015468597,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.3666666666666667,
+        "drawer_displacement_m": 0.052467796951532364,
+        "drawer_velocity_m_s": 0.07471838593482971,
+        "application_point_world": [
+          0.13479819893836975,
+          0.08085903525352478,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.4,
+        "drawer_displacement_m": 0.054991986602544785,
+        "drawer_velocity_m_s": 0.0764974057674408,
+        "application_point_world": [
+          0.13227400183677673,
+          0.08085903525352478,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.4333333333333333,
+        "drawer_displacement_m": 0.057575471699237823,
+        "drawer_velocity_m_s": 0.07827642560005188,
+        "application_point_world": [
+          0.1296905279159546,
+          0.08085905015468597,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.4666666666666666,
+        "drawer_displacement_m": 0.06021824851632118,
+        "drawer_velocity_m_s": 0.08005544543266296,
+        "application_point_world": [
+          0.12704774737358093,
+          0.08085902780294418,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.5,
+        "drawer_displacement_m": 0.06292033940553665,
+        "drawer_velocity_m_s": 0.08183446526527405,
+        "application_point_world": [
+          0.12434566020965576,
+          0.08085903525352478,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.5333333333333334,
+        "drawer_displacement_m": 0.06568171828985214,
+        "drawer_velocity_m_s": 0.08361348509788513,
+        "application_point_world": [
+          0.12158426642417908,
+          0.08085902780294418,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.5666666666666667,
+        "drawer_displacement_m": 0.06850242614746094,
+        "drawer_velocity_m_s": 0.08539250493049622,
+        "application_point_world": [
+          0.11876355111598969,
+          0.08085905015468597,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.6,
+        "drawer_displacement_m": 0.07138241082429886,
+        "drawer_velocity_m_s": 0.0871715247631073,
+        "application_point_world": [
+          0.11588358879089355,
+          0.08085902780294418,
+          0.10222303867340088
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.6333333333333333,
+        "drawer_displacement_m": 0.0743217021226883,
+        "drawer_velocity_m_s": 0.08895054459571838,
+        "application_point_world": [
+          0.11294430494308472,
+          0.08085902035236359,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.6666666666666667,
+        "drawer_displacement_m": 0.07732027769088745,
+        "drawer_velocity_m_s": 0.09072956442832947,
+        "application_point_world": [
+          0.10994569957256317,
+          0.08085902780294418,
+          0.10222305357456207
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.7,
+        "drawer_displacement_m": 0.08037817478179932,
+        "drawer_velocity_m_s": 0.09250858426094055,
+        "application_point_world": [
+          0.1068878173828125,
+          0.08085902035236359,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.7333333333333334,
+        "drawer_displacement_m": 0.0834953561425209,
+        "drawer_velocity_m_s": 0.09428760409355164,
+        "application_point_world": [
+          0.10377064347267151,
+          0.08085902035236359,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.7666666666666666,
+        "drawer_displacement_m": 0.0866718664765358,
+        "drawer_velocity_m_s": 0.09606662392616272,
+        "application_point_world": [
+          0.10059413313865662,
+          0.08085903525352478,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.8,
+        "drawer_displacement_m": 0.08990766108036041,
+        "drawer_velocity_m_s": 0.0978456437587738,
+        "application_point_world": [
+          0.0973583459854126,
+          0.08085900545120239,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.8333333333333333,
+        "drawer_displacement_m": 0.09320276230573654,
+        "drawer_velocity_m_s": 0.09962466359138489,
+        "application_point_world": [
+          0.09406322240829468,
+          0.08085903525352478,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.8666666666666667,
+        "drawer_displacement_m": 0.0965571403503418,
+        "drawer_velocity_m_s": 0.10140368342399597,
+        "application_point_world": [
+          0.09070885181427002,
+          0.08085902035236359,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.9,
+        "drawer_displacement_m": 0.09997083991765976,
+        "drawer_velocity_m_s": 0.10318270325660706,
+        "application_point_world": [
+          0.08729514479637146,
+          0.08085900545120239,
+          0.10222303867340088
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.9333333333333333,
+        "drawer_displacement_m": 0.10344382375478745,
+        "drawer_velocity_m_s": 0.10496172308921814,
+        "application_point_world": [
+          0.08382219076156616,
+          0.08085900545120239,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.9666666666666666,
+        "drawer_displacement_m": 0.10697613656520844,
+        "drawer_velocity_m_s": 0.10674074292182922,
+        "application_point_world": [
+          0.08028984069824219,
+          0.08085902035236359,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.0,
+        "drawer_displacement_m": 0.11056772619485855,
+        "drawer_velocity_m_s": 0.10851976275444031,
+        "application_point_world": [
+          0.07669827342033386,
+          0.08085902035236359,
+          0.10222303867340088
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.033333333333333,
+        "drawer_displacement_m": 0.11421863734722137,
+        "drawer_velocity_m_s": 0.11029878258705139,
+        "application_point_world": [
+          0.07304733991622925,
+          0.08085902035236359,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.066666666666667,
+        "drawer_displacement_m": 0.11792881786823273,
+        "drawer_velocity_m_s": 0.11207780241966248,
+        "application_point_world": [
+          0.0693371593952179,
+          0.08085900545120239,
+          0.10222303867340088
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.1,
+        "drawer_displacement_m": 0.12169831991195679,
+        "drawer_velocity_m_s": 0.11385682225227356,
+        "application_point_world": [
+          0.06556764245033264,
+          0.08085902035236359,
+          0.10222303867340088
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.1333333333333333,
+        "drawer_displacement_m": 0.12552715837955475,
+        "drawer_velocity_m_s": 0.11563584208488464,
+        "application_point_world": [
+          0.06173884868621826,
+          0.08085902035236359,
+          0.10222303867340088
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.1666666666666665,
+        "drawer_displacement_m": 0.12941522896289825,
+        "drawer_velocity_m_s": 0.11741486191749573,
+        "application_point_world": [
+          0.057850778102874756,
+          0.08085902035236359,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.2,
+        "drawer_displacement_m": 0.13336268067359924,
+        "drawer_velocity_m_s": 0.11919388175010681,
+        "application_point_world": [
+          0.05390331149101257,
+          0.08085902035236359,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.2333333333333334,
+        "drawer_displacement_m": 0.13736939430236816,
+        "drawer_velocity_m_s": 0.1209729015827179,
+        "application_point_world": [
+          0.04989659786224365,
+          0.08085900545120239,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.2666666666666666,
+        "drawer_displacement_m": 0.14143535494804382,
+        "drawer_velocity_m_s": 0.12275192141532898,
+        "application_point_world": [
+          0.04583063721656799,
+          0.08085900545120239,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.3,
+        "drawer_displacement_m": 0.1455606371164322,
+        "drawer_velocity_m_s": 0.12453094124794006,
+        "application_point_world": [
+          0.04170534014701843,
+          0.08085897564888,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.3333333333333335,
+        "drawer_displacement_m": 0.14974528551101685,
+        "drawer_velocity_m_s": 0.12630991637706757,
+        "application_point_world": [
+          0.03752070665359497,
+          0.08085900545120239,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.3666666666666667,
+        "drawer_displacement_m": 0.15398919582366943,
+        "drawer_velocity_m_s": 0.12808887660503387,
+        "application_point_world": [
+          0.033276766538619995,
+          0.08085900545120239,
+          0.10222306102514267
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.4,
+        "drawer_displacement_m": 0.15829235315322876,
+        "drawer_velocity_m_s": 0.12986783683300018,
+        "application_point_world": [
+          0.02897360734641552,
+          0.0808589905500412,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.433333333333333,
+        "drawer_displacement_m": 0.162654846906662,
+        "drawer_velocity_m_s": 0.1316467970609665,
+        "application_point_world": [
+          0.02461114339530468,
+          0.08085900545120239,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.466666666666667,
+        "drawer_displacement_m": 0.16707667708396912,
+        "drawer_velocity_m_s": 0.1334257572889328,
+        "application_point_world": [
+          0.02018931321799755,
+          0.0808589905500412,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.5,
+        "drawer_displacement_m": 0.17155776917934418,
+        "drawer_velocity_m_s": 0.1352047175168991,
+        "application_point_world": [
+          0.01570822112262249,
+          0.0808589905500412,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.533333333333333,
+        "drawer_displacement_m": 0.17609813809394836,
+        "drawer_velocity_m_s": 0.13698367774486542,
+        "application_point_world": [
+          0.011167837306857109,
+          0.0808589905500412,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.566666666666667,
+        "drawer_displacement_m": 0.18069782853126526,
+        "drawer_velocity_m_s": 0.13876263797283173,
+        "application_point_world": [
+          0.0065681468695402145,
+          0.08085900545120239,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.6,
+        "drawer_displacement_m": 0.18535685539245605,
+        "drawer_velocity_m_s": 0.14054159820079803,
+        "application_point_world": [
+          0.00190915004350245,
+          0.08085896074771881,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.6333333333333333,
+        "drawer_displacement_m": 0.19007514417171478,
+        "drawer_velocity_m_s": 0.14232055842876434,
+        "application_point_world": [
+          -0.002809153636917472,
+          0.08085897564888,
+          0.10222301632165909
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.6666666666666665,
+        "drawer_displacement_m": 0.19485269486904144,
+        "drawer_velocity_m_s": 0.14409951865673065,
+        "application_point_world": [
+          -0.007586704567074776,
+          0.08085897564888,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.7,
+        "drawer_displacement_m": 0.1996895968914032,
+        "drawer_velocity_m_s": 0.14587847888469696,
+        "application_point_world": [
+          -0.012423621490597725,
+          0.08085896074771881,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.7333333333333334,
+        "drawer_displacement_m": 0.20458582043647766,
+        "drawer_velocity_m_s": 0.14765743911266327,
+        "application_point_world": [
+          -0.017319845035672188,
+          0.08085897564888,
+          0.10222301632165909
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.7666666666666666,
+        "drawer_displacement_m": 0.20954130589962006,
+        "drawer_velocity_m_s": 0.14943639934062958,
+        "application_point_world": [
+          -0.022275375202298164,
+          0.08085897564888,
+          0.10222301632165909
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.8,
+        "drawer_displacement_m": 0.2145560383796692,
+        "drawer_velocity_m_s": 0.1512153595685959,
+        "application_point_world": [
+          -0.027290092781186104,
+          0.0808589905500412,
+          0.10222304612398148
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.8333333333333335,
+        "drawer_displacement_m": 0.2196301370859146,
+        "drawer_velocity_m_s": 0.1529943197965622,
+        "application_point_world": [
+          -0.03236417472362518,
+          0.08085897564888,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.8666666666666667,
+        "drawer_displacement_m": 0.22476357221603394,
+        "drawer_velocity_m_s": 0.1547732800245285,
+        "application_point_world": [
+          -0.037497565150260925,
+          0.08085896074771881,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.9,
+        "drawer_displacement_m": 0.2299562394618988,
+        "drawer_velocity_m_s": 0.1565522402524948,
+        "application_point_world": [
+          -0.04269026219844818,
+          0.08085896074771881,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.933333333333333,
+        "drawer_displacement_m": 0.2352081686258316,
+        "drawer_velocity_m_s": 0.15833120048046112,
+        "application_point_world": [
+          -0.047942206263542175,
+          0.08085897564888,
+          0.10222301632165909
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.966666666666667,
+        "drawer_displacement_m": 0.2405194789171219,
+        "drawer_velocity_m_s": 0.16011016070842743,
+        "application_point_world": [
+          -0.05325351655483246,
+          0.08085896074771881,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.0,
+        "drawer_displacement_m": 0.24589009582996368,
+        "drawer_velocity_m_s": 0.16188912093639374,
+        "application_point_world": [
+          -0.058624133467674255,
+          0.08085894584655762,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.033333333333333,
+        "drawer_displacement_m": 0.2513197660446167,
+        "drawer_velocity_m_s": 0.16366808116436005,
+        "application_point_world": [
+          -0.06405377388000488,
+          0.08085894584655762,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.066666666666667,
+        "drawer_displacement_m": 0.2568090558052063,
+        "drawer_velocity_m_s": 0.16544704139232635,
+        "application_point_world": [
+          -0.06954312324523926,
+          0.08085896074771881,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.1,
+        "drawer_displacement_m": 0.26235756278038025,
+        "drawer_velocity_m_s": 0.16722600162029266,
+        "application_point_world": [
+          -0.07509160041809082,
+          0.08085896074771881,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.1333333333333333,
+        "drawer_displacement_m": 0.2679653465747833,
+        "drawer_velocity_m_s": 0.16900496184825897,
+        "application_point_world": [
+          -0.0806993842124939,
+          0.08085896074771881,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.1666666666666665,
+        "drawer_displacement_m": 0.2736324071884155,
+        "drawer_velocity_m_s": 0.17078392207622528,
+        "application_point_world": [
+          -0.08636647462844849,
+          0.08085894584655762,
+          0.10222301632165909
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.2,
+        "drawer_displacement_m": 0.27935874462127686,
+        "drawer_velocity_m_s": 0.1725628823041916,
+        "application_point_world": [
+          -0.09209281206130981,
+          0.08085894584655762,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.2333333333333334,
+        "drawer_displacement_m": 0.28514429926872253,
+        "drawer_velocity_m_s": 0.1743418425321579,
+        "application_point_world": [
+          -0.09787827730178833,
+          0.08085896074771881,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.2666666666666666,
+        "drawer_displacement_m": 0.2909891605377197,
+        "drawer_velocity_m_s": 0.1761208027601242,
+        "application_point_world": [
+          -0.10372322797775269,
+          0.08085894584655762,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.3,
+        "drawer_displacement_m": 0.29689353704452515,
+        "drawer_velocity_m_s": 0.17789976298809052,
+        "application_point_world": [
+          -0.10962754487991333,
+          0.08085893094539642,
+          0.10222301632165909
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.3333333333333335,
+        "drawer_displacement_m": 0.3028571903705597,
+        "drawer_velocity_m_s": 0.17967872321605682,
+        "application_point_world": [
+          -0.11559122800827026,
+          0.08085896074771881,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.3666666666666667,
+        "drawer_displacement_m": 0.308880090713501,
+        "drawer_velocity_m_s": 0.18145768344402313,
+        "application_point_world": [
+          -0.12161409854888916,
+          0.08085894584655762,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.4,
+        "drawer_displacement_m": 0.3149622678756714,
+        "drawer_velocity_m_s": 0.18323664367198944,
+        "application_point_world": [
+          -0.12769627571105957,
+          0.08085893094539642,
+          0.10222303122282028
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.433333333333333,
+        "drawer_displacement_m": 0.3211037218570709,
+        "drawer_velocity_m_s": 0.18501560389995575,
+        "application_point_world": [
+          -0.1338377594947815,
+          0.08085893094539642,
+          0.10222301632165909
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.466666666666667,
+        "drawer_displacement_m": 0.3273044228553772,
+        "drawer_velocity_m_s": 0.18679456412792206,
+        "application_point_world": [
+          -0.14003843069076538,
+          0.08085893094539642,
+          0.10222301632165909
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.5,
+        "drawer_displacement_m": 0.3335643410682678,
+        "drawer_velocity_m_s": 0.18857352435588837,
+        "application_point_world": [
+          -0.14629840850830078,
+          0.08085893094539642,
+          0.10222301632165909
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.533333333333333,
+        "drawer_displacement_m": 0.33988362550735474,
+        "drawer_velocity_m_s": 0.19035248458385468,
+        "application_point_world": [
+          -0.15261763334274292,
+          0.08085890114307404,
+          0.1022230014204979
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.566666666666667,
+        "drawer_displacement_m": 0.3462623953819275,
+        "drawer_velocity_m_s": 0.19213144481182098,
+        "application_point_world": [
+          -0.15899646282196045,
+          0.08085890114307404,
+          0.10222301632165909
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.6,
+        "drawer_displacement_m": 0.35270044207572937,
+        "drawer_velocity_m_s": 0.1939104050397873,
+        "application_point_world": [
+          -0.16543447971343994,
+          0.08085890114307404,
+          0.10222301632165909
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.6333333333333333,
+        "drawer_displacement_m": 0.3591977655887604,
+        "drawer_velocity_m_s": 0.1956893652677536,
+        "application_point_world": [
+          -0.17193180322647095,
+          0.08085890114307404,
+          0.10222301632165909
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.6666666666666665,
+        "drawer_displacement_m": 0.3657543361186981,
+        "drawer_velocity_m_s": 0.1974683254957199,
+        "application_point_world": [
+          -0.1784883737564087,
+          0.08085893094539642,
+          0.10222301632165909
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.7,
+        "drawer_displacement_m": 0.3723701536655426,
+        "drawer_velocity_m_s": 0.19924728572368622,
+        "application_point_world": [
+          -0.18510419130325317,
+          0.08085893094539642,
+          0.10222301632165909
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.7333333333333334,
+        "drawer_displacement_m": 0.37904518842697144,
+        "drawer_velocity_m_s": 0.20102624595165253,
+        "application_point_world": [
+          -0.1917792558670044,
+          0.08085893094539642,
+          0.1022230014204979
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.7666666666666666,
+        "drawer_displacement_m": 0.3857795000076294,
+        "drawer_velocity_m_s": 0.20280520617961884,
+        "application_point_world": [
+          -0.19851356744766235,
+          0.08085890114307404,
+          0.1022229865193367
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.8,
+        "drawer_displacement_m": 0.3925732374191284,
+        "drawer_velocity_m_s": 0.20458416640758514,
+        "application_point_world": [
+          -0.2053072452545166,
+          0.08085890114307404,
+          0.1022229865193367
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.8333333333333335,
+        "drawer_displacement_m": 0.3994264304637909,
+        "drawer_velocity_m_s": 0.20636312663555145,
+        "application_point_world": [
+          -0.21216046810150146,
+          0.08085893094539642,
+          0.10222301632165909
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.8666666666666667,
+        "drawer_displacement_m": 0.4063388705253601,
+        "drawer_velocity_m_s": 0.20814208686351776,
+        "application_point_world": [
+          -0.21907293796539307,
+          0.08085893094539642,
+          0.10222301632165909
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.9,
+        "drawer_displacement_m": 0.41331055760383606,
+        "drawer_velocity_m_s": 0.20992104709148407,
+        "application_point_world": [
+          -0.22604453563690186,
+          0.08085887134075165,
+          0.1022229865193367
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.933333333333333,
+        "drawer_displacement_m": 0.42034149169921875,
+        "drawer_velocity_m_s": 0.21170000731945038,
+        "application_point_world": [
+          -0.2330755591392517,
+          0.08085890114307404,
+          0.10222301632165909
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.966666666666667,
+        "drawer_displacement_m": 0.4274316728115082,
+        "drawer_velocity_m_s": 0.2134789675474167,
+        "application_point_world": [
+          -0.24016565084457397,
+          0.08085890114307404,
+          0.1022229865193367
+        ],
+        "applied_force_world": [
+          -0.5,
+          -3.725288308942254e-07,
+          0.0
+        ]
+      }
+    ]
+  }
+}

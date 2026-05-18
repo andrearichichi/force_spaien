@@ -1,0 +1,40 @@
+# Local environment and editor state
+.cache/
+.codex/
+.config/
+.cursor-server
+.docker
+.idea/
+.ipython/
+.jupyter
+.lightning_studio/
+.local
+.npm/
+.nv/
+.nvm
+.oh-my-zsh
+.ssh
+.vscode/
+.vscode-server
+.windsurf-server
+
+# Shell/user files from the workspace image
+.bashrc
+.condarc
+.gitconfig
+.hushlogin
+.profile
+.sudo_as_admin_successful
+.vimrc
+.zcompdump
+.zsh_history
+.zshrc
+
+# Python/runtime artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# OS noise
+.DS_Store
+
