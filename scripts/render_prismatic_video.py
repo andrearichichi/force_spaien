@@ -16,6 +16,11 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 import sapien
 
+try:
+    from paths import resolve_model_dir
+except ModuleNotFoundError:
+    from scripts.paths import resolve_model_dir
+
 
 FONT_REGULAR = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 22)
 FONT_BOLD = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 24)
@@ -405,7 +410,7 @@ def main() -> int:
     parser.add_argument("--keep-old", action="store_true", help="Do not delete old files in the output directory")
     args = parser.parse_args()
 
-    model_dir = Path(args.model_dir).resolve()
+    model_dir = resolve_model_dir(args.model_dir)
     output, json_output = output_paths(model_dir, Path(args.output_root).resolve(), args.output, args.json_output)
     output.parent.mkdir(parents=True, exist_ok=True)
     if not args.keep_old:

@@ -4,11 +4,14 @@ Utilities for applying small forces to articulated SAPIEN objects and rendering 
 
 ## Usage
 
-Run the full pipeline for one or more object directories:
+Object assets live in `dataset/`. You can pass either an object ID from that folder or an explicit object path.
+
+Run the full pipeline for one or more objects:
 
 ```bash
 python3 scripts/main.py 101062
 python3 scripts/main.py 11691 44817 45384 101062
+python3 scripts/main.py dataset/101062
 ```
 
 For objects without a handle, generate and select a manual force application point:
@@ -24,4 +27,3 @@ On a machine with a graphical display, the picker can be opened directly:
 ```bash
 python3 scripts/main.py 101062 --pick-point
 ```
-

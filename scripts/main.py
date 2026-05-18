@@ -9,6 +9,11 @@ import subprocess
 import sys
 import xml.etree.ElementTree as ET
 
+try:
+    from paths import resolve_model_dir
+except ModuleNotFoundError:
+    from scripts.paths import resolve_model_dir
+
 
 def first_moving_joint(model_dir: Path) -> tuple[str, str, str, tuple[float, float] | None]:
     root = ET.parse(model_dir / "mobility.urdf").getroot()
@@ -63,7 +68,7 @@ def preferred_joint(model_dir: Path, detected_joint: str, detected_link: str) ->
 
 
 def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path) -> int:
-    model_dir = Path(model_dir_arg).resolve()
+    model_dir = resolve_model_dir(model_dir_arg)
     if not (model_dir / "mobility.urdf").exists():
         raise FileNotFoundError(model_dir / "mobility.urdf")
 
@@ -175,18 +180,19 @@ def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path) 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Run the force/render pipeline on one or more object directories.",
+        description="Run the force/render pipeline on one or more objects.",
         epilog=(
             "Examples:\n"
             "  python3 scripts/main.py 101062\n"
             "  python3 scripts/main.py 11691 44817 45384 101062\n"
+            "  python3 scripts/main.py dataset/101062\n"
             "  python3 scripts/main.py 101062 --preview-points\n"
             "  python3 scripts/main.py 101062 --pick-point\n"
             "  python3 scripts/main.py 101062 --select-point 6"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("objects", nargs="*", help="Object directories to process, e.g. 11691 44817 45384")
+    parser.add_argument("objects", nargs="*", help="Object IDs from dataset/ or object paths, e.g. 11691 44817 45384")
     parser.add_argument("--model-dir", default=None, help="Backward-compatible single object path")
     parser.add_argument("--mode", choices=["render", "apply"], default="render")
     parser.add_argument("--joint-type", choices=["auto", "prismatic", "revolute"], default="auto")
@@ -209,7 +215,7 @@ def main() -> int:
     if args.model_dir is not None:
         objects.append(args.model_dir)
     if not objects:
-        parser.error("pass at least one object directory, e.g. python3 scripts/main.py 101062")
+        parser.error("pass at least one object ID or directory, e.g. python3 scripts/main.py 101062")
 
     scripts_dir = Path(__file__).resolve().parent
     exit_code = 0

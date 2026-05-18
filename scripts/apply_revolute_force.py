@@ -12,6 +12,11 @@ import xml.etree.ElementTree as ET
 import numpy as np
 import sapien
 
+try:
+    from paths import resolve_model_dir
+except ModuleNotFoundError:
+    from scripts.paths import resolve_model_dir
+
 
 TIMESTEP = 1.0 / 240.0
 LINEAR_DAMPING = 0.0
@@ -170,7 +175,7 @@ def main() -> int:
     parser.add_argument("--keep-old", action="store_true")
     args = parser.parse_args()
 
-    model_dir = Path(args.model_dir).resolve()
+    model_dir = resolve_model_dir(args.model_dir)
     if not (model_dir / "mobility.urdf").exists():
         raise FileNotFoundError(model_dir / "mobility.urdf")
 

@@ -14,6 +14,11 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 import sapien
 
+try:
+    from paths import resolve_model_dir
+except ModuleNotFoundError:
+    from scripts.paths import resolve_model_dir
+
 
 FONT = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 24)
 
@@ -160,7 +165,7 @@ def draw_candidates(image: np.ndarray, projected: list[dict[str, object]]) -> np
 
 
 def create_preview(args: argparse.Namespace) -> int:
-    model_dir = Path(args.model_dir).resolve()
+    model_dir = resolve_model_dir(args.model_dir)
     object_output = preview_dir(model_dir, Path(args.output_root).resolve())
     detected_type, detected_joint, detected_link, limits = first_moving_joint(model_dir)
     joint_name = args.joint or preferred_joint(model_dir, detected_joint, detected_link)[0]
@@ -233,7 +238,7 @@ def create_preview(args: argparse.Namespace) -> int:
 
 
 def select_candidate(args: argparse.Namespace) -> int:
-    model_dir = Path(args.model_dir).resolve()
+    model_dir = resolve_model_dir(args.model_dir)
     object_output = preview_dir(model_dir, Path(args.output_root).resolve())
     candidates_path = object_output / "application_point_candidates.json"
     if not candidates_path.exists():
@@ -270,7 +275,7 @@ def write_override(model_dir: Path, output_root: Path, data: dict[str, object], 
 def pick_interactively(args: argparse.Namespace) -> int:
     create_preview(args)
 
-    model_dir = Path(args.model_dir).resolve()
+    model_dir = resolve_model_dir(args.model_dir)
     object_output = preview_dir(model_dir, Path(args.output_root).resolve())
     candidates_path = object_output / "application_point_candidates.json"
     data = json.loads(candidates_path.read_text())
