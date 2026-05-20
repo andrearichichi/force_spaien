@@ -14,8 +14,10 @@ import sapien
 
 try:
     from paths import resolve_model_dir
+    from simulation_json import build_metadata, sample_time_from_step
 except ModuleNotFoundError:
     from scripts.paths import resolve_model_dir
+    from scripts.simulation_json import build_metadata, sample_time_from_step
 
 
 TIMESTEP = 1.0 / 240.0
@@ -46,66 +48,6 @@ def load_application_point_override(object_dir: Path, link_name: str) -> tuple[n
         return None, None
     point = np.append(np.asarray(data["local_point"], dtype=np.float32), np.float32(1.0))
     return point, f"manual candidate {data.get('candidate_id')} from application_point_override.json"
-
-
-def urdf_joint_dynamics(model_dir: Path) -> dict[str, dict[str, str]]:
-    tree = ET.parse(model_dir / "mobility.urdf")
-    result = {}
-    for joint in tree.findall("joint"):
-        dynamics = joint.find("dynamics")
-        if dynamics is not None:
-            result[joint.attrib.get("name", "")] = dict(dynamics.attrib)
-    return result
-
-
-def pose_to_dict(pose: sapien.Pose) -> dict[str, list[float]]:
-    return {"p": np.asarray(pose.p, dtype=float).tolist(), "q": np.asarray(pose.q, dtype=float).tolist()}
-
-
-def optional_float(value_fn) -> float | None:
-    try:
-        return float(value_fn())
-    except RuntimeError:
-        return None
-
-
-def optional_array(value_fn) -> list[float] | list[list[float]] | None:
-    try:
-        return np.asarray(value_fn(), dtype=float).tolist()
-    except RuntimeError:
-        return None
-
-
-def optional_string(value_fn) -> str | None:
-    try:
-        return str(value_fn())
-    except RuntimeError:
-        return None
-
-
-def link_dynamics_to_dict(link: sapien.physx.PhysxArticulationLinkComponent) -> dict[str, object]:
-    return {
-        "name": link.name,
-        "mass": float(link.mass),
-        "inertia": np.asarray(link.inertia, dtype=float).tolist(),
-        "cmass_local_pose": pose_to_dict(link.cmass_local_pose),
-        "linear_damping": float(link.linear_damping),
-        "angular_damping": float(link.angular_damping),
-        "disable_gravity": bool(link.disable_gravity),
-    }
-
-
-def joint_to_dict(joint: sapien.physx.PhysxArticulationJoint) -> dict[str, object]:
-    return {
-        "name": joint.name,
-        "limits_rad": optional_array(joint.get_limit),
-        "friction": optional_float(lambda: joint.friction),
-        "damping": optional_float(lambda: joint.damping),
-        "drive_mode": optional_string(lambda: joint.drive_mode),
-        "drive_target": optional_array(lambda: joint.drive_target),
-        "drive_velocity_target": optional_array(lambda: joint.drive_velocity_target),
-        "force_limit": optional_float(lambda: joint.force_limit),
-    }
 
 
 def mesh_vertices(mesh_path: Path) -> np.ndarray:
@@ -232,43 +174,47 @@ def main() -> int:
             angle = float(articulation.get_qpos()[joint_index])
             samples.append(
                 {
-                    "time_s": float(step * TIMESTEP),
+                    "time_s": sample_time_from_step(step, TIMESTEP),
                     "joint_angle_rad": angle,
                     "joint_angle_deg": math.degrees(angle),
                     "joint_velocity_rad_s": float(articulation.get_qvel()[joint_index]),
-                    "application_point_world": point.astype(float).tolist(),
+                    "application_point_world": application_point_world(target_link, local_application_point).astype(float).tolist(),
                     "applied_force_world": force_world.astype(float).tolist(),
                 }
             )
 
-    urdf_dynamics = urdf_joint_dynamics(model_dir)
-    metadata = {
-        "model_dir": str(model_dir),
-        "joint_type": "revolute",
-        "joint": args.joint,
-        "link": args.link,
-        "fps": args.fps,
-        "seconds": args.seconds,
-        "timestep_s": TIMESTEP,
-        "initial_angle_rad": args.initial_angle,
-        "initial_angle_deg": math.degrees(args.initial_angle),
-        "force_magnitude_n": args.force,
-        "direction_world": direction.astype(float).tolist(),
-        "application_point_strategy": application_point_strategy,
-        "application_point_local": local_application_point[:3].astype(float).tolist(),
-        "joint_limits_rad": target_joint.get_limit().tolist(),
-        "physics": {
-            "urdf_joint_dynamics": urdf_dynamics,
-            "urdf_joint_dynamics_present": bool(urdf_dynamics),
-            "separate_static_dynamic_friction_present": False,
-            "air_friction_model_present": False,
-            "link_linear_damping_set_to": LINEAR_DAMPING,
-            "link_angular_damping_set_to": ANGULAR_DAMPING,
-            "joint_drive_stiffness_damping_force_limit_set_to": [0.0, 0.0, 0.0],
+    metadata = build_metadata(
+        model_dir=model_dir,
+        mode="apply",
+        joint_type="revolute",
+        joint_name=args.joint,
+        link_name=args.link,
+        json_output=json_output,
+        fps=args.fps,
+        requested_seconds=args.seconds,
+        simulated_seconds=steps * TIMESTEP,
+        timestep_s=TIMESTEP,
+        sample_interval_s=sample_interval * TIMESTEP,
+        actuation={
+            "initial_joint_position": {
+                "rad": args.initial_angle,
+                "deg": math.degrees(args.initial_angle),
+            },
+            "force": {
+                "magnitude_n": args.force,
+                "direction_world": direction.astype(float).tolist(),
+            },
+            "joint_limits_rad": target_joint.get_limit().tolist(),
         },
-        "links": [link_dynamics_to_dict(link) for link in articulation.get_links()],
-        "joints": [joint_to_dict(joint) for joint in articulation.get_joints()],
-    }
+        application_point={
+            "strategy": application_point_strategy,
+            "local_on_link": local_application_point[:3].astype(float).tolist(),
+        },
+        articulation=articulation,
+        limit_key="limits_rad",
+        linear_damping=LINEAR_DAMPING,
+        angular_damping=ANGULAR_DAMPING,
+    )
 
     with json_output.open("w", encoding="utf-8") as f:
         json.dump({"metadata": metadata, "samples": {"force": samples}}, f, indent=2)

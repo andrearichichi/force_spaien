@@ -18,13 +18,18 @@ import sapien
 
 try:
     from paths import resolve_model_dir
+    from simulation_json import build_metadata, sample_time_from_frame
 except ModuleNotFoundError:
     from scripts.paths import resolve_model_dir
+    from scripts.simulation_json import build_metadata, sample_time_from_frame
 
 
 FONT_REGULAR = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 22)
 FONT_BOLD = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 24)
 FONT_SMALL = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 18)
+TIMESTEP = 1.0 / 240.0
+LINEAR_DAMPING = 0.0
+ANGULAR_DAMPING = 0.02
 
 
 def look_at_pose(eye: np.ndarray, target: np.ndarray) -> sapien.Pose:
@@ -66,16 +71,6 @@ def load_application_point_override(object_dir: Path, link_name: str) -> tuple[n
         return None, None
     point = np.append(np.asarray(data["local_point"], dtype=np.float32), np.float32(1.0))
     return point, f"manual candidate {data.get('candidate_id')} from application_point_override.json"
-
-
-def urdf_joint_dynamics(model_dir: Path) -> dict[str, dict[str, str]]:
-    tree = ET.parse(model_dir / "mobility.urdf")
-    result = {}
-    for joint in tree.findall("joint"):
-        dynamics = joint.find("dynamics")
-        if dynamics is not None:
-            result[joint.attrib.get("name", "")] = dict(dynamics.attrib)
-    return result
 
 
 @dataclass
@@ -148,7 +143,7 @@ def pick_drawer_pull_point(drawer: sapien.physx.PhysxArticulationLinkComponent, 
 
 def setup_sim(model_dir: Path, drawer_index: int, width: int, height: int, force_dir: np.ndarray, override_point: np.ndarray | None = None, override_strategy: str | None = None) -> DrawerSim:
     scene = sapien.Scene()
-    scene.set_timestep(1.0 / 240.0)
+    scene.set_timestep(TIMESTEP)
     scene.set_ambient_light([0.72, 0.72, 0.72])
     scene.add_directional_light([0.2, -0.45, -1.0], [1.0, 1.0, 1.0], shadow=False)
     scene.add_directional_light([-0.7, 0.25, -1.0], [0.38, 0.38, 0.38], shadow=False)
@@ -162,8 +157,8 @@ def setup_sim(model_dir: Path, drawer_index: int, width: int, height: int, force
         joint.set_drive_property(0.0, 0.0, 0.0)
     for link in cabinet.get_links():
         link.disable_gravity = True
-        link.linear_damping = 0.0
-        link.angular_damping = 0.02
+        link.linear_damping = LINEAR_DAMPING
+        link.angular_damping = ANGULAR_DAMPING
 
     joint = cabinet.find_joint_by_name(f"joint_{drawer_index}")
     drawer = cabinet.find_link_by_name(f"link_{drawer_index}")
@@ -331,56 +326,6 @@ def draw_displacement_plot(canvas: np.ndarray, no_force: list[float], pulling: l
     draw_label(canvas, "tiro", (x + w - 168, y + 54), (210, 55, 45), 0.48)
 
 
-def pose_to_dict(pose: sapien.Pose) -> dict[str, list[float]]:
-    return {"p": np.asarray(pose.p, dtype=float).tolist(), "q": np.asarray(pose.q, dtype=float).tolist()}
-
-
-def link_dynamics_to_dict(link: sapien.physx.PhysxArticulationLinkComponent) -> dict[str, object]:
-    return {
-        "name": link.name,
-        "mass": float(link.mass),
-        "inertia": np.asarray(link.inertia, dtype=float).tolist(),
-        "cmass_local_pose": pose_to_dict(link.cmass_local_pose),
-        "linear_damping": float(link.linear_damping),
-        "angular_damping": float(link.angular_damping),
-        "disable_gravity": bool(link.disable_gravity),
-    }
-
-
-def optional_float(value_fn) -> float | None:
-    try:
-        return float(value_fn())
-    except RuntimeError:
-        return None
-
-
-def optional_array(value_fn) -> list[float] | list[list[float]] | None:
-    try:
-        return np.asarray(value_fn(), dtype=float).tolist()
-    except RuntimeError:
-        return None
-
-
-def optional_string(value_fn) -> str | None:
-    try:
-        return str(value_fn())
-    except RuntimeError:
-        return None
-
-
-def joint_to_dict(joint: sapien.physx.PhysxArticulationJoint) -> dict[str, object]:
-    return {
-        "name": joint.name,
-        "limits_m": optional_array(joint.get_limit),
-        "friction": optional_float(lambda: joint.friction),
-        "damping": optional_float(lambda: joint.damping),
-        "drive_mode": optional_string(lambda: joint.drive_mode),
-        "drive_target": optional_array(lambda: joint.drive_target),
-        "drive_velocity_target": optional_array(lambda: joint.drive_velocity_target),
-        "force_limit": optional_float(lambda: joint.force_limit),
-    }
-
-
 def sample_to_dict(time_s: float, sim: DrawerSim, applied_force: np.ndarray) -> dict[str, object]:
     return {
         "time_s": float(time_s),
@@ -447,7 +392,7 @@ def main() -> int:
                 still_sim.scene.step()
                 pulling_sim.scene.step()
 
-            time_s = len(pulling_displacements) / args.fps
+            time_s = sample_time_from_frame(len(pulling_displacements), steps_per_frame, TIMESTEP)
             samples["no_force"].append(sample_to_dict(time_s, still_sim, np.zeros(3, dtype=np.float32)))
             samples["pulling_force"].append(sample_to_dict(time_s, pulling_sim, force))
             point_histories["no_force"].append(application_point_world(still_sim))
@@ -480,36 +425,39 @@ def main() -> int:
             for _ in range(hold_frames):
                 writer.append_data(final_frame)
 
-    urdf_dynamics = urdf_joint_dynamics(model_dir)
-    metadata = {
-        "model_dir": str(model_dir),
-        "video_output": str(output),
-        "fps": args.fps,
-        "seconds": args.seconds,
-        "end_hold_seconds": args.end_hold_seconds,
-        "video_duration_seconds": args.seconds + args.end_hold_seconds,
-        "drawer": args.drawer,
-        "joint": f"joint_{args.drawer}",
-        "link": f"link_{args.drawer}",
-        "force_magnitude_n": args.force,
-        "direction_world": pull_dir_world.astype(float).tolist(),
-        "generalized_drawer_force_n": float(generalized_force),
-        "application_point_strategy": pulling_sim.application_point_strategy,
-        "application_point_local_on_drawer": pulling_sim.local_application_point[:3].astype(float).tolist(),
-        "joint_limits_m": pulling_sim.cabinet.get_active_joints()[pulling_sim.joint_index].get_limit().tolist(),
-        "timestep_s": 1.0 / 240.0,
-        "physics": {
-            "urdf_joint_dynamics": urdf_dynamics,
-            "urdf_joint_dynamics_present": bool(urdf_dynamics),
-            "separate_static_dynamic_friction_present": False,
-            "air_friction_model_present": False,
-            "link_linear_damping_set_to": 0.0,
-            "link_angular_damping_set_to": 0.02,
-            "joint_drive_stiffness_damping_force_limit_set_to": [0.0, 0.0, 0.0],
+    simulated_seconds = frame_count * steps_per_frame * TIMESTEP
+    metadata = build_metadata(
+        model_dir=model_dir,
+        mode="render",
+        joint_type="prismatic",
+        joint_name=f"joint_{args.drawer}",
+        link_name=f"link_{args.drawer}",
+        json_output=json_output,
+        video_output=output,
+        fps=args.fps,
+        requested_seconds=args.seconds,
+        simulated_seconds=simulated_seconds,
+        timestep_s=TIMESTEP,
+        sample_interval_s=steps_per_frame * TIMESTEP,
+        end_hold_seconds=args.end_hold_seconds,
+        actuation={
+            "force": {
+                "magnitude_n": args.force,
+                "direction_world": pull_dir_world.astype(float).tolist(),
+                "generalized_joint_force_n": float(generalized_force),
+            },
+            "joint_limits_m": pulling_sim.cabinet.get_active_joints()[pulling_sim.joint_index].get_limit().tolist(),
         },
-        "links": [link_dynamics_to_dict(link) for link in pulling_sim.cabinet.get_links()],
-        "joints": [joint_to_dict(joint) for joint in pulling_sim.cabinet.get_joints()],
-    }
+        application_point={
+            "strategy": pulling_sim.application_point_strategy,
+            "local_on_link": pulling_sim.local_application_point[:3].astype(float).tolist(),
+        },
+        articulation=pulling_sim.cabinet,
+        limit_key="limits_m",
+        linear_damping=LINEAR_DAMPING,
+        angular_damping=ANGULAR_DAMPING,
+        drawer_index=args.drawer,
+    )
     with json_output.open("w", encoding="utf-8") as f:
         json.dump({"metadata": metadata, "samples": samples}, f, indent=2)
 

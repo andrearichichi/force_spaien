@@ -18,13 +18,18 @@ import sapien
 
 try:
     from paths import resolve_model_dir
+    from simulation_json import build_metadata, sample_time_from_frame
 except ModuleNotFoundError:
     from scripts.paths import resolve_model_dir
+    from scripts.simulation_json import build_metadata, sample_time_from_frame
 
 
 FONT_REGULAR = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 22)
 FONT_BOLD = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 24)
 FONT_SMALL = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 18)
+TIMESTEP = 1.0 / 240.0
+LINEAR_DAMPING = 0.0
+ANGULAR_DAMPING = 0.02
 
 
 def look_at_pose(eye: np.ndarray, target: np.ndarray) -> sapien.Pose:
@@ -66,16 +71,6 @@ def load_application_point_override(object_dir: Path, link_name: str) -> tuple[n
         return None, None
     point = np.append(np.asarray(data["local_point"], dtype=np.float32), np.float32(1.0))
     return point, f"manual candidate {data.get('candidate_id')} from application_point_override.json"
-
-
-def urdf_joint_dynamics(model_dir: Path) -> dict[str, dict[str, str]]:
-    tree = ET.parse(model_dir / "mobility.urdf")
-    result = {}
-    for joint in tree.findall("joint"):
-        dynamics = joint.find("dynamics")
-        if dynamics is not None:
-            result[joint.attrib.get("name", "")] = dict(dynamics.attrib)
-    return result
 
 
 @dataclass
@@ -168,7 +163,7 @@ def setup_sim(
     override_strategy: str | None = None,
 ) -> LaptopSim:
     scene = sapien.Scene()
-    scene.set_timestep(1.0 / 240.0)
+    scene.set_timestep(TIMESTEP)
     scene.set_ambient_light([0.72, 0.72, 0.72])
     scene.add_directional_light([0.25, 0.45, -1.0], [1.0, 1.0, 1.0], shadow=False)
     scene.add_directional_light([-0.6, -0.2, -1.0], [0.35, 0.35, 0.35], shadow=False)
@@ -191,8 +186,8 @@ def setup_sim(
         current_joint.set_drive_property(0.0, 0.0, 0.0)
     for link in laptop.get_links():
         link.disable_gravity = True
-        link.linear_damping = 0.0
-        link.angular_damping = 0.02
+        link.linear_damping = LINEAR_DAMPING
+        link.angular_damping = ANGULAR_DAMPING
 
     local_application_point = pick_handle_point_local(model_dir, link_name)
     application_point_strategy = "center of handle mesh on selected link"
@@ -382,56 +377,6 @@ def draw_angle_plot(
     draw_label(canvas, "chiude", (x + w - 130, y + 54), (25, 115, 210), 0.48)
 
 
-def pose_to_dict(pose: sapien.Pose) -> dict[str, list[float]]:
-    return {"p": np.asarray(pose.p, dtype=float).tolist(), "q": np.asarray(pose.q, dtype=float).tolist()}
-
-
-def link_dynamics_to_dict(link: sapien.physx.PhysxArticulationLinkComponent) -> dict[str, object]:
-    return {
-        "name": link.name,
-        "mass": float(link.mass),
-        "inertia": np.asarray(link.inertia, dtype=float).tolist(),
-        "cmass_local_pose": pose_to_dict(link.cmass_local_pose),
-        "linear_damping": float(link.linear_damping),
-        "angular_damping": float(link.angular_damping),
-        "disable_gravity": bool(link.disable_gravity),
-    }
-
-
-def optional_float(value_fn) -> float | None:
-    try:
-        return float(value_fn())
-    except RuntimeError:
-        return None
-
-
-def optional_array(value_fn) -> list[float] | list[list[float]] | None:
-    try:
-        return np.asarray(value_fn(), dtype=float).tolist()
-    except RuntimeError:
-        return None
-
-
-def optional_string(value_fn) -> str | None:
-    try:
-        return str(value_fn())
-    except RuntimeError:
-        return None
-
-
-def joint_to_dict(joint: sapien.physx.PhysxArticulationJoint) -> dict[str, object]:
-    return {
-        "name": joint.name,
-        "limits_rad": optional_array(joint.get_limit),
-        "friction": optional_float(lambda: joint.friction),
-        "damping": optional_float(lambda: joint.damping),
-        "drive_mode": optional_string(lambda: joint.drive_mode),
-        "drive_target": optional_array(lambda: joint.drive_target),
-        "drive_velocity_target": optional_array(lambda: joint.drive_velocity_target),
-        "force_limit": optional_float(lambda: joint.force_limit),
-    }
-
-
 def sample_to_dict(time_s: float, sim: LaptopSim, applied_force: np.ndarray) -> dict[str, object]:
     angle = float(sim.laptop.get_qpos()[sim.joint_index])
     return {
@@ -481,38 +426,6 @@ def main() -> int:
     override_point, override_strategy = load_application_point_override(output.parent, args.link)
     opening_sim = setup_sim(model_dir, args.joint, args.link, args.panel_width, args.panel_height, args.initial_angle, override_point, override_strategy)
     closing_sim = setup_sim(model_dir, args.joint, args.link, args.panel_width, args.panel_height, args.initial_angle, override_point, override_strategy)
-    urdf_dynamics = urdf_joint_dynamics(model_dir)
-    metadata = {
-        "model_dir": str(model_dir),
-        "video_output": str(output),
-        "fps": args.fps,
-        "seconds": args.seconds,
-        "end_hold_seconds": args.end_hold_seconds,
-        "video_duration_seconds": args.seconds + args.end_hold_seconds,
-        "timestep_s": 1.0 / 240.0,
-        "initial_angle_rad": args.initial_angle,
-        "initial_angle_deg": math.degrees(args.initial_angle),
-        "joint": args.joint,
-        "link": args.link,
-        "force_magnitude_n": args.force,
-        "closing_force_magnitude_n": args.closing_force,
-        "opening_direction_world": opening_dir.astype(float).tolist(),
-        "closing_direction_world": closing_dir.astype(float).tolist(),
-        "application_point_strategy": opening_sim.application_point_strategy,
-        "application_point_local_on_screen": opening_sim.local_application_point[:3].astype(float).tolist(),
-        "joint_limits_rad": opening_sim.laptop.get_active_joints()[opening_sim.joint_index].get_limit().tolist(),
-        "physics": {
-            "urdf_joint_dynamics": urdf_dynamics,
-            "urdf_joint_dynamics_present": bool(urdf_dynamics),
-            "separate_static_dynamic_friction_present": False,
-            "air_friction_model_present": False,
-            "link_linear_damping_set_to": 0.0,
-            "link_angular_damping_set_to": 0.02,
-            "joint_drive_stiffness_damping_force_limit_set_to": [0.0, 0.0, 0.0],
-        },
-        "links": [link_dynamics_to_dict(link) for link in opening_sim.laptop.get_links()],
-        "joints": [joint_to_dict(joint) for joint in opening_sim.laptop.get_joints()],
-    }
 
     steps_per_frame = max(1, round(240 / args.fps))
     frame_count = max(1, int(args.seconds * args.fps))
@@ -535,7 +448,7 @@ def main() -> int:
                 opening_sim.scene.step()
                 closing_sim.scene.step()
 
-            time_s = len(opening_angles) / args.fps
+            time_s = sample_time_from_frame(len(opening_angles), steps_per_frame, TIMESTEP)
             samples["opening_force"].append(sample_to_dict(time_s, opening_sim, opening_force))
             samples["closing_force"].append(sample_to_dict(time_s, closing_sim, closing_force))
             point_histories["opening_force"].append(application_point_world(opening_sim))
@@ -614,6 +527,46 @@ def main() -> int:
         if final_frame is not None:
             for _ in range(hold_frames):
                 writer.append_data(final_frame)
+
+    simulated_seconds = frame_count * steps_per_frame * TIMESTEP
+    metadata = build_metadata(
+        model_dir=model_dir,
+        mode="render",
+        joint_type="revolute",
+        joint_name=args.joint,
+        link_name=args.link,
+        json_output=json_output,
+        video_output=output,
+        fps=args.fps,
+        requested_seconds=args.seconds,
+        simulated_seconds=simulated_seconds,
+        timestep_s=TIMESTEP,
+        sample_interval_s=steps_per_frame * TIMESTEP,
+        end_hold_seconds=args.end_hold_seconds,
+        actuation={
+            "initial_joint_position": {
+                "rad": args.initial_angle,
+                "deg": math.degrees(args.initial_angle),
+            },
+            "opening_force": {
+                "magnitude_n": args.force,
+                "direction_world": opening_dir.astype(float).tolist(),
+            },
+            "closing_force": {
+                "magnitude_n": args.closing_force,
+                "direction_world": closing_dir.astype(float).tolist(),
+            },
+            "joint_limits_rad": opening_sim.laptop.get_active_joints()[opening_sim.joint_index].get_limit().tolist(),
+        },
+        application_point={
+            "strategy": opening_sim.application_point_strategy,
+            "local_on_link": opening_sim.local_application_point[:3].astype(float).tolist(),
+        },
+        articulation=opening_sim.laptop,
+        limit_key="limits_rad",
+        linear_damping=LINEAR_DAMPING,
+        angular_damping=ANGULAR_DAMPING,
+    )
 
     print(f"Wrote {output}")
     with json_output.open("w", encoding="utf-8") as f:
