@@ -12,7 +12,11 @@ import xml.etree.ElementTree as ET
 import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
-import sapien
+
+try:
+    import sapien
+except ModuleNotFoundError:
+    sapien = None
 
 try:
     from paths import resolve_model_dir
@@ -20,7 +24,28 @@ except ModuleNotFoundError:
     from scripts.paths import resolve_model_dir
 
 
-FONT = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 24)
+def load_font(size: int) -> ImageFont.ImageFont:
+    for font_path in (
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+        "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+        "/System/Library/Fonts/Supplemental/Arial.ttf",
+        "/Library/Fonts/Arial.ttf",
+    ):
+        try:
+            return ImageFont.truetype(font_path, size)
+        except OSError:
+            continue
+    return ImageFont.load_default()
+
+
+FONT = load_font(24)
+
+
+def require_sapien() -> None:
+    if sapien is None:
+        raise ModuleNotFoundError(
+            "sapien is required to generate a new preview. Reuse an existing preview or install sapien."
+        )
 
 
 def look_at_pose(eye: np.ndarray, target: np.ndarray) -> sapien.Pose:
@@ -165,6 +190,7 @@ def draw_candidates(image: np.ndarray, projected: list[dict[str, object]]) -> np
 
 
 def create_preview(args: argparse.Namespace) -> int:
+    require_sapien()
     model_dir = resolve_model_dir(args.model_dir)
     object_output = preview_dir(model_dir, Path(args.output_root).resolve())
     detected_type, detected_joint, detected_link, limits = first_moving_joint(model_dir)
@@ -225,7 +251,7 @@ def create_preview(args: argparse.Namespace) -> int:
                 "joint_type": detected_type,
                 "joint": joint_name,
                 "link": link_name,
-                "preview_image": str(preview_path),
+                "preview_image": preview_path.name,
                 "candidates": projected,
             },
             f,
@@ -273,13 +299,16 @@ def write_override(model_dir: Path, output_root: Path, data: dict[str, object], 
 
 
 def pick_interactively(args: argparse.Namespace) -> int:
-    create_preview(args)
-
     model_dir = resolve_model_dir(args.model_dir)
     object_output = preview_dir(model_dir, Path(args.output_root).resolve())
     candidates_path = object_output / "application_point_candidates.json"
+    preview_path = object_output / "application_point_preview.png"
+
+    if not (candidates_path.exists() and preview_path.exists()):
+        create_preview(args)
+
     data = json.loads(candidates_path.read_text())
-    preview_path = Path(data["preview_image"])
+    preview_path = resolve_preview_path(data, object_output)
     image = cv2.imread(str(preview_path), cv2.IMREAD_COLOR)
     if image is None:
         raise RuntimeError(f"Could not open preview image: {preview_path}")
@@ -329,6 +358,23 @@ def pick_interactively(args: argparse.Namespace) -> int:
     write_override(model_dir, Path(args.output_root).resolve(), data, selected, candidates_path)
     print(f"Selected candidate {selected['id']}: {selected['name']}")
     return 0
+
+
+def resolve_preview_path(data: dict[str, object], object_output: Path) -> Path:
+    local_preview = object_output / "application_point_preview.png"
+    if local_preview.exists():
+        return local_preview
+
+    stored_preview = Path(str(data.get("preview_image", "")))
+    if stored_preview.exists():
+        return stored_preview
+
+    if stored_preview.name:
+        relative_preview = object_output / stored_preview.name
+        if relative_preview.exists():
+            return relative_preview
+
+    raise FileNotFoundError(f"Could not resolve preview image for {object_output}")
 
 
 def main() -> int:
