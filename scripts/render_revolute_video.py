@@ -17,11 +17,29 @@ from PIL import Image, ImageDraw, ImageFont
 import sapien
 
 try:
-    from paths import resolve_model_dir
     from simulation_json import build_metadata, sample_time_from_frame
 except ModuleNotFoundError:
-    from scripts.paths import resolve_model_dir
     from scripts.simulation_json import build_metadata, sample_time_from_frame
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DATASET_DIR = REPO_ROOT / "dataset"
+
+
+def resolve_model_dir(model_dir_arg: str | Path) -> Path:
+    model_dir = Path(model_dir_arg).expanduser()
+    if model_dir.is_absolute():
+        return model_dir.resolve()
+
+    direct = (Path.cwd() / model_dir).resolve()
+    if (direct / "mobility.urdf").exists():
+        return direct
+
+    dataset_model = (DATASET_DIR / model_dir).resolve()
+    if (dataset_model / "mobility.urdf").exists():
+        return dataset_model
+
+    return direct
 
 
 FONT_REGULAR = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 22)
@@ -59,18 +77,6 @@ def clear_object_output(path: Path) -> None:
     for old_output in path.parent.iterdir():
         if old_output.is_file() and old_output.name in {"simulation.json", "final_video.mp4"}:
             old_output.unlink()
-
-
-def load_application_point_override(object_dir: Path, link_name: str) -> tuple[np.ndarray | None, str | None]:
-    model_name = object_dir.name.removesuffix("_output")
-    override_path = object_dir.parent / "application_point_overrides" / f"{model_name}.json"
-    if not override_path.exists():
-        return None, None
-    data = json.loads(override_path.read_text())
-    if data.get("link") != link_name:
-        return None, None
-    point = np.append(np.asarray(data["local_point"], dtype=np.float32), np.float32(1.0))
-    return point, f"manual candidate {data.get('candidate_id')} from application_point_override.json"
 
 
 @dataclass
@@ -189,19 +195,19 @@ def setup_sim(
         link.linear_damping = LINEAR_DAMPING
         link.angular_damping = ANGULAR_DAMPING
 
-    local_application_point = pick_handle_point_local(model_dir, link_name)
-    application_point_strategy = "center of handle mesh on selected link"
-    if local_application_point is None:
-        if override_point is not None:
-            local_application_point = override_point
-            application_point_strategy = override_strategy or "manual application point override"
-            initial_world_point = screen.get_entity_pose().to_transformation_matrix() @ local_application_point
-        else:
+    if override_point is not None:
+        local_application_point = override_point
+        application_point_strategy = override_strategy or "manual application point override"
+        initial_world_point = screen.get_entity_pose().to_transformation_matrix() @ local_application_point
+    else:
+        local_application_point = pick_handle_point_local(model_dir, link_name)
+        application_point_strategy = "center of handle mesh on selected link"
+        if local_application_point is None:
             initial_world_point = pick_screen_edge_point(screen)
             local_application_point = np.linalg.inv(screen.get_entity_pose().to_transformation_matrix()) @ initial_world_point
             application_point_strategy = f"upper free border of {link_name} from tight AABB at initial pose"
-    else:
-        initial_world_point = screen.get_entity_pose().to_transformation_matrix() @ local_application_point
+        else:
+            initial_world_point = screen.get_entity_pose().to_transformation_matrix() @ local_application_point
 
     marker = create_marker(scene)
     marker.set_pose(sapien.Pose(initial_world_point[:3]))
@@ -389,8 +395,128 @@ def sample_to_dict(time_s: float, sim: LaptopSim, applied_force: np.ndarray) -> 
     }
 
 
+def application_point_world_on_link(link: sapien.physx.PhysxArticulationLinkComponent, local_point: np.ndarray) -> np.ndarray:
+    return (link.get_entity_pose().to_transformation_matrix() @ local_point)[:3].astype(np.float32)
+
+
+def explicit_contact_point(args: argparse.Namespace) -> tuple[np.ndarray | None, str | None]:
+    if args.contact_point_local is None:
+        return None, None
+    point = np.append(np.asarray(args.contact_point_local, dtype=np.float32), np.float32(1.0))
+    return point, args.contact_point_strategy
+
+
+def run_apply(args: argparse.Namespace) -> int:
+    model_dir = resolve_model_dir(args.model_dir)
+    if not (model_dir / "mobility.urdf").exists():
+        raise FileNotFoundError(model_dir / "mobility.urdf")
+
+    json_output = output_paths(model_dir, Path(args.output_root).resolve(), None, args.json_output)[1]
+    if not args.keep_old:
+        clear_object_output(json_output)
+
+    scene = sapien.Scene()
+    scene.set_timestep(TIMESTEP)
+    loader = scene.create_urdf_loader()
+    loader.fix_root_link = True
+    articulation = loader.load(str(model_dir / "mobility.urdf"))
+    target_joint = articulation.find_joint_by_name(args.joint)
+    target_link = articulation.find_link_by_name(args.link)
+    if target_joint is None or target_link is None:
+        raise RuntimeError(f"Could not find {args.joint}/{args.link}.")
+
+    active_joints = list(articulation.get_active_joints())
+    joint_index = active_joints.index(target_joint)
+    qpos = np.zeros_like(articulation.get_qpos(), dtype=np.float32)
+    qpos[joint_index] = args.initial_angle
+    articulation.set_qpos(qpos)
+
+    for joint in articulation.get_joints():
+        joint.set_drive_property(0.0, 0.0, 0.0)
+    for link in articulation.get_links():
+        link.disable_gravity = True
+        link.linear_damping = LINEAR_DAMPING
+        link.angular_damping = ANGULAR_DAMPING
+
+    direction = np.asarray(args.direction, dtype=np.float32)
+    direction /= np.linalg.norm(direction) or 1.0
+    force_world = direction * args.force
+    explicit_point, explicit_strategy = explicit_contact_point(args)
+    if explicit_point is not None:
+        local_application_point = explicit_point
+        application_point_strategy = explicit_strategy or "manual application point from picker"
+    else:
+        local_application_point = pick_handle_point_local(model_dir, args.link)
+        application_point_strategy = "center of handle mesh on selected link"
+        if local_application_point is None:
+            local_application_point = np.linalg.inv(target_link.get_entity_pose().to_transformation_matrix()) @ pick_link_edge_point(target_link)
+            application_point_strategy = "free edge of selected link from tight AABB at initial pose"
+
+    samples = []
+    steps = max(1, int(args.seconds / TIMESTEP))
+    sample_interval = max(1, round(1.0 / (TIMESTEP * args.fps)))
+    for step in range(steps):
+        point = application_point_world_on_link(target_link, local_application_point)
+        target_link.add_force_at_point(force_world, point, "force")
+        scene.step()
+
+        if step % sample_interval == 0 or step == steps - 1:
+            angle = float(articulation.get_qpos()[joint_index])
+            samples.append(
+                {
+                    "time_s": sample_time_from_step(step, TIMESTEP),
+                    "joint_angle_rad": angle,
+                    "joint_angle_deg": math.degrees(angle),
+                    "joint_velocity_rad_s": float(articulation.get_qvel()[joint_index]),
+                    "application_point_world": application_point_world_on_link(target_link, local_application_point).astype(float).tolist(),
+                    "applied_force_world": force_world.astype(float).tolist(),
+                }
+            )
+
+    metadata = build_metadata(
+        model_dir=model_dir,
+        mode="apply",
+        joint_type="revolute",
+        joint_name=args.joint,
+        link_name=args.link,
+        json_output=json_output,
+        fps=args.fps,
+        requested_seconds=args.seconds,
+        simulated_seconds=steps * TIMESTEP,
+        timestep_s=TIMESTEP,
+        sample_interval_s=sample_interval * TIMESTEP,
+        actuation={
+            "initial_joint_position": {
+                "rad": args.initial_angle,
+                "deg": math.degrees(args.initial_angle),
+            },
+            "force": {
+                "magnitude_n": args.force,
+                "direction_world": direction.astype(float).tolist(),
+            },
+            "joint_limits_rad": target_joint.get_limit().tolist(),
+        },
+        application_point={
+            "strategy": application_point_strategy,
+            "local_on_link": local_application_point[:3].astype(float).tolist(),
+        },
+        articulation=articulation,
+        limit_key="limits_rad",
+        linear_damping=LINEAR_DAMPING,
+        angular_damping=ANGULAR_DAMPING,
+    )
+
+    with json_output.open("w", encoding="utf-8") as f:
+        json.dump({"metadata": metadata, "samples": {"force": samples}}, f, indent=2)
+
+    print(f"Wrote {json_output}")
+    print(f"Final angle: {samples[-1]['joint_angle_deg']:.2f} deg")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--mode", choices=["render", "apply"], default="render")
     parser.add_argument("--model-dir", default="11691")
     parser.add_argument("--joint", default="joint_1")
     parser.add_argument("--link", default="link_1")
@@ -408,8 +534,13 @@ def main() -> int:
     parser.add_argument("--direction", nargs=3, type=float, default=[0.0, 0.0, 1.0])
     parser.add_argument("--json-output", default=None)
     parser.add_argument("--output-root", default="outputs")
+    parser.add_argument("--contact-point-local", nargs=3, type=float, default=None)
+    parser.add_argument("--contact-point-strategy", default=None)
     parser.add_argument("--keep-old", action="store_true", help="Do not delete old files in the output directory")
     args = parser.parse_args()
+
+    if args.mode == "apply":
+        return run_apply(args)
 
     model_dir = resolve_model_dir(args.model_dir)
     output, json_output = output_paths(model_dir, Path(args.output_root).resolve(), args.output, args.json_output)
@@ -423,9 +554,9 @@ def main() -> int:
     opening_force = opening_dir * args.force
     closing_force = closing_dir * args.closing_force
 
-    override_point, override_strategy = load_application_point_override(output.parent, args.link)
-    opening_sim = setup_sim(model_dir, args.joint, args.link, args.panel_width, args.panel_height, args.initial_angle, override_point, override_strategy)
-    closing_sim = setup_sim(model_dir, args.joint, args.link, args.panel_width, args.panel_height, args.initial_angle, override_point, override_strategy)
+    explicit_point, explicit_strategy = explicit_contact_point(args)
+    opening_sim = setup_sim(model_dir, args.joint, args.link, args.panel_width, args.panel_height, args.initial_angle, explicit_point, explicit_strategy)
+    closing_sim = setup_sim(model_dir, args.joint, args.link, args.panel_width, args.panel_height, args.initial_angle, explicit_point, explicit_strategy)
 
     steps_per_frame = max(1, round(240 / args.fps))
     frame_count = max(1, int(args.seconds * args.fps))

@@ -6,7 +6,9 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 from pathlib import Path
+import sys
 import xml.etree.ElementTree as ET
 
 import cv2
@@ -18,10 +20,24 @@ try:
 except ModuleNotFoundError:
     sapien = None
 
-try:
-    from paths import resolve_model_dir
-except ModuleNotFoundError:
-    from scripts.paths import resolve_model_dir
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DATASET_DIR = REPO_ROOT / "dataset"
+
+
+def resolve_model_dir(model_dir_arg: str | Path) -> Path:
+    model_dir = Path(model_dir_arg).expanduser()
+    if model_dir.is_absolute():
+        return model_dir.resolve()
+
+    direct = (Path.cwd() / model_dir).resolve()
+    if (direct / "mobility.urdf").exists():
+        return direct
+
+    dataset_model = (DATASET_DIR / model_dir).resolve()
+    if (dataset_model / "mobility.urdf").exists():
+        return dataset_model
+
+    return direct
 
 
 def load_font(size: int) -> ImageFont.ImageFont:
@@ -39,6 +55,7 @@ def load_font(size: int) -> ImageFont.ImageFont:
 
 
 FONT = load_font(24)
+SELECTION_PREFIX = "CONTACT_POINT_SELECTION_JSON="
 
 
 def require_sapien() -> None:
@@ -60,18 +77,6 @@ def look_at_pose(eye: np.ndarray, target: np.ndarray) -> sapien.Pose:
     mat[:3, 2] = up
     mat[:3, 3] = eye
     return sapien.Pose(mat)
-
-
-def preview_dir(model_dir: Path, output_root: Path) -> Path:
-    path = output_root / "application_point_previews" / model_dir.name
-    path.mkdir(parents=True, exist_ok=True)
-    return path
-
-
-def override_path(model_dir: Path, output_root: Path) -> Path:
-    path = output_root / "application_point_overrides"
-    path.mkdir(parents=True, exist_ok=True)
-    return path / f"{model_dir.name}.json"
 
 
 def first_moving_joint(model_dir: Path) -> tuple[str, str, str, tuple[float, float] | None]:
@@ -159,6 +164,24 @@ def candidate_points(vertices: np.ndarray) -> list[dict[str, object]]:
         for y in (vmin[1], vmax[1]):
             for z in (vmin[2], vmax[2]):
                 raw.append(("corner", np.array([x, y, z], dtype=np.float32)))
+
+    raw.extend(
+        [
+            ("xy_min_min_edge", np.array([vmin[0], vmin[1], center[2]], dtype=np.float32)),
+            ("xy_min_max_edge", np.array([vmin[0], vmax[1], center[2]], dtype=np.float32)),
+            ("xy_max_min_edge", np.array([vmax[0], vmin[1], center[2]], dtype=np.float32)),
+            ("xy_max_max_edge", np.array([vmax[0], vmax[1], center[2]], dtype=np.float32)),
+            ("xz_min_min_edge", np.array([vmin[0], center[1], vmin[2]], dtype=np.float32)),
+            ("xz_min_max_edge", np.array([vmin[0], center[1], vmax[2]], dtype=np.float32)),
+            ("xz_max_min_edge", np.array([vmax[0], center[1], vmin[2]], dtype=np.float32)),
+            ("xz_max_max_edge", np.array([vmax[0], center[1], vmax[2]], dtype=np.float32)),
+            ("yz_min_min_edge", np.array([center[0], vmin[1], vmin[2]], dtype=np.float32)),
+            ("yz_min_max_edge", np.array([center[0], vmin[1], vmax[2]], dtype=np.float32)),
+            ("yz_max_min_edge", np.array([center[0], vmax[1], vmin[2]], dtype=np.float32)),
+            ("yz_max_max_edge", np.array([center[0], vmax[1], vmax[2]], dtype=np.float32)),
+        ]
+    )
+
     return [{"id": index, "name": name, "local_point": point.astype(float).tolist()} for index, (name, point) in enumerate(raw)]
 
 
@@ -189,10 +212,31 @@ def draw_candidates(image: np.ndarray, projected: list[dict[str, object]]) -> np
     return out
 
 
-def create_preview(args: argparse.Namespace) -> int:
+def object_output_dir(model_dir: Path, output_root: Path) -> Path:
+    path = output_root / f"{model_dir.name}_output"
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def fallback_preview_path(model_dir: Path, output_root: Path) -> Path:
+    return object_output_dir(model_dir, output_root) / "contact_point_preview.png"
+
+
+def save_preview_image(model_dir: Path, output_root: Path, preview: np.ndarray) -> Path:
+    path = fallback_preview_path(model_dir, output_root)
+    Image.fromarray(preview).save(path)
+    return path
+
+
+def can_open_window() -> bool:
+    if sys.platform.startswith("linux"):
+        return bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"))
+    return True
+
+
+def build_preview_data(args: argparse.Namespace) -> tuple[dict[str, object], np.ndarray]:
     require_sapien()
     model_dir = resolve_model_dir(args.model_dir)
-    object_output = preview_dir(model_dir, Path(args.output_root).resolve())
     detected_type, detected_joint, detected_link, limits = first_moving_joint(model_dir)
     joint_name = args.joint or preferred_joint(model_dir, detected_joint, detected_link)[0]
     link_name = args.link or preferred_joint(model_dir, detected_joint, detected_link)[1]
@@ -241,81 +285,122 @@ def create_preview(args: argparse.Namespace) -> int:
         projected.append(item)
 
     preview = draw_candidates(image, projected)
-    preview_path = object_output / "application_point_preview.png"
-    candidates_path = object_output / "application_point_candidates.json"
-    Image.fromarray(preview).save(preview_path)
-    with candidates_path.open("w", encoding="utf-8") as f:
-        json.dump(
-            {
-                "model_dir": str(model_dir),
-                "joint_type": detected_type,
-                "joint": joint_name,
-                "link": link_name,
-                "preview_image": preview_path.name,
-                "candidates": projected,
-            },
-            f,
-            indent=2,
+    return (
+        {
+            "model_dir": str(model_dir),
+            "joint_type": detected_type,
+            "joint": joint_name,
+            "link": link_name,
+            "candidates": projected,
+        },
+        preview,
+    )
+
+
+def print_candidate_summary(data: dict[str, object]) -> None:
+    visible_candidates = [item for item in data["candidates"] if item.get("pixel") is not None]
+    print(f"Visible candidates for {data['link']}:")
+    for item in visible_candidates:
+        x, y = item["pixel"]
+        print(f"  {item['id']:>2}  {item['name']:<18} pixel=({x}, {y})")
+
+
+def emit_selected_candidate(data: dict[str, object], candidate: dict[str, object]) -> None:
+    payload = {
+        "joint": data["joint"],
+        "link": data["link"],
+        "candidate_id": candidate["id"],
+        "candidate_name": candidate["name"],
+        "local_point": candidate["local_point"],
+    }
+    print(f"{SELECTION_PREFIX}{json.dumps(payload)}")
+
+
+def prompt_candidate_selection(data: dict[str, object], preview_path: Path) -> dict[str, object] | None:
+    if not sys.stdin.isatty():
+        raise RuntimeError(
+            "Picker fallback requires an interactive terminal. "
+            f"Open {preview_path} and rerun with --select-point ID if needed."
         )
 
-    print(f"Wrote {preview_path}")
-    print(f"Wrote {candidates_path}")
+    visible_candidates = [item for item in data["candidates"] if item.get("pixel") is not None]
+    candidate_by_id = {int(item["id"]): item for item in visible_candidates}
+    if not candidate_by_id:
+        raise RuntimeError("No visible candidates available for terminal selection.")
+
+    print_candidate_summary(data)
+    print(f"Preview saved to {preview_path}")
+    print("Open the image, inspect the marker ids, then type the candidate number.")
+
+    while True:
+        response = input("Candidate id (or 'cancel'): ").strip().lower()
+        if response in {"cancel", "c", "q", "quit", "exit"}:
+            print("Selection cancelled.")
+            return None
+        try:
+            candidate_id = int(response)
+        except ValueError:
+            print("Enter a numeric candidate id or 'cancel'.")
+            continue
+        candidate = candidate_by_id.get(candidate_id)
+        if candidate is None:
+            print(f"Candidate {candidate_id} is not visible in the saved preview.")
+            continue
+        return candidate
+
+
+def create_preview(args: argparse.Namespace) -> int:
+    data, preview = build_preview_data(args)
+    print_candidate_summary(data)
+
+    preview_bgr = cv2.cvtColor(preview, cv2.COLOR_RGB2BGR)
+    window = "Application point candidates: press any key to close"
+    if not can_open_window():
+        preview_path = save_preview_image(resolve_model_dir(args.model_dir), Path(args.output_root).resolve(), preview)
+        print(f"Could not open a GUI window here. Preview saved to {preview_path}")
+        return 0
+
+    try:
+        cv2.namedWindow(window, cv2.WINDOW_NORMAL)
+        cv2.imshow(window, preview_bgr)
+        cv2.waitKey(0)
+        cv2.destroyWindow(window)
+    except cv2.error:
+        preview_path = save_preview_image(resolve_model_dir(args.model_dir), Path(args.output_root).resolve(), preview)
+        print(f"Could not open a GUI window here. Preview saved to {preview_path}")
+
     return 0
 
 
 def select_candidate(args: argparse.Namespace) -> int:
-    model_dir = resolve_model_dir(args.model_dir)
-    object_output = preview_dir(model_dir, Path(args.output_root).resolve())
-    candidates_path = object_output / "application_point_candidates.json"
-    if not candidates_path.exists():
-        raise FileNotFoundError(f"Run --preview-points first: {candidates_path}")
-
-    data = json.loads(candidates_path.read_text())
+    data, _preview = build_preview_data(args)
     candidate = next((item for item in data["candidates"] if int(item["id"]) == args.select_point), None)
     if candidate is None:
-        raise RuntimeError(f"Candidate id {args.select_point} not found in {candidates_path}")
+        raise RuntimeError(f"Candidate id {args.select_point} not found for {data['link']}")
 
-    write_override(model_dir, Path(args.output_root).resolve(), data, candidate, candidates_path)
+    emit_selected_candidate(data, candidate)
+    print(f"Selected candidate {candidate['id']}: {candidate['name']}")
     return 0
-
-
-def write_override(model_dir: Path, output_root: Path, data: dict[str, object], candidate: dict[str, object], candidates_path: Path) -> None:
-    selected_override_path = override_path(model_dir, output_root)
-    with selected_override_path.open("w", encoding="utf-8") as f:
-        json.dump(
-            {
-                "joint": data["joint"],
-                "link": data["link"],
-                "candidate_id": candidate["id"],
-                "candidate_name": candidate["name"],
-                "local_point": candidate["local_point"],
-                "source": str(candidates_path),
-            },
-            f,
-            indent=2,
-        )
-
-    print(f"Wrote {selected_override_path}")
 
 
 def pick_interactively(args: argparse.Namespace) -> int:
     model_dir = resolve_model_dir(args.model_dir)
-    object_output = preview_dir(model_dir, Path(args.output_root).resolve())
-    candidates_path = object_output / "application_point_candidates.json"
-    preview_path = object_output / "application_point_preview.png"
-
-    if not (candidates_path.exists() and preview_path.exists()):
-        create_preview(args)
-
-    data = json.loads(candidates_path.read_text())
-    preview_path = resolve_preview_path(data, object_output)
-    image = cv2.imread(str(preview_path), cv2.IMREAD_COLOR)
-    if image is None:
-        raise RuntimeError(f"Could not open preview image: {preview_path}")
+    output_root = Path(args.output_root).resolve()
+    data, preview = build_preview_data(args)
+    image = cv2.cvtColor(preview, cv2.COLOR_RGB2BGR)
 
     visible_candidates = [item for item in data["candidates"] if item.get("pixel") is not None]
     if not visible_candidates:
         raise RuntimeError("No visible candidates available for interactive picking.")
+
+    if not can_open_window():
+        preview_path = save_preview_image(model_dir, output_root, preview)
+        selected = prompt_candidate_selection(data, preview_path)
+        if selected is None:
+            return 1
+        emit_selected_candidate(data, selected)
+        print(f"Selected candidate {selected['id']}: {selected['name']}")
+        return 0
 
     selected: dict[str, object] = {}
     window = "Pick application point: click marker, Enter confirms, Esc cancels"
@@ -338,43 +423,35 @@ def pick_interactively(args: argparse.Namespace) -> int:
             selected.update(nearest_candidate(x, y))
             redraw(selected)
 
-    cv2.namedWindow(window, cv2.WINDOW_NORMAL)
-    cv2.setMouseCallback(window, on_mouse)
-    redraw()
+    try:
+        cv2.namedWindow(window, cv2.WINDOW_NORMAL)
+        cv2.setMouseCallback(window, on_mouse)
+        redraw()
 
-    print("Click a marker in the preview window, then press Enter. Press Esc to cancel.")
-    while True:
-        key = cv2.waitKey(50)
-        if key in (13, 10):
-            if selected:
-                break
-            print("No point selected yet.")
-        if key == 27:
-            cv2.destroyWindow(window)
-            print("Selection cancelled.")
+        print("Click a marker in the preview window, then press Enter. Press Esc to cancel.")
+        while True:
+            key = cv2.waitKey(50)
+            if key in (13, 10):
+                if selected:
+                    break
+                print("No point selected yet.")
+            if key == 27:
+                cv2.destroyWindow(window)
+                print("Selection cancelled.")
+                return 1
+
+        cv2.destroyWindow(window)
+        emit_selected_candidate(data, selected)
+        print(f"Selected candidate {selected['id']}: {selected['name']}")
+        return 0
+    except cv2.error:
+        preview_path = save_preview_image(model_dir, output_root, preview)
+        selected = prompt_candidate_selection(data, preview_path)
+        if selected is None:
             return 1
-
-    cv2.destroyWindow(window)
-    write_override(model_dir, Path(args.output_root).resolve(), data, selected, candidates_path)
-    print(f"Selected candidate {selected['id']}: {selected['name']}")
-    return 0
-
-
-def resolve_preview_path(data: dict[str, object], object_output: Path) -> Path:
-    local_preview = object_output / "application_point_preview.png"
-    if local_preview.exists():
-        return local_preview
-
-    stored_preview = Path(str(data.get("preview_image", "")))
-    if stored_preview.exists():
-        return stored_preview
-
-    if stored_preview.name:
-        relative_preview = object_output / stored_preview.name
-        if relative_preview.exists():
-            return relative_preview
-
-    raise FileNotFoundError(f"Could not resolve preview image for {object_output}")
+        emit_selected_candidate(data, selected)
+        print(f"Selected candidate {selected['id']}: {selected['name']}")
+        return 0
 
 
 def main() -> int:

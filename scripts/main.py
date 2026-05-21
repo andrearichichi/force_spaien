@@ -10,10 +10,24 @@ import subprocess
 import sys
 import xml.etree.ElementTree as ET
 
-try:
-    from paths import resolve_model_dir
-except ModuleNotFoundError:
-    from scripts.paths import resolve_model_dir
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DATASET_DIR = REPO_ROOT / "dataset"
+
+
+def resolve_model_dir(model_dir_arg: str | Path) -> Path:
+    model_dir = Path(model_dir_arg).expanduser()
+    if model_dir.is_absolute():
+        return model_dir.resolve()
+
+    direct = (Path.cwd() / model_dir).resolve()
+    if (direct / "mobility.urdf").exists():
+        return direct
+
+    dataset_model = (DATASET_DIR / model_dir).resolve()
+    if (dataset_model / "mobility.urdf").exists():
+        return dataset_model
+
+    return direct
 
 
 def first_moving_joint(model_dir: Path) -> tuple[str, str, str, tuple[float, float] | None]:
@@ -97,22 +111,10 @@ def has_valid_handle(model_dir: Path, link_name: str) -> bool:
     return False
 
 
-def manual_override_path(model_dir: Path, output_root: str) -> Path:
-    return Path(output_root).resolve() / "application_point_overrides" / f"{model_dir.name}.json"
-
-
-def has_manual_override(model_dir: Path, output_root: str, link_name: str) -> bool:
-    override_path = manual_override_path(model_dir, output_root)
-    if not override_path.exists():
-        return False
-
-    try:
-        data = json.loads(override_path.read_text())
-    except json.JSONDecodeError:
-        return False
-
-    local_point = data.get("local_point")
-    return data.get("link") == link_name and isinstance(local_point, list) and len(local_point) == 3
+def contact_point_source(model_dir: Path, link_name: str) -> tuple[str, str]:
+    if has_valid_handle(model_dir, link_name):
+        return "handle", f"handle on {link_name}"
+    return "none", f"no valid handle on {link_name}"
 
 
 def build_picker_command(
@@ -166,10 +168,30 @@ def run_picker(
     scripts_dir: Path,
     *,
     mode: str,
-) -> int:
+) -> tuple[int, dict[str, object] | None]:
     command = build_picker_command(model_dir, joint_type, joint_name, link_name, limits, args, scripts_dir, mode=mode)
     print(f"Running picker: {' '.join(command)}")
-    return subprocess.run(command, check=False).returncode
+    completed = subprocess.run(command, check=False, capture_output=True, text=True)
+    selection = None
+    for line in completed.stdout.splitlines():
+        if line.startswith("CONTACT_POINT_SELECTION_JSON="):
+            selection = json.loads(line.split("=", 1)[1])
+        else:
+            print(line)
+    if completed.stderr:
+        print(completed.stderr, end="", file=sys.stderr)
+    if mode in {"pick", "select"} and completed.returncode == 0 and selection is None:
+        raise RuntimeError("Picker completed without returning a selected contact point.")
+    return completed.returncode, selection
+
+
+def set_selected_contact_point(args: argparse.Namespace, selection: dict[str, object] | None) -> None:
+    if selection is None:
+        return
+    args.contact_point_local = list(selection["local_point"])
+    candidate_id = selection.get("candidate_id")
+    candidate_name = selection.get("candidate_name", "candidate")
+    args.contact_point_strategy = f"manual candidate {candidate_id}: {candidate_name} from interactive picker"
 
 
 def ensure_contact_point(
@@ -181,19 +203,72 @@ def ensure_contact_point(
     args: argparse.Namespace,
     scripts_dir: Path,
 ) -> int:
-    if has_valid_handle(model_dir, link_name):
-        print(f"Using handle on {link_name} as the contact point.")
-        return 0
+    source_kind, source_description = contact_point_source(model_dir, link_name)
 
-    if has_manual_override(model_dir, args.output_root, link_name):
-        print(f"Using saved manual contact point from {manual_override_path(model_dir, args.output_root)}.")
-        return 0
+    if args.contact_point_mode == "manual":
+        print("Contact point mode is manual; opening the interactive point picker.")
+        picker_exit_code, selection = run_picker(model_dir, joint_type, joint_name, link_name, limits, args, scripts_dir, mode="pick")
+        set_selected_contact_point(args, selection)
+        return picker_exit_code
 
-    print(f"No valid handle found on {link_name}; opening the interactive point picker.")
-    return run_picker(model_dir, joint_type, joint_name, link_name, limits, args, scripts_dir, mode="pick")
+    if args.contact_point_mode == "auto":
+        if source_kind != "none":
+            print(f"Using {source_description}.")
+            return 0
+        print(f"Found {source_description}; opening the interactive point picker.")
+        picker_exit_code, selection = run_picker(model_dir, joint_type, joint_name, link_name, limits, args, scripts_dir, mode="pick")
+        set_selected_contact_point(args, selection)
+        return picker_exit_code
+
+    if not sys.stdin.isatty():
+        raise RuntimeError(
+            "Contact-point confirmation requires an interactive terminal. "
+            "Use --contact-point-mode auto to use the detected handle, "
+            "or --contact-point-mode manual to force the picker."
+        )
+
+    if source_kind == "none":
+        print(f"Found {source_description}; opening the interactive point picker.")
+        picker_exit_code, selection = run_picker(model_dir, joint_type, joint_name, link_name, limits, args, scripts_dir, mode="pick")
+        set_selected_contact_point(args, selection)
+        return picker_exit_code
+
+    while True:
+        print(f"Contact point candidate: {source_description}.")
+        response = input(
+            "Press Enter to use it, type 'preview' to inspect candidates, "
+            "'pick' to choose manually, or 'cancel' to stop: "
+        ).strip().lower()
+        if response in {"", "y", "yes", "use"}:
+            print(f"Using {source_description}.")
+            return 0
+        if response in {"preview", "v"}:
+            preview_exit_code, _selection = run_picker(
+                model_dir,
+                joint_type,
+                joint_name,
+                link_name,
+                limits,
+                args,
+                scripts_dir,
+                mode="preview",
+            )
+            if preview_exit_code != 0:
+                return preview_exit_code
+            continue
+        if response in {"pick", "p", "manual", "edit", "change"}:
+            picker_exit_code, selection = run_picker(model_dir, joint_type, joint_name, link_name, limits, args, scripts_dir, mode="pick")
+            set_selected_contact_point(args, selection)
+            return picker_exit_code
+        if response in {"cancel", "c", "stop", "skip", "n", "no"}:
+            print("Cancelled before simulation.")
+            return 1
+        print("Unrecognized answer. Use Enter, preview, pick, or cancel.")
 
 
 def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path) -> int:
+    args.contact_point_local = None
+    args.contact_point_strategy = None
     model_dir = resolve_model_dir(model_dir_arg)
     if not (model_dir / "mobility.urdf").exists():
         raise FileNotFoundError(model_dir / "mobility.urdf")
@@ -209,8 +284,9 @@ def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path) 
         print(f"Detected {detected_type}: {detected_joint}/{detected_link}")
         print(f"Selected {joint_type}: {joint_name}/{link_name}")
         picker_mode = "preview" if args.preview_points else "pick" if args.pick_point else "select"
-        picker_exit_code = run_picker(model_dir, joint_type, joint_name, link_name, limits, args, scripts_dir, mode=picker_mode)
-        if picker_exit_code != 0 or args.preview_points or args.select_point is not None:
+        picker_exit_code, selection = run_picker(model_dir, joint_type, joint_name, link_name, limits, args, scripts_dir, mode=picker_mode)
+        set_selected_contact_point(args, selection)
+        if picker_exit_code != 0 or args.preview_points:
             return picker_exit_code
     else:
         print(f"Detected {detected_type}: {detected_joint}/{detected_link}")
@@ -221,9 +297,11 @@ def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path) 
 
     command = [sys.executable]
     if joint_type == "prismatic":
-        script = scripts_dir / ("render_prismatic_video.py" if args.mode == "render" else "apply_prismatic_force.py")
+        script = scripts_dir / "render_prismatic_video.py"
         command += [
             str(script),
+            "--mode",
+            args.mode,
             "--model-dir",
             str(model_dir),
         ]
@@ -245,10 +323,16 @@ def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path) 
             "--output-root",
             args.output_root,
         ]
+        if args.contact_point_local is not None:
+            command += ["--contact-point-local", *(str(value) for value in args.contact_point_local)]
+        if args.contact_point_strategy is not None:
+            command += ["--contact-point-strategy", args.contact_point_strategy]
     elif joint_type == "revolute":
-        script = scripts_dir / ("render_revolute_video.py" if args.mode == "render" else "apply_revolute_force.py")
+        script = scripts_dir / "render_revolute_video.py"
         command += [
             str(script),
+            "--mode",
+            args.mode,
             "--model-dir",
             str(model_dir),
             "--joint",
@@ -270,6 +354,10 @@ def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path) 
             "--output-root",
             args.output_root,
         ]
+        if args.contact_point_local is not None:
+            command += ["--contact-point-local", *(str(value) for value in args.contact_point_local)]
+        if args.contact_point_strategy is not None:
+            command += ["--contact-point-strategy", args.contact_point_strategy]
         if args.mode == "render":
             command += ["--closing-force", str(args.force)]
     else:
@@ -296,7 +384,8 @@ def main() -> int:
             "  python3 scripts/main.py dataset/101062\n"
             "  python3 scripts/main.py 101062 --preview-points\n"
             "  python3 scripts/main.py 101062 --pick-point\n"
-            "  python3 scripts/main.py 101062 --select-point 6"
+            "  python3 scripts/main.py 101062 --select-point 6\n"
+            "  python3 scripts/main.py 101062 --contact-point-mode auto"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -313,6 +402,12 @@ def main() -> int:
     parser.add_argument("--end-hold-seconds", type=float, default=2.0)
     parser.add_argument("--initial-angle", type=float, default=None)
     parser.add_argument("--output-root", default="outputs")
+    parser.add_argument(
+        "--contact-point-mode",
+        choices=["confirm", "manual", "auto"],
+        default="confirm",
+        help="confirm (default): ask before using a detected handle; manual: always open the picker; auto: use the handle if present, otherwise open the picker",
+    )
     parser.add_argument("--preview-points", action="store_true")
     parser.add_argument("--pick-point", action="store_true")
     parser.add_argument("--select-point", type=int, default=None)
