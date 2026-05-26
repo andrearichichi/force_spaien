@@ -49,15 +49,22 @@ TIMESTEP = 1.0 / 240.0
 LINEAR_DAMPING = 0.0
 ANGULAR_DAMPING = 0.02
 CAMERA_ZOOM_OUT = 1.35
+<<<<<<< HEAD
 COLOR_BG = (180, 180, 180)
+=======
+DEFAULT_VIDEO_WIDTH = 1080
+DEFAULT_PANEL_HEIGHT = 1920
+DEFAULT_INFO_HEIGHT = 0
+COLOR_BG = (242, 244, 246)
+>>>>>>> 078c71f (new videos)
 COLOR_PANEL = (255, 255, 255)
-COLOR_PANEL_2 = (250, 252, 255)
-COLOR_BORDER = (214, 224, 235)
-COLOR_GRID = (225, 233, 242)
-COLOR_TEXT = (28, 38, 52)
-COLOR_MUTED = (111, 126, 145)
-COLOR_ACCENT = (0, 113, 227)
-COLOR_ALT = (255, 55, 95)
+COLOR_PANEL_2 = (248, 249, 250)
+COLOR_BORDER = (210, 216, 224)
+COLOR_GRID = (226, 230, 235)
+COLOR_TEXT = (24, 28, 34)
+COLOR_MUTED = (101, 112, 126)
+COLOR_ACCENT = (0, 122, 255)
+COLOR_ALT = (255, 59, 48)
 
 
 def look_at_pose(eye: np.ndarray, target: np.ndarray) -> sapien.Pose:
@@ -76,6 +83,26 @@ def look_at_pose(eye: np.ndarray, target: np.ndarray) -> sapien.Pose:
 
 def zoomed_eye(eye: np.ndarray, target: np.ndarray) -> np.ndarray:
     return target + (eye - target) * CAMERA_ZOOM_OUT
+
+
+def border_connected_mask(mask: np.ndarray) -> np.ndarray:
+    count, labels = cv2.connectedComponents(mask.astype(np.uint8), connectivity=8)
+    if count <= 1:
+        return mask
+    border_labels = np.unique(
+        np.concatenate(
+            [
+                labels[0, :],
+                labels[-1, :],
+                labels[:, 0],
+                labels[:, -1],
+            ]
+        )
+    )
+    border_labels = border_labels[border_labels != 0]
+    if len(border_labels) == 0:
+        return np.zeros_like(mask, dtype=bool)
+    return np.isin(labels, border_labels)
 
 
 def output_paths(model_dir: Path, output_root: Path, output: str | None, json_output: str | None) -> tuple[Path, Path]:
@@ -280,17 +307,32 @@ def render_panel(sim: DrawerSim) -> np.ndarray:
     sim.scene.update_render()
     sim.camera.take_picture()
     image = (sim.camera.get_picture("Color")[..., :3].clip(0, 1) * 255).astype(np.uint8)
-    image = cv2.convertScaleAbs(image, alpha=0.95, beta=-6)
+    image = cv2.convertScaleAbs(image, alpha=1.08, beta=4)
+    blur = cv2.GaussianBlur(image, (0, 0), 1.15)
+    image = cv2.addWeighted(image, 1.18, blur, -0.18, 0)
     channel_range = image.max(axis=2) - image.min(axis=2)
     luminance = image.mean(axis=2)
+<<<<<<< HEAD
     background_mask = (channel_range < 55) & (luminance > 110)
     top = np.array([160, 160, 160], dtype=np.float32)
     bottom = np.array([200, 200, 200], dtype=np.float32)
+=======
+    background_mask = border_connected_mask((channel_range < 70) & (luminance > 128))
+    top = np.array([248, 250, 252], dtype=np.float32)
+    bottom = np.array([235, 241, 248], dtype=np.float32)
+>>>>>>> 078c71f (new videos)
     t = np.linspace(0.0, 1.0, image.shape[0], dtype=np.float32)[:, None]
     gradient = (top * (1.0 - t) + bottom * t).astype(np.uint8)
     gradient = np.repeat(gradient[:, None, :], image.shape[1], axis=1)
     image[background_mask] = gradient[background_mask]
     return image
+
+
+def fit_panel(image: np.ndarray, width: int, height: int) -> np.ndarray:
+    if image.shape[1] == width and image.shape[0] == height:
+        return image
+    interpolation = cv2.INTER_AREA if image.shape[1] > width or image.shape[0] > height else cv2.INTER_CUBIC
+    return cv2.resize(image, (width, height), interpolation=interpolation)
 
 
 def draw_text(img: np.ndarray, text: str, xy: tuple[int, int], color: tuple[int, int, int], font=FONT_REGULAR) -> None:
@@ -311,10 +353,6 @@ def draw_label(img: np.ndarray, text: str, xy: tuple[int, int], color: tuple[int
 
 def draw_panel_frame(canvas: np.ndarray, x: int, y: int, w: int, h: int, color: tuple[int, int, int]) -> None:
     cv2.rectangle(canvas, (x, y), (x + w - 1, y + h - 1), COLOR_BORDER, 1, cv2.LINE_AA)
-    cv2.line(canvas, (x + 18, y + 14), (x + 92, y + 14), color, 2, cv2.LINE_AA)
-    cv2.line(canvas, (x + 18, y + 14), (x + 18, y + 48), color, 2, cv2.LINE_AA)
-    cv2.line(canvas, (x + w - 92, y + h - 14), (x + w - 18, y + h - 14), color, 2, cv2.LINE_AA)
-    cv2.line(canvas, (x + w - 18, y + h - 48), (x + w - 18, y + h - 14), color, 2, cv2.LINE_AA)
 
 
 def draw_force_annotation(
@@ -360,20 +398,6 @@ def draw_force_annotation(
         cv2.arrowedLine(img, (px, py), (ex, ey), (255, 255, 255), 4, cv2.LINE_AA, tipLength=0.2)
         label_offset = (direction_px * 20 + np.array([-42.0, -10.0], dtype=np.float32)).astype(int)
         draw_label(img, f"{force:g} N", (ex + int(label_offset[0]), ey + int(label_offset[1])), color, 0.58)
-
-    inset_size = 150
-    half = 54
-    x0 = max(0, min(img.shape[1] - 2 * half, px - half))
-    y0 = max(0, min(img.shape[0] - 2 * half, py - half))
-    crop = img[y0 : y0 + 2 * half, x0 : x0 + 2 * half]
-    if crop.size:
-        zoom = cv2.resize(crop, (inset_size, inset_size), interpolation=cv2.INTER_CUBIC)
-        inset_x = img.shape[1] - inset_size - 22
-        inset_y = 22
-        cv2.rectangle(img, (inset_x - 4, inset_y - 4), (inset_x + inset_size + 4, inset_y + inset_size + 4), COLOR_PANEL, -1)
-        cv2.rectangle(img, (inset_x - 4, inset_y - 4), (inset_x + inset_size + 4, inset_y + inset_size + 4), color, 3)
-        img[inset_y : inset_y + inset_size, inset_x : inset_x + inset_size] = zoom
-
 
 def draw_info_card(canvas: np.ndarray, x: int, y: int, w: int, h: int, title: str, force_text: str, disp: float, color: tuple[int, int, int]) -> None:
     x0, y0 = x + 18, y + 12
@@ -571,10 +595,10 @@ def main() -> int:
     parser.add_argument("--seconds", type=float, default=4.0)
     parser.add_argument("--end-hold-seconds", type=float, default=2.0, help="Freeze the last frame for this many seconds")
     parser.add_argument("--fps", type=int, default=30)
-    parser.add_argument("--panel-width", type=int, default=720)
-    parser.add_argument("--panel-height", type=int, default=448)
-    parser.add_argument("--info-height", type=int, default=132)
-    parser.add_argument("--plot-height", type=int, default=176)
+    parser.add_argument("--panel-width", type=int, default=DEFAULT_VIDEO_WIDTH)
+    parser.add_argument("--panel-height", type=int, default=DEFAULT_PANEL_HEIGHT)
+    parser.add_argument("--info-height", type=int, default=DEFAULT_INFO_HEIGHT)
+    parser.add_argument("--plot-height", type=int, default=0)
     parser.add_argument("--direction", nargs=3, type=float, default=[0.0, 0.0, 1.0])
     parser.add_argument("--movement", choices=["single", "comparison"], default="single")
     parser.add_argument("--output-root", default="outputs")
@@ -618,7 +642,7 @@ def main() -> int:
     out_h = args.panel_height + args.info_height + args.plot_height
 
     final_frame = None
-    with imageio.get_writer(output, fps=args.fps, codec="libx264", quality=8) as writer:
+    with imageio.get_writer(output, fps=args.fps, codec="libx264", quality=8, macro_block_size=1) as writer:
         for _ in range(frame_count):
             for _ in range(steps_per_frame):
                 qf = np.zeros_like(pulling_sim.cabinet.get_qf(), dtype=np.float32)
@@ -638,7 +662,7 @@ def main() -> int:
                 samples["force"].append(sample_to_dict(time_s, pulling_sim, force))
                 point_histories["force"].append(application_point_world(pulling_sim))
 
-            right = render_panel(pulling_sim)
+            right = fit_panel(render_panel(pulling_sim), args.panel_width, args.panel_height)
             canvas = np.full((out_h, out_w, 3), COLOR_BG, dtype=np.uint8)
 
             draw_force_annotation(
@@ -654,9 +678,11 @@ def main() -> int:
             pulling_disp = float(pulling_sim.cabinet.get_qpos()[pulling_sim.joint_index])
             pulling_displacements.append(pulling_disp)
 
-            draw_info_card(canvas, 0, args.panel_height, args.panel_width, args.info_height, "movimento", f"F = {args.force:g} N", pulling_disp, COLOR_ACCENT)
+            if args.info_height > 0:
+                draw_info_card(canvas, 0, args.panel_height, args.panel_width, args.info_height, "movimento", f"F = {args.force:g} N", pulling_disp, COLOR_ACCENT)
+
             if still_sim is not None:
-                left = render_panel(still_sim)
+                left = fit_panel(render_panel(still_sim), args.panel_width, args.panel_height)
                 draw_force_annotation(left, still_sim, pull_dir_world, 0.0, COLOR_MUTED, point_histories["no_force"])
                 canvas[: args.panel_height, : args.panel_width] = left
                 canvas[: args.panel_height, args.panel_width :] = right
@@ -665,18 +691,20 @@ def main() -> int:
                 cv2.line(canvas, (args.panel_width, 0), (args.panel_width, args.panel_height + args.info_height), COLOR_BORDER, 1)
                 still_disp = float(still_sim.cabinet.get_qpos()[still_sim.joint_index])
                 still_displacements.append(still_disp)
-                draw_info_card(canvas, 0, args.panel_height, args.panel_width, args.info_height, "senza forza", "F = 0 N", still_disp, COLOR_MUTED)
-                draw_info_card(canvas, args.panel_width, args.panel_height, args.panel_width, args.info_height, "trazione cassetto", f"F = {args.force:g} N", pulling_disp, COLOR_ACCENT)
-            draw_displacement_plot(
-                canvas,
-                still_displacements,
-                pulling_displacements,
-                22,
-                args.panel_height + args.info_height + 16,
-                out_w - 44,
-                args.plot_height - 32,
-                comparison=args.movement == "comparison",
-            )
+                if args.info_height > 0:
+                    draw_info_card(canvas, 0, args.panel_height, args.panel_width, args.info_height, "senza forza", "F = 0 N", still_disp, COLOR_MUTED)
+                    draw_info_card(canvas, args.panel_width, args.panel_height, args.panel_width, args.info_height, "trazione cassetto", f"F = {args.force:g} N", pulling_disp, COLOR_ACCENT)
+            if args.plot_height > 0:
+                draw_displacement_plot(
+                    canvas,
+                    still_displacements,
+                    pulling_displacements,
+                    22,
+                    args.panel_height + args.info_height + 16,
+                    out_w - 44,
+                    args.plot_height - 32,
+                    comparison=args.movement == "comparison",
+                )
             writer.append_data(canvas)
             final_frame = canvas.copy()
 

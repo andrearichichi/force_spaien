@@ -13,6 +13,8 @@ import xml.etree.ElementTree as ET
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DATASET_DIR = REPO_ROOT / "dataset"
 DEFAULT_CONTACT_POINTS_CONFIG = DATASET_DIR / "contact_points.json"
+DEFAULT_VIDEO_WIDTH = 1080
+DEFAULT_VIDEO_HEIGHT = 1920
 
 
 def resolve_model_dir(model_dir_arg: str | Path) -> Path:
@@ -462,6 +464,14 @@ def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path, 
             str(args.seconds),
             "--fps",
             str(args.fps),
+            "--panel-width",
+            str(args.video_width),
+            "--panel-height",
+            str(args.video_height),
+            "--info-height",
+            "0",
+            "--plot-height",
+            "0",
             "--direction",
             str(direction[0]),
             str(direction[1]),
@@ -493,6 +503,14 @@ def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path, 
             str(args.seconds),
             "--fps",
             str(args.fps),
+            "--panel-width",
+            str(args.video_width),
+            "--panel-height",
+            str(args.video_height),
+            "--info-height",
+            "0",
+            "--plot-height",
+            "0",
             "--direction",
             str(direction[0]),
             str(direction[1]),
@@ -549,6 +567,8 @@ def main() -> int:
     parser.add_argument("--direction", nargs=3, type=float, default=None)
     parser.add_argument("--seconds", type=float, default=4.0)
     parser.add_argument("--fps", type=int, default=30)
+    parser.add_argument("--video-width", type=int, default=DEFAULT_VIDEO_WIDTH)
+    parser.add_argument("--video-height", type=int, default=DEFAULT_VIDEO_HEIGHT)
     parser.add_argument("--end-hold-seconds", type=float, default=2.0)
     parser.add_argument("--initial-angle", type=float, default=None)
     parser.add_argument(

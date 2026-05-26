@@ -49,15 +49,15 @@ TIMESTEP = 1.0 / 240.0
 LINEAR_DAMPING = 0.0
 ANGULAR_DAMPING = 0.02
 CAMERA_ZOOM_OUT = 1.35
-COLOR_BG = (180, 180, 180)
+COLOR_BG = (246, 248, 251)
 COLOR_PANEL = (255, 255, 255)
-COLOR_PANEL_2 = (250, 252, 255)
-COLOR_BORDER = (214, 224, 235)
-COLOR_GRID = (225, 233, 242)
-COLOR_TEXT = (28, 38, 52)
-COLOR_MUTED = (111, 126, 145)
-COLOR_ACCENT = (0, 113, 227)
-COLOR_ALT = (255, 55, 95)
+COLOR_PANEL_2 = (248, 249, 250)
+COLOR_BORDER = (210, 216, 224)
+COLOR_GRID = (226, 230, 235)
+COLOR_TEXT = (24, 28, 34)
+COLOR_MUTED = (101, 112, 126)
+COLOR_ACCENT = (0, 122, 255)
+COLOR_ALT = (255, 59, 48)
 
 
 def look_at_pose(eye: np.ndarray, target: np.ndarray) -> sapien.Pose:
@@ -76,6 +76,26 @@ def look_at_pose(eye: np.ndarray, target: np.ndarray) -> sapien.Pose:
 
 def zoomed_eye(eye: np.ndarray, target: np.ndarray) -> np.ndarray:
     return target + (eye - target) * CAMERA_ZOOM_OUT
+
+
+def border_connected_mask(mask: np.ndarray) -> np.ndarray:
+    count, labels = cv2.connectedComponents(mask.astype(np.uint8), connectivity=8)
+    if count <= 1:
+        return mask
+    border_labels = np.unique(
+        np.concatenate(
+            [
+                labels[0, :],
+                labels[-1, :],
+                labels[:, 0],
+                labels[:, -1],
+            ]
+        )
+    )
+    border_labels = border_labels[border_labels != 0]
+    if len(border_labels) == 0:
+        return np.zeros_like(mask, dtype=bool)
+    return np.isin(labels, border_labels)
 
 
 def output_paths(model_dir: Path, output_root: Path, output: str | None, json_output: str | None) -> tuple[Path, Path]:
@@ -258,17 +278,26 @@ def render_panel(sim: LaptopSim) -> np.ndarray:
     sim.scene.update_render()
     sim.camera.take_picture()
     image = (sim.camera.get_picture("Color")[..., :3].clip(0, 1) * 255).astype(np.uint8)
-    image = cv2.convertScaleAbs(image, alpha=0.95, beta=-6)
+    image = cv2.convertScaleAbs(image, alpha=1.08, beta=4)
+    blur = cv2.GaussianBlur(image, (0, 0), 1.15)
+    image = cv2.addWeighted(image, 1.18, blur, -0.18, 0)
     channel_range = image.max(axis=2) - image.min(axis=2)
     luminance = image.mean(axis=2)
     background_mask = (channel_range < 55) & (luminance > 110)
-    top = np.array([160, 160, 160], dtype=np.float32)
-    bottom = np.array([200, 200, 200], dtype=np.float32)
+    top = np.array([238, 243, 249], dtype=np.float32)
+    bottom = np.array([250, 252, 255], dtype=np.float32)
     t = np.linspace(0.0, 1.0, image.shape[0], dtype=np.float32)[:, None]
     gradient = (top * (1.0 - t) + bottom * t).astype(np.uint8)
     gradient = np.repeat(gradient[:, None, :], image.shape[1], axis=1)
     image[background_mask] = gradient[background_mask]
     return image
+
+
+def fit_panel(image: np.ndarray, width: int, height: int) -> np.ndarray:
+    if image.shape[1] == width and image.shape[0] == height:
+        return image
+    interpolation = cv2.INTER_AREA if image.shape[1] > width or image.shape[0] > height else cv2.INTER_CUBIC
+    return cv2.resize(image, (width, height), interpolation=interpolation)
 
 
 def draw_text(
@@ -296,10 +325,6 @@ def draw_label(img: np.ndarray, text: str, xy: tuple[int, int], color: tuple[int
 
 def draw_panel_frame(canvas: np.ndarray, x: int, y: int, w: int, h: int, color: tuple[int, int, int]) -> None:
     cv2.rectangle(canvas, (x, y), (x + w - 1, y + h - 1), COLOR_BORDER, 1, cv2.LINE_AA)
-    cv2.line(canvas, (x + 18, y + 14), (x + 92, y + 14), color, 2, cv2.LINE_AA)
-    cv2.line(canvas, (x + 18, y + 14), (x + 18, y + 48), color, 2, cv2.LINE_AA)
-    cv2.line(canvas, (x + w - 92, y + h - 14), (x + w - 18, y + h - 14), color, 2, cv2.LINE_AA)
-    cv2.line(canvas, (x + w - 18, y + h - 48), (x + w - 18, y + h - 14), color, 2, cv2.LINE_AA)
 
 
 def draw_info_card(
@@ -371,20 +396,6 @@ def draw_force_annotation(
         cv2.arrowedLine(img, (px, py), (ex, ey), color, 9, cv2.LINE_AA, tipLength=0.22)
         cv2.arrowedLine(img, (px, py), (ex, ey), (255, 255, 255), 3, cv2.LINE_AA, tipLength=0.22)
         draw_label(img, f"{force:g} N", (ex + 14, ey - 12), color, 0.58)
-
-    inset_size = 150
-    half = 54
-    x0 = max(0, min(img.shape[1] - 2 * half, px - half))
-    y0 = max(0, min(img.shape[0] - 2 * half, py - half))
-    crop = img[y0 : y0 + 2 * half, x0 : x0 + 2 * half]
-    if crop.size:
-        zoom = cv2.resize(crop, (inset_size, inset_size), interpolation=cv2.INTER_CUBIC)
-        inset_x = img.shape[1] - inset_size - 22
-        inset_y = 22
-        cv2.rectangle(img, (inset_x - 4, inset_y - 4), (inset_x + inset_size + 4, inset_y + inset_size + 4), COLOR_PANEL, -1)
-        cv2.rectangle(img, (inset_x - 4, inset_y - 4), (inset_x + inset_size + 4, inset_y + inset_size + 4), color, 3)
-        img[inset_y : inset_y + inset_size, inset_x : inset_x + inset_size] = zoom
-
 
 def draw_angle_plot(
     canvas: np.ndarray,
@@ -589,10 +600,10 @@ def main() -> int:
     parser.add_argument("--seconds", type=float, default=4.0)
     parser.add_argument("--end-hold-seconds", type=float, default=2.0, help="Freeze the last frame for this many seconds")
     parser.add_argument("--fps", type=int, default=30)
-    parser.add_argument("--panel-width", type=int, default=720)
-    parser.add_argument("--panel-height", type=int, default=448)
-    parser.add_argument("--info-height", type=int, default=132)
-    parser.add_argument("--plot-height", type=int, default=176)
+    parser.add_argument("--panel-width", type=int, default=DEFAULT_VIDEO_WIDTH)
+    parser.add_argument("--panel-height", type=int, default=DEFAULT_PANEL_HEIGHT)
+    parser.add_argument("--info-height", type=int, default=DEFAULT_INFO_HEIGHT)
+    parser.add_argument("--plot-height", type=int, default=0)
     parser.add_argument("--initial-angle", type=float, default=-1.5)
     parser.add_argument("--direction", nargs=3, type=float, default=[0.0, 0.0, 1.0])
     parser.add_argument("--movement", choices=["single", "comparison"], default="single")
@@ -637,7 +648,7 @@ def main() -> int:
     out_h = args.panel_height + args.info_height + args.plot_height
 
     final_frame = None
-    with imageio.get_writer(output, fps=args.fps, codec="libx264", quality=8) as writer:
+    with imageio.get_writer(output, fps=args.fps, codec="libx264", quality=8, macro_block_size=1) as writer:
         for _ in range(frame_count):
             for _ in range(steps_per_frame):
                 opening_point = application_point_world(opening_sim)
@@ -658,7 +669,7 @@ def main() -> int:
                 samples["force"].append(sample_to_dict(time_s, opening_sim, opening_force))
                 point_histories["force"].append(application_point_world(opening_sim))
 
-            left = render_panel(opening_sim)
+            left = fit_panel(render_panel(opening_sim), args.panel_width, args.panel_height)
             canvas = np.full((out_h, out_w, 3), COLOR_BG, dtype=np.uint8)
             draw_force_annotation(
                 left,
@@ -676,20 +687,22 @@ def main() -> int:
             open_angle = math.degrees(float(opening_sim.laptop.get_qpos()[opening_sim.joint_index]))
             opening_angles.append(open_angle)
 
-            draw_info_card(
-                canvas,
-                0,
-                args.panel_height,
-                args.panel_width,
-                args.info_height,
-                "apertura" if args.movement == "comparison" else "movimento",
-                f"F = {args.force:g} N",
-                f"direzione world [{opening_dir[0]:.0f}, {opening_dir[1]:.0f}, {opening_dir[2]:.0f}]",
-                open_angle,
-                COLOR_ACCENT,
-            )
+            if args.info_height > 0:
+                draw_info_card(
+                    canvas,
+                    0,
+                    args.panel_height,
+                    args.panel_width,
+                    args.info_height,
+                    "apertura" if args.movement == "comparison" else "movimento",
+                    f"F = {args.force:g} N",
+                    f"direzione world [{opening_dir[0]:.0f}, {opening_dir[1]:.0f}, {opening_dir[2]:.0f}]",
+                    open_angle,
+                    COLOR_ACCENT,
+                )
+
             if closing_sim is not None:
-                right = render_panel(closing_sim)
+                right = fit_panel(render_panel(closing_sim), args.panel_width, args.panel_height)
                 draw_force_annotation(
                     right,
                     closing_sim,
@@ -705,29 +718,31 @@ def main() -> int:
                 cv2.line(canvas, (args.panel_width, 0), (args.panel_width, args.panel_height + args.info_height), COLOR_BORDER, 1)
                 close_angle = math.degrees(float(closing_sim.laptop.get_qpos()[closing_sim.joint_index]))
                 closing_angles.append(close_angle)
-                draw_info_card(
+                if args.info_height > 0:
+                    draw_info_card(
+                        canvas,
+                        args.panel_width,
+                        args.panel_height,
+                        args.panel_width,
+                        args.info_height,
+                        "chiusura",
+                        f"F = {args.closing_force:g} N",
+                        f"direzione world [{closing_dir[0]:.0f}, {closing_dir[1]:.0f}, {closing_dir[2]:.0f}]",
+                        close_angle,
+                        COLOR_ALT,
+                    )
+            if args.plot_height > 0:
+                draw_angle_plot(
                     canvas,
-                    args.panel_width,
-                    args.panel_height,
-                    args.panel_width,
-                    args.info_height,
-                    "chiusura",
-                    f"F = {args.closing_force:g} N",
-                    f"direzione world [{closing_dir[0]:.0f}, {closing_dir[1]:.0f}, {closing_dir[2]:.0f}]",
-                    close_angle,
-                    COLOR_ALT,
+                    opening_angles,
+                    closing_angles,
+                    args.initial_angle,
+                    22,
+                    args.panel_height + args.info_height + 16,
+                    out_w - 44,
+                    args.plot_height - 32,
+                    comparison=args.movement == "comparison",
                 )
-            draw_angle_plot(
-                canvas,
-                opening_angles,
-                closing_angles,
-                args.initial_angle,
-                22,
-                args.panel_height + args.info_height + 16,
-                out_w - 44,
-                args.plot_height - 32,
-                comparison=args.movement == "comparison",
-            )
             writer.append_data(canvas)
             final_frame = canvas.copy()
 
