@@ -17,9 +17,9 @@ from PIL import Image, ImageDraw, ImageFont
 import sapien
 
 try:
-    from simulation_json import build_metadata, sample_time_from_frame
+    from simulation_json import build_metadata, build_summary, sample_time_from_frame, sample_time_from_step
 except ModuleNotFoundError:
-    from scripts.simulation_json import build_metadata, sample_time_from_frame
+    from scripts.simulation_json import build_metadata, build_summary, sample_time_from_frame, sample_time_from_step
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -377,8 +377,8 @@ def draw_displacement_plot(canvas: np.ndarray, no_force: list[float], pulling: l
 def sample_to_dict(time_s: float, sim: DrawerSim, applied_force: np.ndarray) -> dict[str, object]:
     return {
         "time_s": float(time_s),
-        "drawer_displacement_m": float(sim.cabinet.get_qpos()[sim.joint_index]),
-        "drawer_velocity_m_s": float(sim.cabinet.get_qvel()[sim.joint_index]),
+        "joint_position_m": float(sim.cabinet.get_qpos()[sim.joint_index]),
+        "joint_velocity_m_s": float(sim.cabinet.get_qvel()[sim.joint_index]),
         "application_point_world": application_point_world(sim).astype(float).tolist(),
         "applied_force_world": applied_force.astype(float).tolist(),
     }
@@ -451,6 +451,13 @@ def run_apply(args: argparse.Namespace) -> int:
                 }
             )
 
+    summary = build_summary(
+        sample_series={"force": samples},
+        physics_step_count=steps,
+        position_key="joint_position_m",
+        velocity_key="joint_velocity_m_s",
+        initial_position_value=0.0,
+    )
     metadata = build_metadata(
         model_dir=model_dir,
         mode="apply",
@@ -475,6 +482,7 @@ def run_apply(args: argparse.Namespace) -> int:
             "strategy": application_point_strategy,
             "local_on_link": local_application_point[:3].astype(float).tolist(),
         },
+        summary=summary,
         articulation=articulation,
         limit_key="limits_m",
         linear_damping=LINEAR_DAMPING,
@@ -587,6 +595,13 @@ def main() -> int:
                 writer.append_data(final_frame)
 
     simulated_seconds = frame_count * steps_per_frame * TIMESTEP
+    summary = build_summary(
+        sample_series=samples,
+        physics_step_count=frame_count * steps_per_frame,
+        position_key="joint_position_m",
+        velocity_key="joint_velocity_m_s",
+        initial_position_value=0.0,
+    )
     metadata = build_metadata(
         model_dir=model_dir,
         mode="render",
@@ -613,6 +628,7 @@ def main() -> int:
             "strategy": pulling_sim.application_point_strategy,
             "local_on_link": pulling_sim.local_application_point[:3].astype(float).tolist(),
         },
+        summary=summary,
         articulation=pulling_sim.cabinet,
         limit_key="limits_m",
         linear_damping=LINEAR_DAMPING,

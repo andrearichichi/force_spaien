@@ -2,6 +2,8 @@
 
 Utilities for applying small forces to articulated SAPIEN objects and rendering the resulting prismatic or revolute joint motion.
 
+`simulation.json` is documented separately in [README_simulation_json.md](README_simulation_json.md).
+
 ## Usage
 
 Object assets live in `dataset/`. You can pass either an object ID from that folder or an explicit object path.

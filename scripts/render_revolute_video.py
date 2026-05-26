@@ -17,9 +17,9 @@ from PIL import Image, ImageDraw, ImageFont
 import sapien
 
 try:
-    from simulation_json import build_metadata, sample_time_from_frame
+    from simulation_json import build_metadata, build_summary, sample_time_from_frame, sample_time_from_step
 except ModuleNotFoundError:
-    from scripts.simulation_json import build_metadata, sample_time_from_frame
+    from scripts.simulation_json import build_metadata, build_summary, sample_time_from_frame, sample_time_from_step
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -387,9 +387,9 @@ def sample_to_dict(time_s: float, sim: LaptopSim, applied_force: np.ndarray) -> 
     angle = float(sim.laptop.get_qpos()[sim.joint_index])
     return {
         "time_s": float(time_s),
-        "hinge_angle_rad": angle,
-        "hinge_angle_deg": math.degrees(angle),
-        "hinge_velocity_rad_s": float(sim.laptop.get_qvel()[sim.joint_index]),
+        "joint_angle_rad": angle,
+        "joint_angle_deg": math.degrees(angle),
+        "joint_velocity_rad_s": float(sim.laptop.get_qvel()[sim.joint_index]),
         "application_point_world": application_point_world(sim).astype(float).tolist(),
         "applied_force_world": applied_force.astype(float).tolist(),
     }
@@ -473,6 +473,15 @@ def run_apply(args: argparse.Namespace) -> int:
                 }
             )
 
+    summary = build_summary(
+        sample_series={"force": samples},
+        physics_step_count=steps,
+        position_key="joint_angle_rad",
+        velocity_key="joint_velocity_rad_s",
+        secondary_position_key="joint_angle_deg",
+        initial_position_value=args.initial_angle,
+        initial_secondary_position_value=math.degrees(args.initial_angle),
+    )
     metadata = build_metadata(
         model_dir=model_dir,
         mode="apply",
@@ -500,6 +509,7 @@ def run_apply(args: argparse.Namespace) -> int:
             "strategy": application_point_strategy,
             "local_on_link": local_application_point[:3].astype(float).tolist(),
         },
+        summary=summary,
         articulation=articulation,
         limit_key="limits_rad",
         linear_damping=LINEAR_DAMPING,
@@ -660,6 +670,15 @@ def main() -> int:
                 writer.append_data(final_frame)
 
     simulated_seconds = frame_count * steps_per_frame * TIMESTEP
+    summary = build_summary(
+        sample_series=samples,
+        physics_step_count=frame_count * steps_per_frame,
+        position_key="joint_angle_rad",
+        velocity_key="joint_velocity_rad_s",
+        secondary_position_key="joint_angle_deg",
+        initial_position_value=args.initial_angle,
+        initial_secondary_position_value=math.degrees(args.initial_angle),
+    )
     metadata = build_metadata(
         model_dir=model_dir,
         mode="render",
@@ -693,6 +712,7 @@ def main() -> int:
             "strategy": opening_sim.application_point_strategy,
             "local_on_link": opening_sim.local_application_point[:3].astype(float).tolist(),
         },
+        summary=summary,
         articulation=opening_sim.laptop,
         limit_key="limits_rad",
         linear_damping=LINEAR_DAMPING,

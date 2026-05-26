@@ -9,7 +9,7 @@ import numpy as np
 import sapien
 
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 
 
 def sample_time_from_frame(frame_index: int, steps_per_frame: int, timestep_s: float) -> float:
@@ -109,6 +109,70 @@ def physics_to_dict(model_dir: Path, linear_damping: float, angular_damping: flo
     }
 
 
+def series_summary(
+    samples: list[dict[str, object]],
+    *,
+    position_key: str,
+    velocity_key: str,
+    secondary_position_key: str | None = None,
+    initial_position_value: float | None = None,
+    initial_secondary_position_value: float | None = None,
+) -> dict[str, object]:
+    if not samples:
+        return {"sample_count": 0}
+
+    initial_position = float(initial_position_value) if initial_position_value is not None else float(samples[0][position_key])
+    final_position = float(samples[-1][position_key])
+    max_velocity_index = max(range(len(samples)), key=lambda idx: abs(float(samples[idx][velocity_key])))
+    max_abs_velocity = abs(float(samples[max_velocity_index][velocity_key]))
+    summary: dict[str, object] = {
+        "sample_count": len(samples),
+        f"initial_{position_key}": initial_position,
+        f"final_{position_key}": final_position,
+        f"delta_{position_key}": final_position - initial_position,
+        f"max_abs_{velocity_key}": max_abs_velocity,
+        "time_of_max_abs_joint_velocity_s": float(samples[max_velocity_index]["time_s"]),
+    }
+    if secondary_position_key is not None:
+        initial_secondary_position = (
+            float(initial_secondary_position_value)
+            if initial_secondary_position_value is not None
+            else float(samples[0][secondary_position_key])
+        )
+        final_secondary_position = float(samples[-1][secondary_position_key])
+        summary[f"initial_{secondary_position_key}"] = initial_secondary_position
+        summary[f"final_{secondary_position_key}"] = final_secondary_position
+        summary[f"delta_{secondary_position_key}"] = final_secondary_position - initial_secondary_position
+    return summary
+
+
+def build_summary(
+    *,
+    sample_series: dict[str, list[dict[str, object]]],
+    physics_step_count: int,
+    position_key: str,
+    velocity_key: str,
+    secondary_position_key: str | None = None,
+    initial_position_value: float | None = None,
+    initial_secondary_position_value: float | None = None,
+) -> dict[str, object]:
+    return {
+        "physics_step_count": physics_step_count,
+        "total_sample_count": sum(len(series) for series in sample_series.values()),
+        "sample_series": {
+            name: series_summary(
+                samples,
+                position_key=position_key,
+                velocity_key=velocity_key,
+                secondary_position_key=secondary_position_key,
+                initial_position_value=initial_position_value,
+                initial_secondary_position_value=initial_secondary_position_value,
+            )
+            for name, samples in sample_series.items()
+        },
+    }
+
+
 def build_metadata(
     *,
     model_dir: Path,
@@ -124,6 +188,7 @@ def build_metadata(
     sample_interval_s: float,
     actuation: dict[str, object],
     application_point: dict[str, object],
+    summary: dict[str, object],
     articulation: sapien.physx.PhysxArticulation,
     limit_key: str,
     linear_damping: float,
@@ -164,6 +229,7 @@ def build_metadata(
         "timing": timing,
         "actuation": actuation,
         "application_point": application_point,
+        "summary": summary,
         "physics": physics_to_dict(model_dir, linear_damping, angular_damping),
         "articulation": articulation_to_dict(articulation, limit_key=limit_key),
     }
