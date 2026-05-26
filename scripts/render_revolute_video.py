@@ -48,6 +48,16 @@ FONT_SMALL = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
 TIMESTEP = 1.0 / 240.0
 LINEAR_DAMPING = 0.0
 ANGULAR_DAMPING = 0.02
+CAMERA_ZOOM_OUT = 1.35
+COLOR_BG = (246, 248, 251)
+COLOR_PANEL = (255, 255, 255)
+COLOR_PANEL_2 = (250, 252, 255)
+COLOR_BORDER = (214, 224, 235)
+COLOR_GRID = (225, 233, 242)
+COLOR_TEXT = (28, 38, 52)
+COLOR_MUTED = (111, 126, 145)
+COLOR_ACCENT = (0, 113, 227)
+COLOR_ALT = (255, 55, 95)
 
 
 def look_at_pose(eye: np.ndarray, target: np.ndarray) -> sapien.Pose:
@@ -62,6 +72,10 @@ def look_at_pose(eye: np.ndarray, target: np.ndarray) -> sapien.Pose:
     mat[:3, 2] = up
     mat[:3, 3] = eye
     return sapien.Pose(mat)
+
+
+def zoomed_eye(eye: np.ndarray, target: np.ndarray) -> np.ndarray:
+    return target + (eye - target) * CAMERA_ZOOM_OUT
 
 
 def output_paths(model_dir: Path, output_root: Path, output: str | None, json_output: str | None) -> tuple[Path, Path]:
@@ -170,9 +184,9 @@ def setup_sim(
 ) -> LaptopSim:
     scene = sapien.Scene()
     scene.set_timestep(TIMESTEP)
-    scene.set_ambient_light([0.72, 0.72, 0.72])
-    scene.add_directional_light([0.25, 0.45, -1.0], [1.0, 1.0, 1.0], shadow=False)
-    scene.add_directional_light([-0.6, -0.2, -1.0], [0.35, 0.35, 0.35], shadow=False)
+    scene.set_ambient_light([0.78, 0.80, 0.84])
+    scene.add_directional_light([0.25, 0.45, -1.0], [1.0, 1.0, 0.96], shadow=False)
+    scene.add_directional_light([-0.6, -0.2, -1.0], [0.42, 0.48, 0.56], shadow=False)
 
     loader = scene.create_urdf_loader()
     loader.fix_root_link = True
@@ -213,10 +227,12 @@ def setup_sim(
     marker.set_pose(sapien.Pose(initial_world_point[:3]))
 
     camera = scene.add_camera("camera", width, height, math.radians(48), 0.01, 20.0)
+    camera_eye = np.array([-1.18, -1.46, 0.86], dtype=np.float32)
+    camera_target = np.array([-0.08, 0.10, 0.05], dtype=np.float32)
     camera.set_entity_pose(
         look_at_pose(
-            np.array([-1.18, -1.46, 0.86], dtype=np.float32),
-            np.array([-0.08, 0.10, 0.05], dtype=np.float32),
+            zoomed_eye(camera_eye, camera_target),
+            camera_target,
         )
     )
 
@@ -241,7 +257,18 @@ def render_panel(sim: LaptopSim) -> np.ndarray:
     sim.marker.set_pose(sapien.Pose(point))
     sim.scene.update_render()
     sim.camera.take_picture()
-    return (sim.camera.get_picture("Color")[..., :3].clip(0, 1) * 255).astype(np.uint8)
+    image = (sim.camera.get_picture("Color")[..., :3].clip(0, 1) * 255).astype(np.uint8)
+    image = cv2.convertScaleAbs(image, alpha=0.95, beta=-6)
+    channel_range = image.max(axis=2) - image.min(axis=2)
+    luminance = image.mean(axis=2)
+    background_mask = (channel_range < 55) & (luminance > 110)
+    top = np.array([238, 243, 249], dtype=np.float32)
+    bottom = np.array([250, 252, 255], dtype=np.float32)
+    t = np.linspace(0.0, 1.0, image.shape[0], dtype=np.float32)[:, None]
+    gradient = (top * (1.0 - t) + bottom * t).astype(np.uint8)
+    gradient = np.repeat(gradient[:, None, :], image.shape[1], axis=1)
+    image[background_mask] = gradient[background_mask]
+    return image
 
 
 def draw_text(
@@ -254,7 +281,7 @@ def draw_text(
 ) -> None:
     pil = Image.fromarray(img)
     draw = ImageDraw.Draw(pil)
-    draw.text(xy, text, fill=color[::-1], font=font, anchor=anchor)
+    draw.text(xy, text, fill=color, font=font, anchor=anchor)
     img[:] = np.asarray(pil)
 
 
@@ -265,6 +292,14 @@ def draw_label(img: np.ndarray, text: str, xy: tuple[int, int], color: tuple[int
     y = min(max(24, y), img.shape[0] - 12)
     draw_text(img, text, (x + 2, y + 2), (255, 255, 255), font)
     draw_text(img, text, (x, y), color, font)
+
+
+def draw_panel_frame(canvas: np.ndarray, x: int, y: int, w: int, h: int, color: tuple[int, int, int]) -> None:
+    cv2.rectangle(canvas, (x, y), (x + w - 1, y + h - 1), COLOR_BORDER, 1, cv2.LINE_AA)
+    cv2.line(canvas, (x + 18, y + 14), (x + 92, y + 14), color, 2, cv2.LINE_AA)
+    cv2.line(canvas, (x + 18, y + 14), (x + 18, y + 48), color, 2, cv2.LINE_AA)
+    cv2.line(canvas, (x + w - 92, y + h - 14), (x + w - 18, y + h - 14), color, 2, cv2.LINE_AA)
+    cv2.line(canvas, (x + w - 18, y + h - 48), (x + w - 18, y + h - 14), color, 2, cv2.LINE_AA)
 
 
 def draw_info_card(
@@ -279,13 +314,19 @@ def draw_info_card(
     angle_deg: float,
     color: tuple[int, int, int],
 ) -> None:
-    cv2.rectangle(canvas, (x + 18, y + 12), (x + w - 18, y + h - 10), (248, 248, 248), -1, cv2.LINE_AA)
-    cv2.rectangle(canvas, (x + 18, y + 12), (x + w - 18, y + h - 10), (205, 205, 205), 1, cv2.LINE_AA)
-    cv2.circle(canvas, (x + 42, y + 42), 10, color, -1, cv2.LINE_AA)
-    draw_text(canvas, title, (x + 62, y + 29), (24, 24, 24), FONT_BOLD)
-    draw_text(canvas, force_text, (x + 34, y + 70), color, FONT_REGULAR)
-    draw_text(canvas, direction_text, (x + 34, y + 98), (80, 80, 80), FONT_SMALL)
-    draw_text(canvas, f"angolo: {angle_deg:6.1f} deg", (x + w - 245, y + 70), (24, 24, 24), FONT_REGULAR)
+    x0, y0 = x + 18, y + 12
+    x1, y1 = x + w - 18, y + h - 10
+    cv2.rectangle(canvas, (x0 + 2, y0 + 3), (x1 + 2, y1 + 3), (226, 232, 240), -1, cv2.LINE_AA)
+    cv2.rectangle(canvas, (x0, y0), (x1, y1), COLOR_PANEL, -1, cv2.LINE_AA)
+    cv2.rectangle(canvas, (x0, y0), (x1, y1), COLOR_BORDER, 1, cv2.LINE_AA)
+    cv2.rectangle(canvas, (x0, y0), (x0 + 5, y1), color, -1, cv2.LINE_AA)
+    cv2.circle(canvas, (x + 44, y + 43), 17, (224, 238, 255), -1, cv2.LINE_AA)
+    cv2.circle(canvas, (x + 44, y + 43), 17, color, 1, cv2.LINE_AA)
+    cv2.circle(canvas, (x + 44, y + 43), 6, color, -1, cv2.LINE_AA)
+    draw_text(canvas, title.upper(), (x + 70, y + 29), COLOR_TEXT, FONT_BOLD)
+    draw_text(canvas, force_text, (x + 34, y + 72), color, FONT_REGULAR)
+    draw_text(canvas, direction_text, (x + 34, y + 100), COLOR_MUTED, FONT_SMALL)
+    draw_text(canvas, f"angolo {angle_deg:6.1f} deg", (x + w - 255, y + 72), COLOR_TEXT, FONT_REGULAR)
 
 
 def draw_force_annotation(
@@ -340,7 +381,7 @@ def draw_force_annotation(
         zoom = cv2.resize(crop, (inset_size, inset_size), interpolation=cv2.INTER_CUBIC)
         inset_x = img.shape[1] - inset_size - 22
         inset_y = 22
-        cv2.rectangle(img, (inset_x - 4, inset_y - 4), (inset_x + inset_size + 4, inset_y + inset_size + 4), (255, 255, 255), -1)
+        cv2.rectangle(img, (inset_x - 4, inset_y - 4), (inset_x + inset_size + 4, inset_y + inset_size + 4), COLOR_PANEL, -1)
         cv2.rectangle(img, (inset_x - 4, inset_y - 4), (inset_x + inset_size + 4, inset_y + inset_size + 4), color, 3)
         img[inset_y : inset_y + inset_size, inset_x : inset_x + inset_size] = zoom
 
@@ -354,10 +395,18 @@ def draw_angle_plot(
     y: int,
     w: int,
     h: int,
+    *,
+    comparison: bool = True,
 ) -> None:
-    cv2.rectangle(canvas, (x, y), (x + w, y + h), (245, 245, 245), -1)
-    cv2.rectangle(canvas, (x, y), (x + w, y + h), (180, 180, 180), 1)
-    draw_label(canvas, "risposta nel tempo", (x + 14, y + 28), (20, 20, 20), 0.55)
+    cv2.rectangle(canvas, (x + 2, y + 3), (x + w + 2, y + h + 3), (226, 232, 240), -1)
+    cv2.rectangle(canvas, (x, y), (x + w, y + h), COLOR_PANEL_2, -1)
+    cv2.rectangle(canvas, (x, y), (x + w, y + h), COLOR_BORDER, 1)
+    for tick in range(1, 5):
+        gx = x + int(w * tick / 5)
+        gy = y + int(h * tick / 5)
+        cv2.line(canvas, (gx, y + 42), (gx, y + h - 18), COLOR_GRID, 1, cv2.LINE_AA)
+        cv2.line(canvas, (x + 24, gy), (x + w - 24, gy), COLOR_GRID, 1, cv2.LINE_AA)
+    draw_label(canvas, "risposta nel tempo", (x + 14, y + 28), COLOR_TEXT, 0.55)
 
     all_angles = [math.degrees(initial_angle), *opening_angles, *closing_angles]
     amin = min(all_angles) - 4.0
@@ -372,15 +421,19 @@ def draw_angle_plot(
         return px, py
 
     for angles, color in (
-        (opening_angles, (210, 55, 45)),
-        (closing_angles, (25, 115, 210)),
+        (opening_angles, COLOR_ACCENT),
+        (closing_angles, COLOR_ALT),
     ):
         pts = [to_px(i, a, len(angles)) for i, a in enumerate(angles)]
         if len(pts) > 1:
-            cv2.polylines(canvas, [np.array(pts, dtype=np.int32)], False, color, 2, cv2.LINE_AA)
+            cv2.polylines(canvas, [np.array(pts, dtype=np.int32)], False, (210, 228, 250), 5, cv2.LINE_AA)
+            cv2.polylines(canvas, [np.array(pts, dtype=np.int32)], False, color, 3, cv2.LINE_AA)
 
-    draw_label(canvas, "apre", (x + w - 130, y + 30), (210, 55, 45), 0.48)
-    draw_label(canvas, "chiude", (x + w - 130, y + 54), (25, 115, 210), 0.48)
+    if comparison:
+        draw_label(canvas, "apre", (x + w - 130, y + 30), COLOR_ACCENT, 0.48)
+        draw_label(canvas, "chiude", (x + w - 130, y + 54), COLOR_ALT, 0.48)
+    else:
+        draw_label(canvas, "movimento", (x + w - 150, y + 30), COLOR_ACCENT, 0.48)
 
 
 def sample_to_dict(time_s: float, sim: LaptopSim, applied_force: np.ndarray) -> dict[str, object]:
@@ -542,6 +595,7 @@ def main() -> int:
     parser.add_argument("--plot-height", type=int, default=176)
     parser.add_argument("--initial-angle", type=float, default=-1.5)
     parser.add_argument("--direction", nargs=3, type=float, default=[0.0, 0.0, 1.0])
+    parser.add_argument("--movement", choices=["single", "comparison"], default="single")
     parser.add_argument("--json-output", default=None)
     parser.add_argument("--output-root", default="outputs")
     parser.add_argument("--contact-point-local", nargs=3, type=float, default=None)
@@ -566,16 +620,20 @@ def main() -> int:
 
     explicit_point, explicit_strategy = explicit_contact_point(args)
     opening_sim = setup_sim(model_dir, args.joint, args.link, args.panel_width, args.panel_height, args.initial_angle, explicit_point, explicit_strategy)
-    closing_sim = setup_sim(model_dir, args.joint, args.link, args.panel_width, args.panel_height, args.initial_angle, explicit_point, explicit_strategy)
+    closing_sim = (
+        setup_sim(model_dir, args.joint, args.link, args.panel_width, args.panel_height, args.initial_angle, explicit_point, explicit_strategy)
+        if args.movement == "comparison"
+        else None
+    )
 
     steps_per_frame = max(1, round(240 / args.fps))
     frame_count = max(1, int(args.seconds * args.fps))
     opening_angles: list[float] = []
     closing_angles: list[float] = []
-    samples = {"opening_force": [], "closing_force": []}
-    point_histories = {"opening_force": [], "closing_force": []}
+    samples = {"opening_force": [], "closing_force": []} if args.movement == "comparison" else {"force": []}
+    point_histories = {"opening_force": [], "closing_force": []} if args.movement == "comparison" else {"force": []}
 
-    out_w = args.panel_width * 2
+    out_w = args.panel_width * 2 if args.movement == "comparison" else args.panel_width
     out_h = args.panel_height + args.info_height + args.plot_height
 
     final_frame = None
@@ -583,21 +641,25 @@ def main() -> int:
         for _ in range(frame_count):
             for _ in range(steps_per_frame):
                 opening_point = application_point_world(opening_sim)
-                closing_point = application_point_world(closing_sim)
                 opening_sim.screen.add_force_at_point(opening_force, opening_point, "force")
-                closing_sim.screen.add_force_at_point(closing_force, closing_point, "force")
                 opening_sim.scene.step()
-                closing_sim.scene.step()
+                if closing_sim is not None:
+                    closing_point = application_point_world(closing_sim)
+                    closing_sim.screen.add_force_at_point(closing_force, closing_point, "force")
+                    closing_sim.scene.step()
 
             time_s = sample_time_from_frame(len(opening_angles), steps_per_frame, TIMESTEP)
-            samples["opening_force"].append(sample_to_dict(time_s, opening_sim, opening_force))
-            samples["closing_force"].append(sample_to_dict(time_s, closing_sim, closing_force))
-            point_histories["opening_force"].append(application_point_world(opening_sim))
-            point_histories["closing_force"].append(application_point_world(closing_sim))
+            if args.movement == "comparison":
+                samples["opening_force"].append(sample_to_dict(time_s, opening_sim, opening_force))
+                samples["closing_force"].append(sample_to_dict(time_s, closing_sim, closing_force))
+                point_histories["opening_force"].append(application_point_world(opening_sim))
+                point_histories["closing_force"].append(application_point_world(closing_sim))
+            else:
+                samples["force"].append(sample_to_dict(time_s, opening_sim, opening_force))
+                point_histories["force"].append(application_point_world(opening_sim))
 
             left = render_panel(opening_sim)
-            right = render_panel(closing_sim)
-            canvas = np.full((out_h, out_w, 3), 232, dtype=np.uint8)
+            canvas = np.full((out_h, out_w, 3), COLOR_BG, dtype=np.uint8)
             draw_force_annotation(
                 left,
                 opening_sim,
@@ -605,27 +667,14 @@ def main() -> int:
                 args.force,
                 args.panel_width,
                 args.panel_height,
-                (210, 55, 45),
-                point_histories["opening_force"],
-            )
-            draw_force_annotation(
-                right,
-                closing_sim,
-                closing_dir,
-                args.closing_force,
-                args.panel_width,
-                args.panel_height,
-                (25, 115, 210),
-                point_histories["closing_force"],
+                COLOR_ACCENT,
+                point_histories["opening_force"] if args.movement == "comparison" else point_histories["force"],
             )
             canvas[: args.panel_height, : args.panel_width] = left
-            canvas[: args.panel_height, args.panel_width :] = right
-            cv2.line(canvas, (args.panel_width, 0), (args.panel_width, args.panel_height + args.info_height), (205, 205, 205), 2)
+            draw_panel_frame(canvas, 0, 0, args.panel_width, args.panel_height, COLOR_ACCENT)
 
             open_angle = math.degrees(float(opening_sim.laptop.get_qpos()[opening_sim.joint_index]))
-            close_angle = math.degrees(float(closing_sim.laptop.get_qpos()[closing_sim.joint_index]))
             opening_angles.append(open_angle)
-            closing_angles.append(close_angle)
 
             draw_info_card(
                 canvas,
@@ -633,24 +682,41 @@ def main() -> int:
                 args.panel_height,
                 args.panel_width,
                 args.info_height,
-                "apertura",
+                "apertura" if args.movement == "comparison" else "movimento",
                 f"F = {args.force:g} N",
                 f"direzione world [{opening_dir[0]:.0f}, {opening_dir[1]:.0f}, {opening_dir[2]:.0f}]",
                 open_angle,
-                (210, 55, 45),
+                COLOR_ACCENT,
             )
-            draw_info_card(
-                canvas,
-                args.panel_width,
-                args.panel_height,
-                args.panel_width,
-                args.info_height,
-                "chiusura",
-                f"F = {args.closing_force:g} N",
-                f"direzione world [{closing_dir[0]:.0f}, {closing_dir[1]:.0f}, {closing_dir[2]:.0f}]",
-                close_angle,
-                (25, 115, 210),
-            )
+            if closing_sim is not None:
+                right = render_panel(closing_sim)
+                draw_force_annotation(
+                    right,
+                    closing_sim,
+                    closing_dir,
+                    args.closing_force,
+                    args.panel_width,
+                    args.panel_height,
+                    COLOR_ALT,
+                    point_histories["closing_force"],
+                )
+                canvas[: args.panel_height, args.panel_width :] = right
+                draw_panel_frame(canvas, args.panel_width, 0, args.panel_width, args.panel_height, COLOR_ALT)
+                cv2.line(canvas, (args.panel_width, 0), (args.panel_width, args.panel_height + args.info_height), COLOR_BORDER, 1)
+                close_angle = math.degrees(float(closing_sim.laptop.get_qpos()[closing_sim.joint_index]))
+                closing_angles.append(close_angle)
+                draw_info_card(
+                    canvas,
+                    args.panel_width,
+                    args.panel_height,
+                    args.panel_width,
+                    args.info_height,
+                    "chiusura",
+                    f"F = {args.closing_force:g} N",
+                    f"direzione world [{closing_dir[0]:.0f}, {closing_dir[1]:.0f}, {closing_dir[2]:.0f}]",
+                    close_angle,
+                    COLOR_ALT,
+                )
             draw_angle_plot(
                 canvas,
                 opening_angles,
@@ -660,6 +726,7 @@ def main() -> int:
                 args.panel_height + args.info_height + 16,
                 out_w - 44,
                 args.plot_height - 32,
+                comparison=args.movement == "comparison",
             )
             writer.append_data(canvas)
             final_frame = canvas.copy()
@@ -679,6 +746,28 @@ def main() -> int:
         initial_position_value=args.initial_angle,
         initial_secondary_position_value=math.degrees(args.initial_angle),
     )
+    actuation = {
+        "initial_joint_position": {
+            "rad": args.initial_angle,
+            "deg": math.degrees(args.initial_angle),
+        },
+        "force": {
+            "magnitude_n": args.force,
+            "direction_world": opening_dir.astype(float).tolist(),
+        },
+        "joint_limits_rad": opening_sim.laptop.get_active_joints()[opening_sim.joint_index].get_limit().tolist(),
+    }
+    if args.movement == "comparison":
+        actuation = {
+            "initial_joint_position": actuation["initial_joint_position"],
+            "opening_force": actuation["force"],
+            "closing_force": {
+                "magnitude_n": args.closing_force,
+                "direction_world": closing_dir.astype(float).tolist(),
+            },
+            "joint_limits_rad": actuation["joint_limits_rad"],
+        }
+
     metadata = build_metadata(
         model_dir=model_dir,
         mode="render",
@@ -693,21 +782,7 @@ def main() -> int:
         timestep_s=TIMESTEP,
         sample_interval_s=steps_per_frame * TIMESTEP,
         end_hold_seconds=args.end_hold_seconds,
-        actuation={
-            "initial_joint_position": {
-                "rad": args.initial_angle,
-                "deg": math.degrees(args.initial_angle),
-            },
-            "opening_force": {
-                "magnitude_n": args.force,
-                "direction_world": opening_dir.astype(float).tolist(),
-            },
-            "closing_force": {
-                "magnitude_n": args.closing_force,
-                "direction_world": closing_dir.astype(float).tolist(),
-            },
-            "joint_limits_rad": opening_sim.laptop.get_active_joints()[opening_sim.joint_index].get_limit().tolist(),
-        },
+        actuation=actuation,
         application_point={
             "strategy": opening_sim.application_point_strategy,
             "local_on_link": opening_sim.local_application_point[:3].astype(float).tolist(),
@@ -723,8 +798,9 @@ def main() -> int:
     with json_output.open("w", encoding="utf-8") as f:
         json.dump({"metadata": metadata, "samples": samples}, f, indent=2)
     print(f"Wrote {json_output}")
-    print(f"Opening-force final angle: {opening_angles[-1]:.2f} deg")
-    print(f"Closing-force final angle: {closing_angles[-1]:.2f} deg")
+    print(f"Final angle: {opening_angles[-1]:.2f} deg")
+    if closing_angles:
+        print(f"Closing-force final angle: {closing_angles[-1]:.2f} deg")
     return 0
 
 

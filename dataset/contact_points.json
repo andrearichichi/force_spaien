@@ -1,0 +1,41 @@
+{
+  "objects": {
+    "101062": {
+      "joint_type": "prismatic",
+      "joint": "joint_0",
+      "link": "link_0",
+      "force": 0.5,
+      "direction": [0.0, 0.0, 1.0],
+      "application_point": {
+        "type": "local_point",
+        "point": [-0.0808589980006218, 0.1022230014204979, -0.187266007065773],
+        "description": "manual candidate 9 corner"
+      }
+    },
+    "11691": {
+      "joint_type": "revolute",
+      "joint": "joint_1",
+      "link": "link_1",
+      "initial_angle": -1.5,
+      "force": 0.5,
+      "direction": [0.0, 0.0, 1.0],
+      "application_point": {
+        "type": "local_point",
+        "point": [-0.6254175305366516, 0.7759732604026794, -0.32202526926994324],
+        "description": "upper free screen edge; avoids decorative/non-functional handle parts"
+      }
+    },
+    "12447": {
+      "joint_type": "revolute",
+      "joint": "joint_0",
+      "link": "link_0",
+      "initial_angle": 0.0,
+      "force": 50.0,
+      "direction": [1.0, 0.0, 0.0],
+      "application_point": {
+        "type": "auto",
+        "description": "uses cover handle; default 0.5 N +Z does not open this lid"
+      }
+    }
+  }
+}

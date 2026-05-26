@@ -48,6 +48,16 @@ FONT_SMALL = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
 TIMESTEP = 1.0 / 240.0
 LINEAR_DAMPING = 0.0
 ANGULAR_DAMPING = 0.02
+CAMERA_ZOOM_OUT = 1.35
+COLOR_BG = (246, 248, 251)
+COLOR_PANEL = (255, 255, 255)
+COLOR_PANEL_2 = (250, 252, 255)
+COLOR_BORDER = (214, 224, 235)
+COLOR_GRID = (225, 233, 242)
+COLOR_TEXT = (28, 38, 52)
+COLOR_MUTED = (111, 126, 145)
+COLOR_ACCENT = (0, 113, 227)
+COLOR_ALT = (255, 55, 95)
 
 
 def look_at_pose(eye: np.ndarray, target: np.ndarray) -> sapien.Pose:
@@ -62,6 +72,10 @@ def look_at_pose(eye: np.ndarray, target: np.ndarray) -> sapien.Pose:
     mat[:3, 2] = up
     mat[:3, 3] = eye
     return sapien.Pose(mat)
+
+
+def zoomed_eye(eye: np.ndarray, target: np.ndarray) -> np.ndarray:
+    return target + (eye - target) * CAMERA_ZOOM_OUT
 
 
 def output_paths(model_dir: Path, output_root: Path, output: str | None, json_output: str | None) -> tuple[Path, Path]:
@@ -192,9 +206,9 @@ def explicit_contact_point(args: argparse.Namespace) -> tuple[np.ndarray | None,
 def setup_sim(model_dir: Path, drawer_index: int, width: int, height: int, force_dir: np.ndarray, override_point: np.ndarray | None = None, override_strategy: str | None = None) -> DrawerSim:
     scene = sapien.Scene()
     scene.set_timestep(TIMESTEP)
-    scene.set_ambient_light([0.72, 0.72, 0.72])
-    scene.add_directional_light([0.2, -0.45, -1.0], [1.0, 1.0, 1.0], shadow=False)
-    scene.add_directional_light([-0.7, 0.25, -1.0], [0.38, 0.38, 0.38], shadow=False)
+    scene.set_ambient_light([0.78, 0.80, 0.84])
+    scene.add_directional_light([0.2, -0.45, -1.0], [1.0, 1.0, 0.96], shadow=False)
+    scene.add_directional_light([-0.7, 0.25, -1.0], [0.42, 0.48, 0.56], shadow=False)
 
     loader = scene.create_urdf_loader()
     loader.fix_root_link = True
@@ -237,10 +251,12 @@ def setup_sim(model_dir: Path, drawer_index: int, width: int, height: int, force
     positive_pull_dir_world /= np.linalg.norm(positive_pull_dir_world) or 1.0
 
     camera = scene.add_camera("camera", width, height, math.radians(44), 0.01, 20.0)
+    camera_eye = np.array([-1.45, -1.55, 0.86], dtype=np.float32)
+    camera_target = np.array([0.0, -0.04, 0.06], dtype=np.float32)
     camera.set_entity_pose(
         look_at_pose(
-            np.array([-1.45, -1.55, 0.86], dtype=np.float32),
-            np.array([0.0, -0.04, 0.06], dtype=np.float32),
+            zoomed_eye(camera_eye, camera_target),
+            camera_target,
         )
     )
 
@@ -263,13 +279,24 @@ def project(camera: sapien.render.RenderCameraComponent, point: np.ndarray) -> t
 def render_panel(sim: DrawerSim) -> np.ndarray:
     sim.scene.update_render()
     sim.camera.take_picture()
-    return (sim.camera.get_picture("Color")[..., :3].clip(0, 1) * 255).astype(np.uint8)
+    image = (sim.camera.get_picture("Color")[..., :3].clip(0, 1) * 255).astype(np.uint8)
+    image = cv2.convertScaleAbs(image, alpha=0.95, beta=-6)
+    channel_range = image.max(axis=2) - image.min(axis=2)
+    luminance = image.mean(axis=2)
+    background_mask = (channel_range < 55) & (luminance > 110)
+    top = np.array([238, 243, 249], dtype=np.float32)
+    bottom = np.array([250, 252, 255], dtype=np.float32)
+    t = np.linspace(0.0, 1.0, image.shape[0], dtype=np.float32)[:, None]
+    gradient = (top * (1.0 - t) + bottom * t).astype(np.uint8)
+    gradient = np.repeat(gradient[:, None, :], image.shape[1], axis=1)
+    image[background_mask] = gradient[background_mask]
+    return image
 
 
 def draw_text(img: np.ndarray, text: str, xy: tuple[int, int], color: tuple[int, int, int], font=FONT_REGULAR) -> None:
     pil = Image.fromarray(img)
     draw = ImageDraw.Draw(pil)
-    draw.text(xy, text, fill=color[::-1], font=font)
+    draw.text(xy, text, fill=color, font=font)
     img[:] = np.asarray(pil)
 
 
@@ -280,6 +307,14 @@ def draw_label(img: np.ndarray, text: str, xy: tuple[int, int], color: tuple[int
     y = min(max(24, y), img.shape[0] - 12)
     draw_text(img, text, (x + 2, y + 2), (255, 255, 255), font)
     draw_text(img, text, (x, y), color, font)
+
+
+def draw_panel_frame(canvas: np.ndarray, x: int, y: int, w: int, h: int, color: tuple[int, int, int]) -> None:
+    cv2.rectangle(canvas, (x, y), (x + w - 1, y + h - 1), COLOR_BORDER, 1, cv2.LINE_AA)
+    cv2.line(canvas, (x + 18, y + 14), (x + 92, y + 14), color, 2, cv2.LINE_AA)
+    cv2.line(canvas, (x + 18, y + 14), (x + 18, y + 48), color, 2, cv2.LINE_AA)
+    cv2.line(canvas, (x + w - 92, y + h - 14), (x + w - 18, y + h - 14), color, 2, cv2.LINE_AA)
+    cv2.line(canvas, (x + w - 18, y + h - 48), (x + w - 18, y + h - 14), color, 2, cv2.LINE_AA)
 
 
 def draw_force_annotation(
@@ -335,24 +370,46 @@ def draw_force_annotation(
         zoom = cv2.resize(crop, (inset_size, inset_size), interpolation=cv2.INTER_CUBIC)
         inset_x = img.shape[1] - inset_size - 22
         inset_y = 22
-        cv2.rectangle(img, (inset_x - 4, inset_y - 4), (inset_x + inset_size + 4, inset_y + inset_size + 4), (255, 255, 255), -1)
+        cv2.rectangle(img, (inset_x - 4, inset_y - 4), (inset_x + inset_size + 4, inset_y + inset_size + 4), COLOR_PANEL, -1)
         cv2.rectangle(img, (inset_x - 4, inset_y - 4), (inset_x + inset_size + 4, inset_y + inset_size + 4), color, 3)
         img[inset_y : inset_y + inset_size, inset_x : inset_x + inset_size] = zoom
 
 
 def draw_info_card(canvas: np.ndarray, x: int, y: int, w: int, h: int, title: str, force_text: str, disp: float, color: tuple[int, int, int]) -> None:
-    cv2.rectangle(canvas, (x + 18, y + 12), (x + w - 18, y + h - 10), (248, 248, 248), -1, cv2.LINE_AA)
-    cv2.rectangle(canvas, (x + 18, y + 12), (x + w - 18, y + h - 10), (205, 205, 205), 1, cv2.LINE_AA)
-    cv2.circle(canvas, (x + 42, y + 42), 10, color, -1, cv2.LINE_AA)
-    draw_text(canvas, title, (x + 62, y + 29), (24, 24, 24), FONT_BOLD)
-    draw_text(canvas, force_text, (x + 34, y + 70), color, FONT_REGULAR)
-    draw_text(canvas, f"spostamento: {disp:5.3f} m", (x + w - 286, y + 70), (24, 24, 24), FONT_REGULAR)
+    x0, y0 = x + 18, y + 12
+    x1, y1 = x + w - 18, y + h - 10
+    cv2.rectangle(canvas, (x0 + 2, y0 + 3), (x1 + 2, y1 + 3), (226, 232, 240), -1, cv2.LINE_AA)
+    cv2.rectangle(canvas, (x0, y0), (x1, y1), COLOR_PANEL, -1, cv2.LINE_AA)
+    cv2.rectangle(canvas, (x0, y0), (x1, y1), COLOR_BORDER, 1, cv2.LINE_AA)
+    cv2.rectangle(canvas, (x0, y0), (x0 + 5, y1), color, -1, cv2.LINE_AA)
+    cv2.circle(canvas, (x + 44, y + 43), 17, (224, 238, 255), -1, cv2.LINE_AA)
+    cv2.circle(canvas, (x + 44, y + 43), 17, color, 1, cv2.LINE_AA)
+    cv2.circle(canvas, (x + 44, y + 43), 6, color, -1, cv2.LINE_AA)
+    draw_text(canvas, title.upper(), (x + 70, y + 29), COLOR_TEXT, FONT_BOLD)
+    draw_text(canvas, force_text, (x + 34, y + 72), color, FONT_REGULAR)
+    draw_text(canvas, f"spostamento {disp:5.3f} m", (x + w - 310, y + 72), COLOR_TEXT, FONT_REGULAR)
 
 
-def draw_displacement_plot(canvas: np.ndarray, no_force: list[float], pulling: list[float], x: int, y: int, w: int, h: int) -> None:
-    cv2.rectangle(canvas, (x, y), (x + w, y + h), (245, 245, 245), -1)
-    cv2.rectangle(canvas, (x, y), (x + w, y + h), (180, 180, 180), 1)
-    draw_label(canvas, "spostamento nel tempo", (x + 14, y + 28), (20, 20, 20), 0.55)
+def draw_displacement_plot(
+    canvas: np.ndarray,
+    no_force: list[float],
+    pulling: list[float],
+    x: int,
+    y: int,
+    w: int,
+    h: int,
+    *,
+    comparison: bool = True,
+) -> None:
+    cv2.rectangle(canvas, (x + 2, y + 3), (x + w + 2, y + h + 3), (226, 232, 240), -1)
+    cv2.rectangle(canvas, (x, y), (x + w, y + h), COLOR_PANEL_2, -1)
+    cv2.rectangle(canvas, (x, y), (x + w, y + h), COLOR_BORDER, 1)
+    for tick in range(1, 5):
+        gx = x + int(w * tick / 5)
+        gy = y + int(h * tick / 5)
+        cv2.line(canvas, (gx, y + 42), (gx, y + h - 18), COLOR_GRID, 1, cv2.LINE_AA)
+        cv2.line(canvas, (x + 24, gy), (x + w - 24, gy), COLOR_GRID, 1, cv2.LINE_AA)
+    draw_label(canvas, "spostamento nel tempo", (x + 14, y + 28), COLOR_TEXT, 0.55)
 
     values = [0.0, *no_force, *pulling]
     vmin = min(values) - 0.02
@@ -365,13 +422,17 @@ def draw_displacement_plot(canvas: np.ndarray, no_force: list[float], pulling: l
         py = y + h - 24 - int((h - 58) * ((value - vmin) / (vmax - vmin)))
         return px, py
 
-    for values_line, color in ((no_force, (95, 95, 95)), (pulling, (210, 55, 45))):
+    for values_line, color in ((no_force, COLOR_MUTED), (pulling, COLOR_ACCENT)):
         pts = [to_px(i, value, len(values_line)) for i, value in enumerate(values_line)]
         if len(pts) > 1:
-            cv2.polylines(canvas, [np.array(pts, dtype=np.int32)], False, color, 2, cv2.LINE_AA)
+            cv2.polylines(canvas, [np.array(pts, dtype=np.int32)], False, (210, 228, 250), 5, cv2.LINE_AA)
+            cv2.polylines(canvas, [np.array(pts, dtype=np.int32)], False, color, 3, cv2.LINE_AA)
 
-    draw_label(canvas, "senza forza", (x + w - 168, y + 30), (95, 95, 95), 0.48)
-    draw_label(canvas, "tiro", (x + w - 168, y + 54), (210, 55, 45), 0.48)
+    if comparison:
+        draw_label(canvas, "senza forza", (x + w - 168, y + 30), COLOR_MUTED, 0.48)
+        draw_label(canvas, "tiro", (x + w - 168, y + 54), COLOR_ACCENT, 0.48)
+    else:
+        draw_label(canvas, "movimento", (x + w - 168, y + 30), COLOR_ACCENT, 0.48)
 
 
 def sample_to_dict(time_s: float, sim: DrawerSim, applied_force: np.ndarray) -> dict[str, object]:
@@ -515,6 +576,7 @@ def main() -> int:
     parser.add_argument("--info-height", type=int, default=132)
     parser.add_argument("--plot-height", type=int, default=176)
     parser.add_argument("--direction", nargs=3, type=float, default=[0.0, 0.0, 1.0])
+    parser.add_argument("--movement", choices=["single", "comparison"], default="single")
     parser.add_argument("--output-root", default="outputs")
     parser.add_argument("--contact-point-local", nargs=3, type=float, default=None)
     parser.add_argument("--contact-point-strategy", default=None)
@@ -536,7 +598,11 @@ def main() -> int:
     generalized_force = args.force if force_dir[slider_axis] >= 0 else -args.force
 
     explicit_point, explicit_strategy = explicit_contact_point(args)
-    still_sim = setup_sim(model_dir, args.drawer, args.panel_width, args.panel_height, force_dir, explicit_point, explicit_strategy)
+    still_sim = (
+        setup_sim(model_dir, args.drawer, args.panel_width, args.panel_height, force_dir, explicit_point, explicit_strategy)
+        if args.movement == "comparison"
+        else None
+    )
     pulling_sim = setup_sim(model_dir, args.drawer, args.panel_width, args.panel_height, force_dir, explicit_point, explicit_strategy)
     pull_dir_world = pulling_sim.positive_pull_dir_world if generalized_force >= 0 else -pulling_sim.positive_pull_dir_world
     force = pull_dir_world * args.force
@@ -545,10 +611,10 @@ def main() -> int:
     frame_count = max(1, int(args.seconds * args.fps))
     still_displacements: list[float] = []
     pulling_displacements: list[float] = []
-    samples = {"no_force": [], "pulling_force": []}
-    point_histories = {"no_force": [], "pulling_force": []}
+    samples = {"no_force": [], "pulling_force": []} if args.movement == "comparison" else {"force": []}
+    point_histories = {"no_force": [], "pulling_force": []} if args.movement == "comparison" else {"force": []}
 
-    out_w = args.panel_width * 2
+    out_w = args.panel_width * 2 if args.movement == "comparison" else args.panel_width
     out_h = args.panel_height + args.info_height + args.plot_height
 
     final_frame = None
@@ -558,34 +624,59 @@ def main() -> int:
                 qf = np.zeros_like(pulling_sim.cabinet.get_qf(), dtype=np.float32)
                 qf[pulling_sim.joint_index] = generalized_force
                 pulling_sim.cabinet.set_qf(qf)
-                still_sim.scene.step()
+                if still_sim is not None:
+                    still_sim.scene.step()
                 pulling_sim.scene.step()
 
             time_s = sample_time_from_frame(len(pulling_displacements), steps_per_frame, TIMESTEP)
-            samples["no_force"].append(sample_to_dict(time_s, still_sim, np.zeros(3, dtype=np.float32)))
-            samples["pulling_force"].append(sample_to_dict(time_s, pulling_sim, force))
-            point_histories["no_force"].append(application_point_world(still_sim))
-            point_histories["pulling_force"].append(application_point_world(pulling_sim))
+            if args.movement == "comparison":
+                samples["no_force"].append(sample_to_dict(time_s, still_sim, np.zeros(3, dtype=np.float32)))
+                samples["pulling_force"].append(sample_to_dict(time_s, pulling_sim, force))
+                point_histories["no_force"].append(application_point_world(still_sim))
+                point_histories["pulling_force"].append(application_point_world(pulling_sim))
+            else:
+                samples["force"].append(sample_to_dict(time_s, pulling_sim, force))
+                point_histories["force"].append(application_point_world(pulling_sim))
 
-            left = render_panel(still_sim)
             right = render_panel(pulling_sim)
-            canvas = np.full((out_h, out_w, 3), 232, dtype=np.uint8)
+            canvas = np.full((out_h, out_w, 3), COLOR_BG, dtype=np.uint8)
 
-            draw_force_annotation(left, still_sim, pull_dir_world, 0.0, (95, 95, 95), point_histories["no_force"])
-            draw_force_annotation(right, pulling_sim, pull_dir_world, args.force, (210, 55, 45), point_histories["pulling_force"])
-
-            canvas[: args.panel_height, : args.panel_width] = left
-            canvas[: args.panel_height, args.panel_width :] = right
-            cv2.line(canvas, (args.panel_width, 0), (args.panel_width, args.panel_height + args.info_height), (205, 205, 205), 2)
-
-            still_disp = float(still_sim.cabinet.get_qpos()[still_sim.joint_index])
+            draw_force_annotation(
+                right,
+                pulling_sim,
+                pull_dir_world,
+                args.force,
+                COLOR_ACCENT,
+                point_histories["pulling_force"] if args.movement == "comparison" else point_histories["force"],
+            )
+            canvas[: args.panel_height, : args.panel_width] = right
+            draw_panel_frame(canvas, 0, 0, args.panel_width, args.panel_height, COLOR_ACCENT)
             pulling_disp = float(pulling_sim.cabinet.get_qpos()[pulling_sim.joint_index])
-            still_displacements.append(still_disp)
             pulling_displacements.append(pulling_disp)
 
-            draw_info_card(canvas, 0, args.panel_height, args.panel_width, args.info_height, "senza forza", "F = 0 N", still_disp, (95, 95, 95))
-            draw_info_card(canvas, args.panel_width, args.panel_height, args.panel_width, args.info_height, "trazione cassetto", f"F = {args.force:g} N", pulling_disp, (210, 55, 45))
-            draw_displacement_plot(canvas, still_displacements, pulling_displacements, 22, args.panel_height + args.info_height + 16, out_w - 44, args.plot_height - 32)
+            draw_info_card(canvas, 0, args.panel_height, args.panel_width, args.info_height, "movimento", f"F = {args.force:g} N", pulling_disp, COLOR_ACCENT)
+            if still_sim is not None:
+                left = render_panel(still_sim)
+                draw_force_annotation(left, still_sim, pull_dir_world, 0.0, COLOR_MUTED, point_histories["no_force"])
+                canvas[: args.panel_height, : args.panel_width] = left
+                canvas[: args.panel_height, args.panel_width :] = right
+                draw_panel_frame(canvas, 0, 0, args.panel_width, args.panel_height, COLOR_MUTED)
+                draw_panel_frame(canvas, args.panel_width, 0, args.panel_width, args.panel_height, COLOR_ACCENT)
+                cv2.line(canvas, (args.panel_width, 0), (args.panel_width, args.panel_height + args.info_height), COLOR_BORDER, 1)
+                still_disp = float(still_sim.cabinet.get_qpos()[still_sim.joint_index])
+                still_displacements.append(still_disp)
+                draw_info_card(canvas, 0, args.panel_height, args.panel_width, args.info_height, "senza forza", "F = 0 N", still_disp, COLOR_MUTED)
+                draw_info_card(canvas, args.panel_width, args.panel_height, args.panel_width, args.info_height, "trazione cassetto", f"F = {args.force:g} N", pulling_disp, COLOR_ACCENT)
+            draw_displacement_plot(
+                canvas,
+                still_displacements,
+                pulling_displacements,
+                22,
+                args.panel_height + args.info_height + 16,
+                out_w - 44,
+                args.plot_height - 32,
+                comparison=args.movement == "comparison",
+            )
             writer.append_data(canvas)
             final_frame = canvas.copy()
 
@@ -640,8 +731,9 @@ def main() -> int:
 
     print(f"Wrote {output}")
     print(f"Wrote {json_output}")
-    print(f"No-force final displacement: {still_displacements[-1]:.4f} m")
-    print(f"Pulling-force final displacement: {pulling_displacements[-1]:.4f} m")
+    if still_displacements:
+        print(f"No-force final displacement: {still_displacements[-1]:.4f} m")
+    print(f"Final displacement: {pulling_displacements[-1]:.4f} m")
     return 0
 
 

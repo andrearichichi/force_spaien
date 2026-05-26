@@ -1,0 +1,2164 @@
+{
+  "metadata": {
+    "schema_version": 3,
+    "pipeline": {
+      "mode": "render"
+    },
+    "object": {
+      "model_dir": "/teamspace/studios/this_studio/dataset/12447",
+      "joint_type": "revolute",
+      "joint": "joint_0",
+      "link": "link_0"
+    },
+    "output": {
+      "json_output": "/teamspace/studios/this_studio/outputs/12447_output/simulation.json",
+      "video_output": "/teamspace/studios/this_studio/outputs/12447_output/final_video.mp4"
+    },
+    "timing": {
+      "fps": 30,
+      "requested_seconds": 4.0,
+      "simulated_seconds": 4.0,
+      "sample_interval_s": 0.03333333333333333,
+      "timestep_s": 0.004166666666666667,
+      "end_hold_seconds": 2.0,
+      "video_duration_seconds": 6.0
+    },
+    "actuation": {
+      "initial_joint_position": {
+        "rad": 0.0,
+        "deg": 0.0
+      },
+      "force": {
+        "magnitude_n": 50.0,
+        "direction_world": [
+          1.0,
+          0.0,
+          0.0
+        ]
+      },
+      "joint_limits_rad": [
+        [
+          -0.0,
+          1.5707963705062866
+        ]
+      ]
+    },
+    "application_point": {
+      "strategy": "center of handle mesh on selected link",
+      "local_on_link": [
+        -0.43807899951934814,
+        0.09455379843711853,
+        -0.039855703711509705
+      ]
+    },
+    "summary": {
+      "physics_step_count": 960,
+      "total_sample_count": 120,
+      "sample_series": {
+        "force": {
+          "sample_count": 120,
+          "initial_joint_angle_rad": 0.0,
+          "final_joint_angle_rad": 0.8443554639816284,
+          "delta_joint_angle_rad": 0.8443554639816284,
+          "max_abs_joint_velocity_rad_s": 0.30337193608283997,
+          "time_of_max_abs_joint_velocity_s": 3.0,
+          "initial_joint_angle_deg": 0.0,
+          "final_joint_angle_deg": 48.37800449495771,
+          "delta_joint_angle_deg": 48.37800449495771
+        }
+      }
+    },
+    "physics": {
+      "urdf_joint_dynamics": null,
+      "uses_separate_static_dynamic_friction": false,
+      "uses_air_friction_model": false,
+      "overrides": {
+        "link_linear_damping": 0.0,
+        "link_angular_damping": 0.02,
+        "joint_drive": {
+          "stiffness": 0.0,
+          "damping": 0.0,
+          "force_limit": 0.0
+        }
+      }
+    },
+    "articulation": {
+      "links": [
+        {
+          "name": "base",
+          "mass": 9.999999974752427e-07,
+          "inertia": [
+            9.999999974752427e-07,
+            9.999999974752427e-07,
+            9.999999974752427e-07
+          ],
+          "cmass_local_pose": {
+            "p": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "q": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "linear_damping": 0.0,
+          "angular_damping": 0.019999999552965164,
+          "disable_gravity": true
+        },
+        {
+          "name": "link_1",
+          "mass": 707.3504028320312,
+          "inertia": [
+            165.56814575195312,
+            53.040855407714844,
+            175.10360717773438
+          ],
+          "cmass_local_pose": {
+            "p": [
+              -0.019489014521241188,
+              -0.10463897138834,
+              -0.006894542369991541
+            ],
+            "q": [
+              0.998177707195282,
+              0.008597825653851032,
+              -0.058918606489896774,
+              0.009796044789254665
+            ]
+          },
+          "linear_damping": 0.0,
+          "angular_damping": 0.019999999552965164,
+          "disable_gravity": true
+        },
+        {
+          "name": "link_0",
+          "mass": 92.5780029296875,
+          "inertia": [
+            4.6707305908203125,
+            10.32659912109375,
+            5.946822166442871
+          ],
+          "cmass_local_pose": {
+            "p": [
+              -0.4385872781276703,
+              0.06432012468576431,
+              0.31291434168815613
+            ],
+            "q": [
+              0.9991846084594727,
+              0.028118323534727097,
+              0.02894843928515911,
+              0.001283879391849041
+            ]
+          },
+          "linear_damping": 0.0,
+          "angular_damping": 0.019999999552965164,
+          "disable_gravity": true
+        },
+        {
+          "name": "link_2",
+          "mass": 8.398536682128906,
+          "inertia": [
+            0.04980671405792236,
+            0.7487777471542358,
+            0.74907386302948
+          ],
+          "cmass_local_pose": {
+            "p": [
+              -0.352640837430954,
+              0.0037868632934987545,
+              0.0015694793546572328
+            ],
+            "q": [
+              0.9999947547912598,
+              0.003242823062464595,
+              -0.0002444979327265173,
+              -1.742175527397194e-06
+            ]
+          },
+          "linear_damping": 0.0,
+          "angular_damping": 0.019999999552965164,
+          "disable_gravity": true
+        }
+      ],
+      "joints": [
+        {
+          "name": "joint_1",
+          "limits_rad": [],
+          "friction": 0.05000000074505806,
+          "damping": null,
+          "drive_mode": null,
+          "drive_target": [],
+          "drive_velocity_target": [],
+          "force_limit": null
+        },
+        {
+          "name": "joint_0",
+          "limits_rad": [
+            [
+              -0.0,
+              1.5707963705062866
+            ]
+          ],
+          "friction": 0.05000000074505806,
+          "damping": 0.0,
+          "drive_mode": "force",
+          "drive_target": [
+            0.0
+          ],
+          "drive_velocity_target": [
+            0.0
+          ],
+          "force_limit": 0.0
+        },
+        {
+          "name": "joint_2",
+          "limits_rad": [
+            [
+              -Infinity,
+              Infinity
+            ]
+          ],
+          "friction": 0.05000000074505806,
+          "damping": 0.0,
+          "drive_mode": "force",
+          "drive_target": [
+            0.0
+          ],
+          "drive_velocity_target": [
+            0.0
+          ],
+          "force_limit": 0.0
+        }
+      ]
+    }
+  },
+  "samples": {
+    "force": [
+      {
+        "time_s": 0.03333333333333333,
+        "joint_angle_rad": 0.000103109581687022,
+        "joint_angle_deg": 0.005907743858025763,
+        "joint_velocity_rad_s": 0.004791627638041973,
+        "application_point_world": [
+          0.38086438179016113,
+          0.003913849592208862,
+          0.7317352294921875
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.06666666666666667,
+        "joint_angle_rad": 0.00036590726813301444,
+        "joint_angle_deg": 0.02096494215718349,
+        "joint_velocity_rad_s": 0.009581418707966805,
+        "application_point_world": [
+          0.38088953495025635,
+          0.003913819789886475,
+          0.7317245602607727
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.1,
+        "joint_angle_rad": 0.0007883189246058464,
+        "joint_angle_deg": 0.045167347290206744,
+        "joint_velocity_rad_s": 0.014368669129908085,
+        "application_point_world": [
+          0.3809291124343872,
+          0.003914088010787964,
+          0.7317076325416565
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.13333333333333333,
+        "joint_angle_rad": 0.0013702464057132602,
+        "joint_angle_deg": 0.0785093359403405,
+        "joint_velocity_rad_s": 0.019152682274580002,
+        "application_point_world": [
+          0.3809841573238373,
+          0.003913968801498413,
+          0.7316845655441284
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.16666666666666666,
+        "joint_angle_rad": 0.0021115688141435385,
+        "joint_angle_deg": 0.12098398120186889,
+        "joint_velocity_rad_s": 0.023932738229632378,
+        "application_point_world": [
+          0.38105419278144836,
+          0.003913849592208862,
+          0.7316548228263855
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.2,
+        "joint_angle_rad": 0.003012140281498432,
+        "joint_angle_deg": 0.1725829254312079,
+        "joint_velocity_rad_s": 0.028708115220069885,
+        "application_point_world": [
+          0.38113933801651,
+          0.00391387939453125,
+          0.7316187024116516
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.23333333333333334,
+        "joint_angle_rad": 0.0040717897936701775,
+        "joint_angle_deg": 0.23329637024174546,
+        "joint_velocity_rad_s": 0.033478040248155594,
+        "application_point_world": [
+          0.3812391757965088,
+          0.00391387939453125,
+          0.7315760850906372
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.26666666666666666,
+        "joint_angle_rad": 0.0052903215400874615,
+        "joint_angle_deg": 0.3031130965141613,
+        "joint_velocity_rad_s": 0.03824174404144287,
+        "application_point_world": [
+          0.3813541829586029,
+          0.003913670778274536,
+          0.7315271496772766
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.3,
+        "joint_angle_rad": 0.006667516194283962,
+        "joint_angle_deg": 0.38202053776759964,
+        "joint_velocity_rad_s": 0.042998481541872025,
+        "application_point_world": [
+          0.38148415088653564,
+          0.003913760185241699,
+          0.7314715385437012
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.3333333333333333,
+        "joint_angle_rad": 0.00820312649011612,
+        "joint_angle_deg": 0.47000452669561804,
+        "joint_velocity_rad_s": 0.04774758964776993,
+        "application_point_world": [
+          0.38162878155708313,
+          0.003913909196853638,
+          0.731408953666687
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.36666666666666664,
+        "joint_angle_rad": 0.009896880015730858,
+        "joint_angle_deg": 0.567049455248746,
+        "joint_velocity_rad_s": 0.05248817056417465,
+        "application_point_world": [
+          0.3817884624004364,
+          0.003913968801498413,
+          0.7313400506973267
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.4,
+        "joint_angle_rad": 0.011748481541872025,
+        "joint_angle_deg": 0.673138408036617,
+        "joint_velocity_rad_s": 0.05721947178244591,
+        "application_point_world": [
+          0.38196277618408203,
+          0.00391387939453125,
+          0.7312644720077515
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.43333333333333335,
+        "joint_angle_rad": 0.013757606968283653,
+        "joint_angle_deg": 0.7882528154824251,
+        "joint_velocity_rad_s": 0.06194068491458893,
+        "application_point_world": [
+          0.38215142488479614,
+          0.003913909196853638,
+          0.7311820387840271
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.4666666666666667,
+        "joint_angle_rad": 0.01592390239238739,
+        "joint_angle_deg": 0.912372400462072,
+        "joint_velocity_rad_s": 0.06665106862783432,
+        "application_point_world": [
+          0.38235539197921753,
+          0.003913670778274536,
+          0.7310925126075745
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.5,
+        "joint_angle_rad": 0.018246997147798538,
+        "joint_angle_deg": 1.045475925356107,
+        "joint_velocity_rad_s": 0.0713498443365097,
+        "application_point_world": [
+          0.38257312774658203,
+          0.003913789987564087,
+          0.7309961318969727
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.5333333333333333,
+        "joint_angle_rad": 0.020726483315229416,
+        "joint_angle_deg": 1.187540018110964,
+        "joint_velocity_rad_s": 0.07603593915700912,
+        "application_point_world": [
+          0.38280582427978516,
+          0.0039137303829193115,
+          0.7308926582336426
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.5666666666666667,
+        "joint_angle_rad": 0.0233619287610054,
+        "joint_angle_deg": 1.338539919290902,
+        "joint_velocity_rad_s": 0.08070903271436691,
+        "application_point_world": [
+          0.3830524981021881,
+          0.003913909196853638,
+          0.7307822108268738
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.6,
+        "joint_angle_rad": 0.026152877137064934,
+        "joint_angle_deg": 1.498449482078004,
+        "joint_velocity_rad_s": 0.08536768704652786,
+        "application_point_world": [
+          0.38331371545791626,
+          0.003913938999176025,
+          0.7306645512580872
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.6333333333333333,
+        "joint_angle_rad": 0.029098834842443466,
+        "joint_angle_deg": 1.6672404252202384,
+        "joint_velocity_rad_s": 0.09001162648200989,
+        "application_point_world": [
+          0.3835887610912323,
+          0.003914058208465576,
+          0.7305395007133484
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.6666666666666666,
+        "joint_angle_rad": 0.03219929337501526,
+        "joint_angle_deg": 1.8448836136919267,
+        "joint_velocity_rad_s": 0.09463950246572495,
+        "application_point_world": [
+          0.3838779628276825,
+          0.0039140284061431885,
+          0.7304070591926575
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.7,
+        "joint_angle_rad": 0.03545369580388069,
+        "joint_angle_deg": 2.03134713770304,
+        "joint_velocity_rad_s": 0.09925057739019394,
+        "application_point_world": [
+          0.3841812312602997,
+          0.003913789987564087,
+          0.7302669882774353
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.7333333333333333,
+        "joint_angle_rad": 0.0388614758849144,
+        "joint_angle_deg": 2.226598553855021,
+        "joint_velocity_rad_s": 0.10384414345026016,
+        "application_point_world": [
+          0.3844982087612152,
+          0.003913909196853638,
+          0.7301194667816162
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.7666666666666666,
+        "joint_angle_rad": 0.04242201894521713,
+        "joint_angle_deg": 2.430602643984962,
+        "joint_velocity_rad_s": 0.10841887444257736,
+        "application_point_world": [
+          0.3848287761211395,
+          0.00391387939453125,
+          0.729964017868042
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.8,
+        "joint_angle_rad": 0.04613470286130905,
+        "joint_angle_deg": 2.6433237630431314,
+        "joint_velocity_rad_s": 0.11297419667243958,
+        "application_point_world": [
+          0.38517287373542786,
+          0.0039137303829193115,
+          0.7298004627227783
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.8333333333333334,
+        "joint_angle_rad": 0.049998849630355835,
+        "joint_angle_deg": 2.8647230643286257,
+        "joint_velocity_rad_s": 0.1175091564655304,
+        "application_point_world": [
+          0.38553062081336975,
+          0.003913849592208862,
+          0.7296290397644043
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.8666666666666667,
+        "joint_angle_rad": 0.054013751447200775,
+        "joint_angle_deg": 3.094759993593247,
+        "joint_velocity_rad_s": 0.12202248722314835,
+        "application_point_world": [
+          0.3859011232852936,
+          0.003913849592208862,
+          0.7294495105743408
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.9,
+        "joint_angle_rad": 0.058178678154945374,
+        "joint_angle_deg": 3.3333927159283294,
+        "joint_velocity_rad_s": 0.1265135109424591,
+        "application_point_world": [
+          0.3862851858139038,
+          0.003913819789886475,
+          0.729261577129364
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.9333333333333333,
+        "joint_angle_rad": 0.062492888420820236,
+        "joint_angle_deg": 3.5805787560949716,
+        "joint_velocity_rad_s": 0.13098135590553284,
+        "application_point_world": [
+          0.38668182492256165,
+          0.003913968801498413,
+          0.7290653586387634
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 0.9666666666666667,
+        "joint_angle_rad": 0.06695565581321716,
+        "joint_angle_deg": 3.836276492627919,
+        "joint_velocity_rad_s": 0.13542459905147552,
+        "application_point_world": [
+          0.38709142804145813,
+          0.003913760185241699,
+          0.7288606762886047
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.0,
+        "joint_angle_rad": 0.07156597077846527,
+        "joint_angle_deg": 4.1004280823626384,
+        "joint_velocity_rad_s": 0.13984228670597076,
+        "application_point_world": [
+          0.387513667345047,
+          0.003913760185241699,
+          0.7286474704742432
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.0333333333333332,
+        "joint_angle_rad": 0.0763230174779892,
+        "joint_angle_deg": 4.372986781191997,
+        "joint_velocity_rad_s": 0.1442328840494156,
+        "application_point_world": [
+          0.387948215007782,
+          0.003913700580596924,
+          0.728425145149231
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.0666666666666667,
+        "joint_angle_rad": 0.08122588694095612,
+        "joint_angle_deg": 4.6539005089235745,
+        "joint_velocity_rad_s": 0.14859500527381897,
+        "application_point_world": [
+          0.38839492201805115,
+          0.003913938999176025,
+          0.7281938195228577
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.1,
+        "joint_angle_rad": 0.08627364784479141,
+        "joint_angle_deg": 4.943115904704479,
+        "joint_velocity_rad_s": 0.1529283970594406,
+        "application_point_world": [
+          0.38885393738746643,
+          0.003913849592208862,
+          0.7279532551765442
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.1333333333333333,
+        "joint_angle_rad": 0.09146521240472794,
+        "joint_angle_deg": 5.240570643058534,
+        "joint_velocity_rad_s": 0.15723203122615814,
+        "application_point_world": [
+          0.3893243074417114,
+          0.003913909196853638,
+          0.7277034521102905
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.1666666666666667,
+        "joint_angle_rad": 0.09679970145225525,
+        "joint_angle_deg": 5.546214351340612,
+        "joint_velocity_rad_s": 0.16150446236133575,
+        "application_point_world": [
+          0.38980647921562195,
+          0.003913849592208862,
+          0.7274444699287415
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.2,
+        "joint_angle_rad": 0.1022760197520256,
+        "joint_angle_deg": 5.859984277187712,
+        "joint_velocity_rad_s": 0.16574391722679138,
+        "application_point_world": [
+          0.39030036330223083,
+          0.003913849592208862,
+          0.7271760106086731
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.2333333333333334,
+        "joint_angle_rad": 0.10789302736520767,
+        "joint_angle_deg": 6.181815106915896,
+        "joint_velocity_rad_s": 0.16994991898536682,
+        "application_point_world": [
+          0.39080485701560974,
+          0.0039140284061431885,
+          0.726897656917572
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.2666666666666666,
+        "joint_angle_rad": 0.11364962160587311,
+        "joint_angle_deg": 6.511643661275342,
+        "joint_velocity_rad_s": 0.1741206794977188,
+        "application_point_world": [
+          0.39132052659988403,
+          0.0039137303829193115,
+          0.726609468460083
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.3,
+        "joint_angle_rad": 0.11954457312822342,
+        "joint_angle_deg": 6.849399503940235,
+        "joint_velocity_rad_s": 0.17825518548488617,
+        "application_point_world": [
+          0.391846626996994,
+          0.003913998603820801,
+          0.726311206817627
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.3333333333333333,
+        "joint_angle_rad": 0.12557661533355713,
+        "joint_angle_deg": 7.195010064150642,
+        "joint_velocity_rad_s": 0.18235212564468384,
+        "application_point_world": [
+          0.3923832178115845,
+          0.00391387939453125,
+          0.7260026335716248
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.3666666666666667,
+        "joint_angle_rad": 0.1317443996667862,
+        "joint_angle_deg": 7.548398075391578,
+        "joint_velocity_rad_s": 0.18640993535518646,
+        "application_point_world": [
+          0.392930269241333,
+          0.003913998603820801,
+          0.725684404373169
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.4,
+        "joint_angle_rad": 0.138046994805336,
+        "joint_angle_deg": 7.909510176810152,
+        "joint_velocity_rad_s": 0.19042743742465973,
+        "application_point_world": [
+          0.3934870958328247,
+          0.003913849592208862,
+          0.7253552079200745
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.4333333333333333,
+        "joint_angle_rad": 0.1444825679063797,
+        "joint_angle_deg": 8.278241354247875,
+        "joint_velocity_rad_s": 0.19440323114395142,
+        "application_point_world": [
+          0.39405325055122375,
+          0.003914058208465576,
+          0.72501540184021
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.4666666666666666,
+        "joint_angle_rad": 0.15104983747005463,
+        "joint_angle_deg": 8.65451818317117,
+        "joint_velocity_rad_s": 0.1983359158039093,
+        "application_point_world": [
+          0.39462897181510925,
+          0.003913760185241699,
+          0.7246653437614441
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.5,
+        "joint_angle_rad": 0.15774740278720856,
+        "joint_angle_deg": 9.038260408857289,
+        "joint_velocity_rad_s": 0.2022237330675125,
+        "application_point_world": [
+          0.3952135741710663,
+          0.003913819789886475,
+          0.7243040204048157
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.5333333333333332,
+        "joint_angle_rad": 0.16457363963127136,
+        "joint_angle_deg": 9.429374969978792,
+        "joint_velocity_rad_s": 0.20606538653373718,
+        "application_point_world": [
+          0.3958069980144501,
+          0.0039137303829193115,
+          0.7239316701889038
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.5666666666666667,
+        "joint_angle_rad": 0.17152701318264008,
+        "joint_angle_deg": 9.82777392785011,
+        "joint_velocity_rad_s": 0.2098594754934311,
+        "application_point_world": [
+          0.39640894532203674,
+          0.0039136409759521484,
+          0.7235487699508667
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.6,
+        "joint_angle_rad": 0.1786060929298401,
+        "joint_angle_deg": 10.23337532020121,
+        "joint_velocity_rad_s": 0.21360431611537933,
+        "application_point_world": [
+          0.39701902866363525,
+          0.00391387939453125,
+          0.7231544256210327
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.6333333333333333,
+        "joint_angle_rad": 0.18580903112888336,
+        "joint_angle_deg": 10.646073279099951,
+        "joint_velocity_rad_s": 0.21729843318462372,
+        "application_point_world": [
+          0.3976365029811859,
+          0.003913998603820801,
+          0.7227485179901123
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.6666666666666667,
+        "joint_angle_rad": 0.19313403964042664,
+        "joint_angle_deg": 11.065765351708786,
+        "joint_velocity_rad_s": 0.22094036638736725,
+        "application_point_world": [
+          0.3982618749141693,
+          0.003913998603820801,
+          0.7223315834999084
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.7,
+        "joint_angle_rad": 0.200579434633255,
+        "joint_angle_deg": 11.492355061605688,
+        "joint_velocity_rad_s": 0.22452808916568756,
+        "application_point_world": [
+          0.3988942503929138,
+          0.003913968801498413,
+          0.7219028472900391
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.7333333333333334,
+        "joint_angle_rad": 0.208143413066864,
+        "joint_angle_deg": 11.925739102179458,
+        "joint_velocity_rad_s": 0.22806042432785034,
+        "application_point_world": [
+          0.39953336119651794,
+          0.003913938999176025,
+          0.7214623689651489
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.7666666666666666,
+        "joint_angle_rad": 0.2158239781856537,
+        "joint_angle_deg": 12.365803067761503,
+        "joint_velocity_rad_s": 0.23153534531593323,
+        "application_point_world": [
+          0.4001789689064026,
+          0.003914058208465576,
+          0.7210102081298828
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.8,
+        "joint_angle_rad": 0.22361919283866882,
+        "joint_angle_deg": 12.812435967777807,
+        "joint_velocity_rad_s": 0.234951451420784,
+        "application_point_world": [
+          0.4008304476737976,
+          0.003914207220077515,
+          0.720546543598175
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.8333333333333333,
+        "joint_angle_rad": 0.23152737319469452,
+        "joint_angle_deg": 13.265541325806344,
+        "joint_velocity_rad_s": 0.23830673098564148,
+        "application_point_world": [
+          0.4014877378940582,
+          0.003913968801498413,
+          0.7200706601142883
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.8666666666666667,
+        "joint_angle_rad": 0.23954617977142334,
+        "joint_angle_deg": 13.724985099384652,
+        "joint_velocity_rad_s": 0.24159979820251465,
+        "application_point_world": [
+          0.4021507799625397,
+          0.003913789987564087,
+          0.7195829153060913
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.9,
+        "joint_angle_rad": 0.24767358601093292,
+        "joint_angle_deg": 14.190651175296843,
+        "joint_velocity_rad_s": 0.2448287308216095,
+        "application_point_world": [
+          0.40281811356544495,
+          0.003914237022399902,
+          0.719083309173584
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.9333333333333333,
+        "joint_angle_rad": 0.255907267332077,
+        "joint_angle_deg": 14.6624063648541,
+        "joint_velocity_rad_s": 0.2479916661977768,
+        "application_point_world": [
+          0.4034903645515442,
+          0.003913819789886475,
+          0.7185715436935425
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 1.9666666666666666,
+        "joint_angle_rad": 0.2642453908920288,
+        "joint_angle_deg": 15.140145653897935,
+        "joint_velocity_rad_s": 0.2510868310928345,
+        "application_point_world": [
+          0.4041668772697449,
+          0.00391387939453125,
+          0.718047559261322
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.0,
+        "joint_angle_rad": 0.27268531918525696,
+        "joint_angle_deg": 15.62371792449296,
+        "joint_velocity_rad_s": 0.2541123330593109,
+        "application_point_world": [
+          0.4048474133014679,
+          0.003913700580596924,
+          0.717511773109436
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.033333333333333,
+        "joint_angle_rad": 0.28122469782829285,
+        "joint_angle_deg": 16.11298828040307,
+        "joint_velocity_rad_s": 0.25706642866134644,
+        "application_point_world": [
+          0.4055308699607849,
+          0.003913819789886475,
+          0.7169635891914368
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.0666666666666664,
+        "joint_angle_rad": 0.2898608446121216,
+        "joint_angle_deg": 16.607803042371934,
+        "joint_velocity_rad_s": 0.25994741916656494,
+        "application_point_world": [
+          0.4062172472476959,
+          0.003913998603820801,
+          0.7164030075073242
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.1,
+        "joint_angle_rad": 0.2985917925834656,
+        "joint_angle_deg": 17.108049512278253,
+        "joint_velocity_rad_s": 0.26275354623794556,
+        "application_point_world": [
+          0.40690648555755615,
+          0.003913909196853638,
+          0.7158308029174805
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.1333333333333333,
+        "joint_angle_rad": 0.3074150085449219,
+        "joint_angle_deg": 17.61358254860216,
+        "joint_velocity_rad_s": 0.26548269391059875,
+        "application_point_world": [
+          0.4075978696346283,
+          0.003913700580596924,
+          0.7152463793754578
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.1666666666666665,
+        "joint_angle_rad": 0.3163277804851532,
+        "joint_angle_deg": 18.124246764540043,
+        "joint_velocity_rad_s": 0.2681328356266022,
+        "application_point_world": [
+          0.40829092264175415,
+          0.003913998603820801,
+          0.7146496176719666
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.2,
+        "joint_angle_rad": 0.32532745599746704,
+        "joint_angle_deg": 18.639890188382864,
+        "joint_velocity_rad_s": 0.2707025110721588,
+        "application_point_world": [
+          0.4089851379394531,
+          0.00391387939453125,
+          0.7140405178070068
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.2333333333333334,
+        "joint_angle_rad": 0.33441123366355896,
+        "joint_angle_deg": 19.160352310685127,
+        "joint_velocity_rad_s": 0.27318936586380005,
+        "application_point_world": [
+          0.40968057513237,
+          0.003913938999176025,
+          0.7134199142456055
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.2666666666666666,
+        "joint_angle_rad": 0.3435763120651245,
+        "joint_angle_deg": 19.68547262200134,
+        "joint_velocity_rad_s": 0.2755923271179199,
+        "application_point_world": [
+          0.4103761911392212,
+          0.003913968801498413,
+          0.7127872705459595
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.3,
+        "joint_angle_rad": 0.3528203070163727,
+        "joint_angle_deg": 20.215114518548102,
+        "joint_velocity_rad_s": 0.2779090106487274,
+        "application_point_world": [
+          0.41107234358787537,
+          0.003914058208465576,
+          0.7121428847312927
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.3333333333333335,
+        "joint_angle_rad": 0.362139493227005,
+        "joint_angle_deg": 20.749064556913847,
+        "joint_velocity_rad_s": 0.28013673424720764,
+        "application_point_world": [
+          0.4117676615715027,
+          0.003913849592208862,
+          0.7114866375923157
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.3666666666666667,
+        "joint_angle_rad": 0.3715313971042633,
+        "joint_angle_deg": 21.2871810106733,
+        "joint_velocity_rad_s": 0.2822745442390442,
+        "application_point_world": [
+          0.4124624729156494,
+          0.003913760185241699,
+          0.7108187079429626
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.4,
+        "joint_angle_rad": 0.38099268078804016,
+        "joint_angle_deg": 21.829272634529705,
+        "joint_velocity_rad_s": 0.2843203842639923,
+        "application_point_world": [
+          0.41315576434135437,
+          0.003913968801498413,
+          0.7101391553878784
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.433333333333333,
+        "joint_angle_rad": 0.3905206024646759,
+        "joint_angle_deg": 22.375182334132145,
+        "joint_velocity_rad_s": 0.28627222776412964,
+        "application_point_world": [
+          0.4138478636741638,
+          0.003914058208465576,
+          0.709448516368866
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.466666666666667,
+        "joint_angle_rad": 0.40011173486709595,
+        "joint_angle_deg": 22.924713741541982,
+        "joint_velocity_rad_s": 0.28812849521636963,
+        "application_point_world": [
+          0.4145375192165375,
+          0.0039137303829193115,
+          0.7087463140487671
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.5,
+        "joint_angle_rad": 0.4097629189491272,
+        "joint_angle_deg": 23.477685856746213,
+        "joint_velocity_rad_s": 0.2898871898651123,
+        "application_point_world": [
+          0.4152248501777649,
+          0.003913581371307373,
+          0.7080333232879639
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.533333333333333,
+        "joint_angle_rad": 0.41947096586227417,
+        "joint_angle_deg": 24.03391597218454,
+        "joint_velocity_rad_s": 0.2915460169315338,
+        "application_point_world": [
+          0.4159091114997864,
+          0.003913819789886475,
+          0.7073096036911011
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.5666666666666664,
+        "joint_angle_rad": 0.4292323887348175,
+        "joint_angle_deg": 24.593204304823743,
+        "joint_velocity_rad_s": 0.2931038439273834,
+        "application_point_world": [
+          0.4165897071361542,
+          0.003913998603820801,
+          0.7065749168395996
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.6,
+        "joint_angle_rad": 0.43904393911361694,
+        "joint_angle_deg": 25.155364732008938,
+        "joint_velocity_rad_s": 0.29455873370170593,
+        "application_point_world": [
+          0.4172671139240265,
+          0.003913700580596924,
+          0.7058296203613281
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.6333333333333333,
+        "joint_angle_rad": 0.4489020109176636,
+        "joint_angle_deg": 25.720190640517725,
+        "joint_velocity_rad_s": 0.29590848088264465,
+        "application_point_world": [
+          0.4179401397705078,
+          0.0039140284061431885,
+          0.7050748467445374
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.6666666666666665,
+        "joint_angle_rad": 0.4588032364845276,
+        "joint_angle_deg": 26.28748907750606,
+        "joint_velocity_rad_s": 0.2971516251564026,
+        "application_point_world": [
+          0.4186086058616638,
+          0.00391387939453125,
+          0.7043098211288452
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.7,
+        "joint_angle_rad": 0.46874403953552246,
+        "joint_angle_deg": 26.85705513729884,
+        "joint_velocity_rad_s": 0.29828670620918274,
+        "application_point_world": [
+          0.4192720055580139,
+          0.00391387939453125,
+          0.7035349607467651
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.7333333333333334,
+        "joint_angle_rad": 0.47872036695480347,
+        "joint_angle_deg": 27.42865659346428,
+        "joint_velocity_rad_s": 0.29931163787841797,
+        "application_point_world": [
+          0.41993004083633423,
+          0.00391387939453125,
+          0.7027508020401001
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.7666666666666666,
+        "joint_angle_rad": 0.4887288808822632,
+        "joint_angle_deg": 28.002102200705625,
+        "joint_velocity_rad_s": 0.30022531747817993,
+        "application_point_world": [
+          0.420582115650177,
+          0.00391387939453125,
+          0.7019574642181396
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.8,
+        "joint_angle_rad": 0.4987657070159912,
+        "joint_angle_deg": 28.57716997787485,
+        "joint_velocity_rad_s": 0.3010258078575134,
+        "application_point_world": [
+          0.42122846841812134,
+          0.003913849592208862,
+          0.7011555433273315
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.8333333333333335,
+        "joint_angle_rad": 0.5088271498680115,
+        "joint_angle_deg": 29.15364818910768,
+        "joint_velocity_rad_s": 0.3017110526561737,
+        "application_point_world": [
+          0.42186784744262695,
+          0.003913789987564087,
+          0.700344979763031
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.8666666666666667,
+        "joint_angle_rad": 0.5189090371131897,
+        "joint_angle_deg": 29.73129777778317,
+        "joint_velocity_rad_s": 0.3022814393043518,
+        "application_point_world": [
+          0.4225005507469177,
+          0.003913909196853638,
+          0.6995265483856201
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.9,
+        "joint_angle_rad": 0.5290080904960632,
+        "joint_angle_deg": 30.30993091369914,
+        "joint_velocity_rad_s": 0.3027341067790985,
+        "application_point_world": [
+          0.42312565445899963,
+          0.003913909196853638,
+          0.6987001299858093
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.933333333333333,
+        "joint_angle_rad": 0.5391199588775635,
+        "joint_angle_deg": 30.889298294950887,
+        "joint_velocity_rad_s": 0.30306780338287354,
+        "application_point_world": [
+          0.4237436056137085,
+          0.003913819789886475,
+          0.6978664994239807
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 2.966666666666667,
+        "joint_angle_rad": 0.5492408275604248,
+        "joint_angle_deg": 31.469181355484967,
+        "joint_velocity_rad_s": 0.30328112840652466,
+        "application_point_world": [
+          0.4243534803390503,
+          0.003914058208465576,
+          0.6970260739326477
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.0,
+        "joint_angle_rad": 0.5593665242195129,
+        "joint_angle_deg": 32.04934103868044,
+        "joint_velocity_rad_s": 0.30337193608283997,
+        "application_point_world": [
+          0.42495501041412354,
+          0.003913998603820801,
+          0.6961788535118103
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.033333333333333,
+        "joint_angle_rad": 0.5694928765296936,
+        "joint_angle_deg": 32.62953828791634,
+        "joint_velocity_rad_s": 0.3033408522605896,
+        "application_point_world": [
+          0.4255484640598297,
+          0.003913849592208862,
+          0.6953258514404297
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.0666666666666664,
+        "joint_angle_rad": 0.579616129398346,
+        "joint_angle_deg": 33.20955795223382,
+        "joint_velocity_rad_s": 0.3031858801841736,
+        "application_point_world": [
+          0.42613255977630615,
+          0.003913909196853638,
+          0.6944671273231506
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.1,
+        "joint_angle_rad": 0.5897319912910461,
+        "joint_angle_deg": 33.78915414482277,
+        "joint_velocity_rad_s": 0.30290576815605164,
+        "application_point_world": [
+          0.42670753598213196,
+          0.003913968801498413,
+          0.6936025619506836
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.1333333333333333,
+        "joint_angle_rad": 0.599835991859436,
+        "joint_angle_deg": 34.36807073358929,
+        "joint_velocity_rad_s": 0.30249959230422974,
+        "application_point_world": [
+          0.4272732734680176,
+          0.00391387939453125,
+          0.6927339434623718
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.1666666666666665,
+        "joint_angle_rad": 0.6099241971969604,
+        "joint_angle_deg": 34.94608232229079,
+        "joint_velocity_rad_s": 0.3019665777683258,
+        "application_point_world": [
+          0.4278291165828705,
+          0.003913938999176025,
+          0.6918606758117676
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.2,
+        "joint_angle_rad": 0.619992196559906,
+        "joint_angle_deg": 35.52293619392797,
+        "joint_velocity_rad_s": 0.30130618810653687,
+        "application_point_world": [
+          0.428375244140625,
+          0.003914058208465576,
+          0.690983772277832
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.2333333333333334,
+        "joint_angle_rad": 0.6300359964370728,
+        "joint_angle_deg": 36.09840353716364,
+        "joint_velocity_rad_s": 0.30051735043525696,
+        "application_point_world": [
+          0.4289112389087677,
+          0.003913998603820801,
+          0.6901035308837891
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.2666666666666666,
+        "joint_angle_rad": 0.6400510668754578,
+        "joint_angle_deg": 36.67222480480934,
+        "joint_velocity_rad_s": 0.299599826335907,
+        "application_point_world": [
+          0.42943671345710754,
+          0.003913909196853638,
+          0.6892205476760864
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.3,
+        "joint_angle_rad": 0.6500332355499268,
+        "joint_angle_deg": 37.24416094024411,
+        "joint_velocity_rad_s": 0.2985523045063019,
+        "application_point_world": [
+          0.42995184659957886,
+          0.003913670778274536,
+          0.6883352398872375
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.3333333333333335,
+        "joint_angle_rad": 0.6599782109260559,
+        "joint_angle_deg": 37.81396605665784,
+        "joint_velocity_rad_s": 0.2973749339580536,
+        "application_point_world": [
+          0.4304562211036682,
+          0.003913760185241699,
+          0.6874481439590454
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.3666666666666667,
+        "joint_angle_rad": 0.6698813438415527,
+        "joint_angle_deg": 38.381373776672895,
+        "joint_velocity_rad_s": 0.29606711864471436,
+        "application_point_world": [
+          0.4309493899345398,
+          0.003913968801498413,
+          0.6865594387054443
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.4,
+        "joint_angle_rad": 0.6797385215759277,
+        "joint_angle_deg": 38.946148458762906,
+        "joint_velocity_rad_s": 0.2946285605430603,
+        "application_point_world": [
+          0.43143174052238464,
+          0.003913998603820801,
+          0.6856703758239746
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.433333333333333,
+        "joint_angle_rad": 0.6895453929901123,
+        "joint_angle_deg": 39.50804080102318,
+        "joint_velocity_rad_s": 0.2930589020252228,
+        "application_point_world": [
+          0.4319031238555908,
+          0.003913700580596924,
+          0.6847814917564392
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.466666666666667,
+        "joint_angle_rad": 0.6992973685264587,
+        "joint_angle_deg": 40.06678784117065,
+        "joint_velocity_rad_s": 0.29135844111442566,
+        "application_point_world": [
+          0.43236252665519714,
+          0.003913968801498413,
+          0.6838924884796143
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.5,
+        "joint_angle_rad": 0.7089903354644775,
+        "joint_angle_deg": 40.62215393767897,
+        "joint_velocity_rad_s": 0.28952673077583313,
+        "application_point_world": [
+          0.43281126022338867,
+          0.003913938999176025,
+          0.6830047965049744
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.533333333333333,
+        "joint_angle_rad": 0.7186198830604553,
+        "joint_angle_deg": 41.173886373548854,
+        "joint_velocity_rad_s": 0.28756389021873474,
+        "application_point_world": [
+          0.43324804306030273,
+          0.003913938999176025,
+          0.6821185946464539
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.5666666666666664,
+        "joint_angle_rad": 0.7281815409660339,
+        "joint_angle_deg": 41.7217290166864,
+        "joint_velocity_rad_s": 0.28547045588493347,
+        "application_point_world": [
+          0.4336733818054199,
+          0.0039140284061431885,
+          0.6812343597412109
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.6,
+        "joint_angle_rad": 0.7376712560653687,
+        "joint_angle_deg": 42.26544964065985,
+        "joint_velocity_rad_s": 0.2832464575767517,
+        "application_point_world": [
+          0.43408724665641785,
+          0.003913849592208862,
+          0.6803529262542725
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.6333333333333333,
+        "joint_angle_rad": 0.7470844388008118,
+        "joint_angle_deg": 42.804785283186156,
+        "joint_velocity_rad_s": 0.2808922231197357,
+        "application_point_world": [
+          0.43448948860168457,
+          0.003913909196853638,
+          0.6794750094413757
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.6666666666666665,
+        "joint_angle_rad": 0.7564166784286499,
+        "joint_angle_deg": 43.339483227266015,
+        "joint_velocity_rad_s": 0.2784082293510437,
+        "application_point_world": [
+          0.4348802864551544,
+          0.003913849592208862,
+          0.6786008477210999
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.6999999999999997,
+        "joint_angle_rad": 0.7656636834144592,
+        "joint_angle_deg": 43.869297586089324,
+        "joint_velocity_rad_s": 0.27579501271247864,
+        "application_point_world": [
+          0.43525922298431396,
+          0.003913819789886475,
+          0.6777307987213135
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.7333333333333334,
+        "joint_angle_rad": 0.7748212814331055,
+        "joint_angle_deg": 44.39398930303512,
+        "joint_velocity_rad_s": 0.27305349707603455,
+        "application_point_world": [
+          0.435626357793808,
+          0.00391387939453125,
+          0.676865816116333
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.7666666666666666,
+        "joint_angle_rad": 0.7838851809501648,
+        "joint_angle_deg": 44.91331249129328,
+        "joint_velocity_rad_s": 0.27018389105796814,
+        "application_point_world": [
+          0.43598243594169617,
+          0.003913760185241699,
+          0.6760066747665405
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.8,
+        "joint_angle_rad": 0.7928511500358582,
+        "joint_angle_deg": 45.42702467914828,
+        "joint_velocity_rad_s": 0.2671876549720764,
+        "application_point_world": [
+          0.43632638454437256,
+          0.00391387939453125,
+          0.6751532554626465
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.8333333333333335,
+        "joint_angle_rad": 0.8017148375511169,
+        "joint_angle_deg": 45.93487656469541,
+        "joint_velocity_rad_s": 0.2640655040740967,
+        "application_point_world": [
+          0.4366593360900879,
+          0.0039141178131103516,
+          0.6743069291114807
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.8666666666666667,
+        "joint_angle_rad": 0.8104722499847412,
+        "joint_angle_deg": 46.43663933659747,
+        "joint_velocity_rad_s": 0.26081836223602295,
+        "application_point_world": [
+          0.43698081374168396,
+          0.003913760185241699,
+          0.6734679937362671
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.9,
+        "joint_angle_rad": 0.8191189765930176,
+        "joint_angle_deg": 46.93206027785518,
+        "joint_velocity_rad_s": 0.2574475109577179,
+        "application_point_world": [
+          0.43729084730148315,
+          0.003913789987564087,
+          0.6726364493370056
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.933333333333333,
+        "joint_angle_rad": 0.8276510238647461,
+        "joint_angle_deg": 47.42091057713133,
+        "joint_velocity_rad_s": 0.253954142332077,
+        "application_point_world": [
+          0.43758973479270935,
+          0.003913611173629761,
+          0.6718137264251709
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 3.966666666666667,
+        "joint_angle_rad": 0.8360645174980164,
+        "joint_angle_deg": 47.902968253277905,
+        "joint_velocity_rad_s": 0.25033971667289734,
+        "application_point_world": [
+          0.4378778338432312,
+          0.003913909196853638,
+          0.6710000038146973
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "time_s": 4.0,
+        "joint_angle_rad": 0.8443554639816284,
+        "joint_angle_deg": 48.37800449495771,
+        "joint_velocity_rad_s": 0.24660533666610718,
+        "application_point_world": [
+          0.4381546080112457,
+          0.003913968801498413,
+          0.670195460319519
+        ],
+        "applied_force_world": [
+          50.0,
+          0.0,
+          0.0
+        ]
+      }
+    ]
+  }
+}

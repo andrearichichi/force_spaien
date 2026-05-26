@@ -1,179 +1,205 @@
 {
   "metadata": {
-    "model_dir": "/teamspace/studios/this_studio/45384",
-    "video_output": "/teamspace/studios/this_studio/outputs/45384_output/final_video.mp4",
-    "fps": 30,
-    "seconds": 4.0,
-    "end_hold_seconds": 2.0,
-    "video_duration_seconds": 6.0,
-    "timestep_s": 0.004166666666666667,
-    "initial_angle_rad": 0.0,
-    "initial_angle_deg": 0.0,
-    "joint": "joint_0",
-    "link": "link_0",
-    "force_magnitude_n": 0.5,
-    "closing_force_magnitude_n": 0.5,
-    "opening_direction_world": [
-      -1.0,
-      0.0,
-      0.0
-    ],
-    "closing_direction_world": [
-      1.0,
-      -0.0,
-      -0.0
-    ],
-    "application_point_strategy": "center of handle mesh on selected link",
-    "application_point_local_on_screen": [
-      -0.7541781067848206,
-      -0.4453360438346863,
-      0.038426488637924194
-    ],
-    "joint_limits_rad": [
-      [
-        0.0,
-        1.5833626985549927
-      ]
-    ],
-    "physics": {
-      "urdf_joint_dynamics": {},
-      "urdf_joint_dynamics_present": false,
-      "separate_static_dynamic_friction_present": false,
-      "air_friction_model_present": false,
-      "link_linear_damping_set_to": 0.0,
-      "link_angular_damping_set_to": 0.02,
-      "joint_drive_stiffness_damping_force_limit_set_to": [
-        0.0,
-        0.0,
-        0.0
+    "schema_version": 3,
+    "pipeline": {
+      "mode": "render"
+    },
+    "object": {
+      "model_dir": "/teamspace/studios/this_studio/dataset/45384",
+      "joint_type": "revolute",
+      "joint": "joint_0",
+      "link": "link_0"
+    },
+    "output": {
+      "json_output": "/teamspace/studios/this_studio/outputs/45384_output/simulation.json",
+      "video_output": "/teamspace/studios/this_studio/outputs/45384_output/final_video.mp4"
+    },
+    "timing": {
+      "fps": 30,
+      "requested_seconds": 4.0,
+      "simulated_seconds": 4.0,
+      "sample_interval_s": 0.03333333333333333,
+      "timestep_s": 0.004166666666666667,
+      "end_hold_seconds": 2.0,
+      "video_duration_seconds": 6.0
+    },
+    "actuation": {
+      "initial_joint_position": {
+        "rad": 0.0,
+        "deg": 0.0
+      },
+      "force": {
+        "magnitude_n": 0.5,
+        "direction_world": [
+          -1.0,
+          0.0,
+          0.0
+        ]
+      },
+      "joint_limits_rad": [
+        [
+          0.0,
+          1.5833626985549927
+        ]
       ]
     },
-    "links": [
-      {
-        "name": "base",
-        "mass": 9.999999974752427e-07,
-        "inertia": [
-          9.999999974752427e-07,
-          9.999999974752427e-07,
-          9.999999974752427e-07
-        ],
-        "cmass_local_pose": {
-          "p": [
-            0.0,
-            0.0,
+    "application_point": {
+      "strategy": "center of handle mesh on selected link",
+      "local_on_link": [
+        -0.7541781067848206,
+        -0.4453360438346863,
+        0.038426488637924194
+      ]
+    },
+    "summary": {
+      "physics_step_count": 960,
+      "total_sample_count": 120,
+      "sample_series": {
+        "force": {
+          "sample_count": 120,
+          "initial_joint_angle_rad": 0.0,
+          "final_joint_angle_rad": 0.7137761116027832,
+          "delta_joint_angle_rad": 0.7137761116027832,
+          "max_abs_joint_velocity_rad_s": 0.3303040564060211,
+          "time_of_max_abs_joint_velocity_s": 4.0,
+          "initial_joint_angle_deg": 0.0,
+          "final_joint_angle_deg": 40.896358712098305,
+          "delta_joint_angle_deg": 40.896358712098305
+        }
+      }
+    },
+    "physics": {
+      "urdf_joint_dynamics": null,
+      "uses_separate_static_dynamic_friction": false,
+      "uses_air_friction_model": false,
+      "overrides": {
+        "link_linear_damping": 0.0,
+        "link_angular_damping": 0.02,
+        "joint_drive": {
+          "stiffness": 0.0,
+          "damping": 0.0,
+          "force_limit": 0.0
+        }
+      }
+    },
+    "articulation": {
+      "links": [
+        {
+          "name": "base",
+          "mass": 9.999999974752427e-07,
+          "inertia": [
+            9.999999974752427e-07,
+            9.999999974752427e-07,
+            9.999999974752427e-07
+          ],
+          "cmass_local_pose": {
+            "p": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "q": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "linear_damping": 0.0,
+          "angular_damping": 0.019999999552965164,
+          "disable_gravity": true
+        },
+        {
+          "name": "link_1",
+          "mass": 98.96427154541016,
+          "inertia": [
+            34.7215690612793,
+            25.095157623291016,
+            33.68227005004883
+          ],
+          "cmass_local_pose": {
+            "p": [
+              0.004015276208519936,
+              -0.06601718813180923,
+              -0.054564666002988815
+            ],
+            "q": [
+              0.9974831342697144,
+              0.07087622582912445,
+              0.001997146522626281,
+              -0.00010659229155862704
+            ]
+          },
+          "linear_damping": 0.0,
+          "angular_damping": 0.019999999552965164,
+          "disable_gravity": true
+        },
+        {
+          "name": "link_0",
+          "mass": 16.691787719726562,
+          "inertia": [
+            1.4518963098526,
+            1.1602905988693237,
+            2.608835220336914
+          ],
+          "cmass_local_pose": {
+            "p": [
+              -0.39869529008865356,
+              -0.7711267471313477,
+              0.002002270892262459
+            ],
+            "q": [
+              0.9995645880699158,
+              0.0005042182165198028,
+              0.0006521910545416176,
+              0.029497802257537842
+            ]
+          },
+          "linear_damping": 0.0,
+          "angular_damping": 0.019999999552965164,
+          "disable_gravity": true
+        }
+      ],
+      "joints": [
+        {
+          "name": "joint_1",
+          "limits_rad": [],
+          "friction": 0.05000000074505806,
+          "damping": null,
+          "drive_mode": null,
+          "drive_target": [],
+          "drive_velocity_target": [],
+          "force_limit": null
+        },
+        {
+          "name": "joint_0",
+          "limits_rad": [
+            [
+              0.0,
+              1.5833626985549927
+            ]
+          ],
+          "friction": 0.05000000074505806,
+          "damping": 0.0,
+          "drive_mode": "force",
+          "drive_target": [
             0.0
           ],
-          "q": [
-            1.0,
-            0.0,
-            0.0,
+          "drive_velocity_target": [
             0.0
-          ]
-        },
-        "linear_damping": 0.0,
-        "angular_damping": 0.019999999552965164,
-        "disable_gravity": true
-      },
-      {
-        "name": "link_1",
-        "mass": 98.96427154541016,
-        "inertia": [
-          34.7215690612793,
-          25.095157623291016,
-          33.68227005004883
-        ],
-        "cmass_local_pose": {
-          "p": [
-            0.004015276208519936,
-            -0.06601718813180923,
-            -0.054564666002988815
           ],
-          "q": [
-            0.9974831342697144,
-            0.07087622582912445,
-            0.001997146522626281,
-            -0.00010659229155862704
-          ]
-        },
-        "linear_damping": 0.0,
-        "angular_damping": 0.019999999552965164,
-        "disable_gravity": true
-      },
-      {
-        "name": "link_0",
-        "mass": 16.691787719726562,
-        "inertia": [
-          1.4518963098526,
-          1.1602905988693237,
-          2.608835220336914
-        ],
-        "cmass_local_pose": {
-          "p": [
-            -0.39869529008865356,
-            -0.7711267471313477,
-            0.002002270892262459
-          ],
-          "q": [
-            0.9995645880699158,
-            0.0005042182165198028,
-            0.0006521910545416176,
-            0.029497802257537842
-          ]
-        },
-        "linear_damping": 0.0,
-        "angular_damping": 0.019999999552965164,
-        "disable_gravity": true
-      }
-    ],
-    "joints": [
-      {
-        "name": "",
-        "limits_rad": [],
-        "friction": 0.0,
-        "damping": null,
-        "drive_mode": null,
-        "drive_target": [],
-        "drive_velocity_target": [],
-        "force_limit": null
-      },
-      {
-        "name": "joint_1",
-        "limits_rad": [],
-        "friction": 0.05000000074505806,
-        "damping": null,
-        "drive_mode": null,
-        "drive_target": [],
-        "drive_velocity_target": [],
-        "force_limit": null
-      },
-      {
-        "name": "joint_0",
-        "limits_rad": [
-          [
-            0.0,
-            1.5833626985549927
-          ]
-        ],
-        "friction": 0.05000000074505806,
-        "damping": 0.0,
-        "drive_mode": "force",
-        "drive_target": [
-          0.0
-        ],
-        "drive_velocity_target": [
-          0.0
-        ],
-        "force_limit": 0.0
-      }
-    ]
+          "force_limit": 0.0
+        }
+      ]
+    }
   },
   "samples": {
-    "opening_force": [
+    "force": [
       {
-        "time_s": 0.0,
-        "hinge_angle_rad": 5.912665801588446e-05,
-        "hinge_angle_deg": 0.0033877079610235374,
-        "hinge_velocity_rad_s": 0.0031356702093034983,
+        "time_s": 0.03333333333333333,
+        "joint_angle_rad": 5.912665801588446e-05,
+        "joint_angle_deg": 0.0033877079610235374,
+        "joint_velocity_rad_s": 0.0031356702093034983,
         "application_point_world": [
           -0.5418445467948914,
           0.3545066714286804,
@@ -186,10 +212,10 @@
         ]
       },
       {
-        "time_s": 0.03333333333333333,
-        "hinge_angle_rad": 0.00022276457457337528,
-        "hinge_angle_deg": 0.012763469948081694,
-        "hinge_velocity_rad_s": 0.006270754616707563,
+        "time_s": 0.06666666666666667,
+        "joint_angle_rad": 0.00022276457457337528,
+        "joint_angle_deg": 0.012763469948081694,
+        "joint_velocity_rad_s": 0.006270754616707563,
         "application_point_world": [
           -0.5419681668281555,
           0.3545004427433014,
@@ -202,10 +228,10 @@
         ]
       },
       {
-        "time_s": 0.06666666666666667,
-        "hinge_angle_rad": 0.0004908942501060665,
-        "hinge_angle_deg": 0.028126168718317072,
-        "hinge_velocity_rad_s": 0.009405254386365414,
+        "time_s": 0.1,
+        "joint_angle_rad": 0.0004908942501060665,
+        "joint_angle_deg": 0.028126168718317072,
+        "joint_velocity_rad_s": 0.009405254386365414,
         "application_point_world": [
           -0.5421703457832336,
           0.354489803314209,
@@ -218,10 +244,10 @@
         ]
       },
       {
-        "time_s": 0.1,
-        "hinge_angle_rad": 0.0008634950499981642,
-        "hinge_angle_deg": 0.04947462199533281,
-        "hinge_velocity_rad_s": 0.012539122253656387,
+        "time_s": 0.13333333333333333,
+        "joint_angle_rad": 0.0008634950499981642,
+        "joint_angle_deg": 0.04947462199533281,
+        "joint_velocity_rad_s": 0.012539122253656387,
         "application_point_world": [
           -0.5424512028694153,
           0.35447534918785095,
@@ -234,10 +260,10 @@
         ]
       },
       {
-        "time_s": 0.13333333333333333,
-        "hinge_angle_rad": 0.0013405460631474853,
-        "hinge_angle_deg": 0.07680763166122885,
-        "hinge_velocity_rad_s": 0.015672342851758003,
+        "time_s": 0.16666666666666666,
+        "joint_angle_rad": 0.0013405460631474853,
+        "joint_angle_deg": 0.07680763166122885,
+        "joint_velocity_rad_s": 0.015672342851758003,
         "application_point_world": [
           -0.54281085729599,
           0.3544568121433258,
@@ -250,10 +276,10 @@
         ]
       },
       {
-        "time_s": 0.16666666666666666,
-        "hinge_angle_rad": 0.0019220254616811872,
-        "hinge_angle_deg": 0.11012394707101555,
-        "hinge_velocity_rad_s": 0.018804900348186493,
+        "time_s": 0.2,
+        "joint_angle_rad": 0.0019220254616811872,
+        "joint_angle_deg": 0.11012394707101555,
+        "joint_velocity_rad_s": 0.018804900348186493,
         "application_point_world": [
           -0.5432494878768921,
           0.35443365573883057,
@@ -266,10 +292,10 @@
         ]
       },
       {
-        "time_s": 0.2,
-        "hinge_angle_rad": 0.002607910428196192,
-        "hinge_angle_deg": 0.14942226088379712,
-        "hinge_velocity_rad_s": 0.021936772391200066,
+        "time_s": 0.23333333333333334,
+        "joint_angle_rad": 0.002607910428196192,
+        "joint_angle_deg": 0.14942226088379712,
+        "joint_velocity_rad_s": 0.021936772391200066,
         "application_point_world": [
           -0.5437667369842529,
           0.3544061481952667,
@@ -282,10 +308,10 @@
         ]
       },
       {
-        "time_s": 0.23333333333333334,
-        "hinge_angle_rad": 0.003398178843781352,
-        "hinge_angle_deg": 0.19470130577931735,
-        "hinge_velocity_rad_s": 0.02506798319518566,
+        "time_s": 0.26666666666666666,
+        "joint_angle_rad": 0.003398178843781352,
+        "joint_angle_deg": 0.19470130577931735,
+        "joint_velocity_rad_s": 0.02506798319518566,
         "application_point_world": [
           -0.5443628430366516,
           0.3543739318847656,
@@ -298,10 +324,10 @@
         ]
       },
       {
-        "time_s": 0.26666666666666666,
-        "hinge_angle_rad": 0.0042928061448037624,
-        "hinge_angle_deg": 0.24595967436508132,
-        "hinge_velocity_rad_s": 0.02819840982556343,
+        "time_s": 0.3,
+        "joint_angle_rad": 0.0042928061448037624,
+        "joint_angle_deg": 0.24595967436508132,
+        "joint_velocity_rad_s": 0.02819840982556343,
         "application_point_world": [
           -0.5450372099876404,
           0.3543369174003601,
@@ -314,10 +340,10 @@
         ]
       },
       {
-        "time_s": 0.3,
-        "hinge_angle_rad": 0.0052917650900781155,
-        "hinge_angle_deg": 0.3031958058361419,
-        "hinge_velocity_rad_s": 0.031328052282333374,
+        "time_s": 0.3333333333333333,
+        "joint_angle_rad": 0.0052917650900781155,
+        "joint_angle_deg": 0.3031958058361419,
+        "joint_velocity_rad_s": 0.031328052282333374,
         "application_point_world": [
           -0.5457903742790222,
           0.35429492592811584,
@@ -330,10 +356,10 @@
         ]
       },
       {
-        "time_s": 0.3333333333333333,
-        "hinge_angle_rad": 0.006395032629370689,
-        "hinge_angle_deg": 0.3664083795113901,
-        "hinge_velocity_rad_s": 0.0344570092856884,
+        "time_s": 0.36666666666666664,
+        "joint_angle_rad": 0.006395032629370689,
+        "joint_angle_deg": 0.3664083795113901,
+        "joint_velocity_rad_s": 0.0344570092856884,
         "application_point_world": [
           -0.5466220378875732,
           0.3542478084564209,
@@ -346,10 +372,10 @@
         ]
       },
       {
-        "time_s": 0.36666666666666664,
-        "hinge_angle_rad": 0.007602584082633257,
-        "hinge_angle_deg": 0.4355959813282243,
-        "hinge_velocity_rad_s": 0.03758511319756508,
+        "time_s": 0.4,
+        "joint_angle_rad": 0.007602584082633257,
+        "joint_angle_deg": 0.4355959813282243,
+        "joint_velocity_rad_s": 0.03758511319756508,
         "application_point_world": [
           -0.5475326776504517,
           0.35419487953186035,
@@ -362,10 +388,10 @@
         ]
       },
       {
-        "time_s": 0.4,
-        "hinge_angle_rad": 0.00891438964754343,
-        "hinge_angle_deg": 0.510756903739352,
-        "hinge_velocity_rad_s": 0.04071234166622162,
+        "time_s": 0.43333333333333335,
+        "joint_angle_rad": 0.00891438964754343,
+        "joint_angle_deg": 0.510756903739352,
+        "joint_velocity_rad_s": 0.04071234166622162,
         "application_point_world": [
           -0.5485215187072754,
           0.35413628816604614,
@@ -378,10 +404,10 @@
         ]
       },
       {
-        "time_s": 0.43333333333333335,
-        "hinge_angle_rad": 0.010330419056117535,
-        "hinge_angle_deg": 0.5918894125170543,
-        "hinge_velocity_rad_s": 0.04383866488933563,
+        "time_s": 0.4666666666666667,
+        "joint_angle_rad": 0.010330419056117535,
+        "joint_angle_deg": 0.5918894125170543,
+        "joint_velocity_rad_s": 0.04383866488933563,
         "application_point_world": [
           -0.5495887398719788,
           0.35407185554504395,
@@ -394,10 +420,10 @@
         ]
       },
       {
-        "time_s": 0.4666666666666667,
-        "hinge_angle_rad": 0.011850636452436447,
-        "hinge_angle_deg": 0.6789914532684947,
-        "hinge_velocity_rad_s": 0.04696373641490936,
+        "time_s": 0.5,
+        "joint_angle_rad": 0.011850636452436447,
+        "joint_angle_deg": 0.6789914532684947,
+        "joint_velocity_rad_s": 0.04696373641490936,
         "application_point_world": [
           -0.5507344603538513,
           0.35400065779685974,
@@ -410,10 +436,10 @@
         ]
       },
       {
-        "time_s": 0.5,
-        "hinge_angle_rad": 0.013475003652274609,
-        "hinge_angle_deg": 0.772060838198705,
-        "hinge_velocity_rad_s": 0.05008785054087639,
+        "time_s": 0.5333333333333333,
+        "joint_angle_rad": 0.013475003652274609,
+        "joint_angle_deg": 0.772060838198705,
+        "joint_velocity_rad_s": 0.05008785054087639,
         "application_point_world": [
           -0.5519589781761169,
           0.3539225161075592,
@@ -426,10 +452,10 @@
         ]
       },
       {
-        "time_s": 0.5333333333333333,
-        "hinge_angle_rad": 0.015203490853309631,
-        "hinge_angle_deg": 0.8710958597603925,
-        "hinge_velocity_rad_s": 0.05321097373962402,
+        "time_s": 0.5666666666666667,
+        "joint_angle_rad": 0.015203490853309631,
+        "joint_angle_deg": 0.8710958597603925,
+        "joint_velocity_rad_s": 0.05321097373962402,
         "application_point_world": [
           -0.5532611012458801,
           0.3538375198841095,
@@ -442,10 +468,10 @@
         ]
       },
       {
-        "time_s": 0.5666666666666667,
-        "hinge_angle_rad": 0.017036056146025658,
-        "hinge_angle_deg": 0.9760941167151771,
-        "hinge_velocity_rad_s": 0.056332748383283615,
+        "time_s": 0.6,
+        "joint_angle_rad": 0.017036056146025658,
+        "joint_angle_deg": 0.9760941167151771,
+        "joint_velocity_rad_s": 0.056332748383283615,
         "application_point_world": [
           -0.5546420812606812,
           0.35374483466148376,
@@ -458,10 +484,10 @@
         ]
       },
       {
-        "time_s": 0.6,
-        "hinge_angle_rad": 0.018972663208842278,
-        "hinge_angle_deg": 1.0870535279897962,
-        "hinge_velocity_rad_s": 0.05945330485701561,
+        "time_s": 0.6333333333333333,
+        "joint_angle_rad": 0.018972663208842278,
+        "joint_angle_deg": 1.0870535279897962,
+        "joint_velocity_rad_s": 0.05945330485701561,
         "application_point_world": [
           -0.5561009049415588,
           0.35364416241645813,
@@ -474,10 +500,10 @@
         ]
       },
       {
-        "time_s": 0.6333333333333333,
-        "hinge_angle_rad": 0.021013258025050163,
-        "hinge_angle_deg": 1.203970998654782,
-        "hinge_velocity_rad_s": 0.06257256865501404,
+        "time_s": 0.6666666666666666,
+        "joint_angle_rad": 0.021013258025050163,
+        "joint_angle_deg": 1.203970998654782,
+        "joint_velocity_rad_s": 0.06257256865501404,
         "application_point_world": [
           -0.5576380491256714,
           0.35353508591651917,
@@ -490,10 +516,10 @@
         ]
       },
       {
-        "time_s": 0.6666666666666666,
-        "hinge_angle_rad": 0.02315780334174633,
-        "hinge_angle_deg": 1.3268443942760186,
-        "hinge_velocity_rad_s": 0.06569025665521622,
+        "time_s": 0.7,
+        "joint_angle_rad": 0.02315780334174633,
+        "joint_angle_deg": 1.3268443942760186,
+        "joint_velocity_rad_s": 0.06569025665521622,
         "application_point_world": [
           -0.5592535138130188,
           0.3534168601036072,
@@ -506,10 +532,10 @@
         ]
       },
       {
-        "time_s": 0.7,
-        "hinge_angle_rad": 0.0254062470048666,
-        "hinge_angle_deg": 1.455670726645745,
-        "hinge_velocity_rad_s": 0.06880661845207214,
+        "time_s": 0.7333333333333333,
+        "joint_angle_rad": 0.0254062470048666,
+        "joint_angle_deg": 1.455670726645745,
+        "joint_velocity_rad_s": 0.06880661845207214,
         "application_point_world": [
           -0.5609464645385742,
           0.35328924655914307,
@@ -522,10 +548,10 @@
         ]
       },
       {
-        "time_s": 0.7333333333333333,
-        "hinge_angle_rad": 0.027758536860346794,
-        "hinge_angle_deg": 1.5904470075561983,
-        "hinge_velocity_rad_s": 0.07192110270261765,
+        "time_s": 0.7666666666666666,
+        "joint_angle_rad": 0.027758536860346794,
+        "joint_angle_deg": 1.5904470075561983,
+        "joint_velocity_rad_s": 0.07192110270261765,
         "application_point_world": [
           -0.5627174377441406,
           0.3531515896320343,
@@ -538,10 +564,10 @@
         ]
       },
       {
-        "time_s": 0.7666666666666667,
-        "hinge_angle_rad": 0.030214611440896988,
-        "hinge_angle_deg": 1.7311697151910883,
-        "hinge_velocity_rad_s": 0.07503384351730347,
+        "time_s": 0.8,
+        "joint_angle_rad": 0.030214611440896988,
+        "joint_angle_deg": 1.7311697151910883,
+        "joint_velocity_rad_s": 0.07503384351730347,
         "application_point_world": [
           -0.5645663142204285,
           0.3530036211013794,
@@ -554,10 +580,10 @@
         ]
       },
       {
-        "time_s": 0.8,
-        "hinge_angle_rad": 0.032774418592453,
-        "hinge_angle_deg": 1.8778358613426531,
-        "hinge_velocity_rad_s": 0.07814472168684006,
+        "time_s": 0.8333333333333334,
+        "joint_angle_rad": 0.032774418592453,
+        "joint_angle_deg": 1.8778358613426531,
+        "joint_velocity_rad_s": 0.07814472168684006,
         "application_point_world": [
           -0.5664926171302795,
           0.35284459590911865,
@@ -570,10 +596,10 @@
         ]
       },
       {
-        "time_s": 0.8333333333333334,
-        "hinge_angle_rad": 0.03543787822127342,
-        "hinge_angle_deg": 2.030440856977544,
-        "hinge_velocity_rad_s": 0.08125359565019608,
+        "time_s": 0.8666666666666667,
+        "joint_angle_rad": 0.03543787822127342,
+        "joint_angle_deg": 2.030440856977544,
+        "joint_velocity_rad_s": 0.08125359565019608,
         "application_point_world": [
           -0.5684967637062073,
           0.35267406702041626,
@@ -586,10 +612,10 @@
         ]
       },
       {
-        "time_s": 0.8666666666666667,
-        "hinge_angle_rad": 0.03820493072271347,
-        "hinge_angle_deg": 2.188981287001176,
-        "hinge_velocity_rad_s": 0.08436032384634018,
+        "time_s": 0.9,
+        "joint_angle_rad": 0.03820493072271347,
+        "joint_angle_deg": 2.188981287001176,
+        "joint_velocity_rad_s": 0.08436032384634018,
         "application_point_world": [
           -0.5705783367156982,
           0.3524908125400543,
@@ -602,10 +628,10 @@
         ]
       },
       {
-        "time_s": 0.9,
-        "hinge_angle_rad": 0.04107549041509628,
-        "hinge_angle_deg": 2.353452242215083,
-        "hinge_velocity_rad_s": 0.08746478706598282,
+        "time_s": 0.9333333333333333,
+        "joint_angle_rad": 0.04107549041509628,
+        "joint_angle_deg": 2.353452242215083,
+        "joint_velocity_rad_s": 0.08746478706598282,
         "application_point_world": [
           -0.5727370977401733,
           0.3522948920726776,
@@ -618,10 +644,10 @@
         ]
       },
       {
-        "time_s": 0.9333333333333333,
-        "hinge_angle_rad": 0.044049493968486786,
-        "hinge_angle_deg": 2.5238500940812685,
-        "hinge_velocity_rad_s": 0.09056674689054489,
+        "time_s": 0.9666666666666667,
+        "joint_angle_rad": 0.044049493968486786,
+        "joint_angle_deg": 2.5238500940812685,
+        "joint_velocity_rad_s": 0.09056674689054489,
         "application_point_world": [
           -0.5749732255935669,
           0.35208505392074585,
@@ -634,10 +660,10 @@
         ]
       },
       {
-        "time_s": 0.9666666666666667,
-        "hinge_angle_rad": 0.047126851975917816,
-        "hinge_angle_deg": 2.7001697199578554,
-        "hinge_velocity_rad_s": 0.09366606920957565,
+        "time_s": 1.0,
+        "joint_angle_rad": 0.047126851975917816,
+        "joint_angle_deg": 2.7001697199578554,
+        "joint_velocity_rad_s": 0.09366606920957565,
         "application_point_world": [
           -0.5772861838340759,
           0.35186120867729187,
@@ -650,10 +676,10 @@
         ]
       },
       {
-        "time_s": 1.0,
-        "hinge_angle_rad": 0.05030747875571251,
-        "hinge_angle_deg": 2.882406210646377,
-        "hinge_velocity_rad_s": 0.09676269441843033,
+        "time_s": 1.0333333333333332,
+        "joint_angle_rad": 0.05030747875571251,
+        "joint_angle_deg": 2.882406210646377,
+        "joint_velocity_rad_s": 0.09676269441843033,
         "application_point_world": [
           -0.5796763896942139,
           0.3516223728656769,
@@ -666,10 +692,10 @@
         ]
       },
       {
-        "time_s": 1.0333333333333334,
-        "hinge_angle_rad": 0.05359125882387161,
-        "hinge_angle_deg": 3.0705529494010753,
-        "hinge_velocity_rad_s": 0.09985630959272385,
+        "time_s": 1.0666666666666667,
+        "joint_angle_rad": 0.05359125882387161,
+        "joint_angle_deg": 3.0705529494010753,
+        "joint_velocity_rad_s": 0.09985630959272385,
         "application_point_world": [
           -0.58214271068573,
           0.3513680100440979,
@@ -682,10 +708,10 @@
         ]
       },
       {
-        "time_s": 1.0666666666666667,
-        "hinge_angle_rad": 0.05697810649871826,
-        "hinge_angle_deg": 3.2646050270234848,
-        "hinge_velocity_rad_s": 0.10294683277606964,
+        "time_s": 1.1,
+        "joint_angle_rad": 0.05697810649871826,
+        "joint_angle_deg": 3.2646050270234848,
+        "joint_velocity_rad_s": 0.10294683277606964,
         "application_point_world": [
           -0.5846862196922302,
           0.3510966897010803,
@@ -698,10 +724,10 @@
         ]
       },
       {
-        "time_s": 1.1,
-        "hinge_angle_rad": 0.0604679211974144,
-        "hinge_angle_deg": 3.464556680541492,
-        "hinge_velocity_rad_s": 0.1060340479016304,
+        "time_s": 1.1333333333333333,
+        "joint_angle_rad": 0.0604679211974144,
+        "joint_angle_deg": 3.464556680541492,
+        "joint_velocity_rad_s": 0.1060340479016304,
         "application_point_world": [
           -0.5873057842254639,
           0.3508082330226898,
@@ -714,10 +740,10 @@
         ]
       },
       {
-        "time_s": 1.1333333333333333,
-        "hinge_angle_rad": 0.06406058371067047,
-        "hinge_angle_deg": 3.6704010797659286,
-        "hinge_velocity_rad_s": 0.1091177836060524,
+        "time_s": 1.1666666666666667,
+        "joint_angle_rad": 0.06406058371067047,
+        "joint_angle_deg": 3.6704010797659286,
+        "joint_velocity_rad_s": 0.1091177836060524,
         "application_point_world": [
           -0.5900011658668518,
           0.350502073764801,
@@ -730,10 +756,10 @@
         ]
       },
       {
-        "time_s": 1.1666666666666667,
-        "hinge_angle_rad": 0.06775597482919693,
-        "hinge_angle_deg": 3.882131394507623,
-        "hinge_velocity_rad_s": 0.1121978759765625,
+        "time_s": 1.2,
+        "joint_angle_rad": 0.06775597482919693,
+        "joint_angle_deg": 3.882131394507623,
+        "joint_velocity_rad_s": 0.1121978759765625,
         "application_point_world": [
           -0.5927727818489075,
           0.3501768112182617,
@@ -746,10 +772,10 @@
         ]
       },
       {
-        "time_s": 1.2,
-        "hinge_angle_rad": 0.07155396044254303,
-        "hinge_angle_deg": 4.09973994080376,
-        "hinge_velocity_rad_s": 0.11527399718761444,
+        "time_s": 1.2333333333333334,
+        "joint_angle_rad": 0.07155396044254303,
+        "joint_angle_deg": 4.09973994080376,
+        "joint_velocity_rad_s": 0.11527399718761444,
         "application_point_world": [
           -0.5956202745437622,
           0.3498317301273346,
@@ -762,10 +788,10 @@
         ]
       },
       {
-        "time_s": 1.2333333333333334,
-        "hinge_angle_rad": 0.07545441389083862,
-        "hinge_angle_deg": 4.323219461578346,
-        "hinge_velocity_rad_s": 0.11834606528282166,
+        "time_s": 1.2666666666666666,
+        "joint_angle_rad": 0.07545441389083862,
+        "joint_angle_deg": 4.323219461578346,
+        "joint_velocity_rad_s": 0.11834606528282166,
         "application_point_world": [
           -0.5985426902770996,
           0.3494662046432495,
@@ -778,10 +804,10 @@
         ]
       },
       {
-        "time_s": 1.2666666666666666,
-        "hinge_angle_rad": 0.07945719361305237,
-        "hinge_angle_deg": 4.552561845981741,
-        "hinge_velocity_rad_s": 0.12141382694244385,
+        "time_s": 1.3,
+        "joint_angle_rad": 0.07945719361305237,
+        "joint_angle_deg": 4.552561845981741,
+        "joint_velocity_rad_s": 0.12141382694244385,
         "application_point_world": [
           -0.6015406847000122,
           0.34907934069633484,
@@ -794,10 +820,10 @@
         ]
       },
       {
-        "time_s": 1.3,
-        "hinge_angle_rad": 0.08356214314699173,
-        "hinge_angle_deg": 4.787758129390661,
-        "hinge_velocity_rad_s": 0.12447702884674072,
+        "time_s": 1.3333333333333333,
+        "joint_angle_rad": 0.08356214314699173,
+        "joint_angle_deg": 4.787758129390661,
+        "joint_velocity_rad_s": 0.12447702884674072,
         "application_point_world": [
           -0.6046134829521179,
           0.34867000579833984,
@@ -810,10 +836,10 @@
         ]
       },
       {
-        "time_s": 1.3333333333333333,
-        "hinge_angle_rad": 0.08776912838220596,
-        "hinge_angle_deg": 5.028800627842289,
-        "hinge_velocity_rad_s": 0.12753555178642273,
+        "time_s": 1.3666666666666667,
+        "joint_angle_rad": 0.08776912838220596,
+        "joint_angle_deg": 5.028800627842289,
+        "joint_velocity_rad_s": 0.12753555178642273,
         "application_point_world": [
           -0.6077606678009033,
           0.3482377827167511,
@@ -826,10 +852,10 @@
         ]
       },
       {
-        "time_s": 1.3666666666666667,
-        "hinge_angle_rad": 0.09207796305418015,
-        "hinge_angle_deg": 5.275678669166046,
-        "hinge_velocity_rad_s": 0.13058923184871674,
+        "time_s": 1.4,
+        "joint_angle_rad": 0.09207796305418015,
+        "joint_angle_deg": 5.275678669166046,
+        "joint_velocity_rad_s": 0.13058923184871674,
         "application_point_world": [
           -0.6109822988510132,
           0.3477810323238373,
@@ -842,10 +868,10 @@
         ]
       },
       {
-        "time_s": 1.4,
-        "hinge_angle_rad": 0.09648851305246353,
-        "hinge_angle_deg": 5.528384569399116,
-        "hinge_velocity_rad_s": 0.13363762199878693,
+        "time_s": 1.4333333333333333,
+        "joint_angle_rad": 0.09648851305246353,
+        "joint_angle_deg": 5.528384569399116,
+        "joint_velocity_rad_s": 0.13363762199878693,
         "application_point_world": [
           -0.6142778396606445,
           0.3472990095615387,
@@ -858,10 +884,10 @@
         ]
       },
       {
-        "time_s": 1.4333333333333333,
-        "hinge_angle_rad": 0.10100056231021881,
-        "hinge_angle_deg": 5.786905948823629,
-        "hinge_velocity_rad_s": 0.13668063282966614,
+        "time_s": 1.4666666666666666,
+        "joint_angle_rad": 0.10100056231021881,
+        "joint_angle_deg": 5.786905948823629,
+        "joint_velocity_rad_s": 0.13668063282966614,
         "application_point_world": [
           -0.6176469922065735,
           0.3467911183834076,
@@ -874,10 +900,10 @@
         ]
       },
       {
-        "time_s": 1.4666666666666666,
-        "hinge_angle_rad": 0.10561395436525345,
-        "hinge_angle_deg": 6.0512338428163,
-        "hinge_velocity_rad_s": 0.1397179365158081,
+        "time_s": 1.5,
+        "joint_angle_rad": 0.10561395436525345,
+        "joint_angle_deg": 6.0512338428163,
+        "joint_velocity_rad_s": 0.1397179365158081,
         "application_point_world": [
           -0.6210897564888,
           0.34625571966171265,
@@ -890,10 +916,10 @@
         ]
       },
       {
-        "time_s": 1.5,
-        "hinge_angle_rad": 0.11032848805189133,
-        "hinge_angle_deg": 6.321356725432903,
-        "hinge_velocity_rad_s": 0.14274945855140686,
+        "time_s": 1.5333333333333332,
+        "joint_angle_rad": 0.11032848805189133,
+        "joint_angle_deg": 6.321356725432903,
+        "joint_velocity_rad_s": 0.14274945855140686,
         "application_point_world": [
           -0.6246050596237183,
           0.34569251537323,
@@ -906,10 +932,10 @@
         ]
       },
       {
-        "time_s": 1.5333333333333334,
-        "hinge_angle_rad": 0.11514396220445633,
-        "hinge_angle_deg": 6.597263070729214,
-        "hinge_velocity_rad_s": 0.14577490091323853,
+        "time_s": 1.5666666666666667,
+        "joint_angle_rad": 0.11514396220445633,
+        "joint_angle_deg": 6.597263070729214,
+        "joint_velocity_rad_s": 0.14577490091323853,
         "application_point_world": [
           -0.6281927824020386,
           0.34510016441345215,
@@ -922,10 +948,10 @@
         ]
       },
       {
-        "time_s": 1.5666666666666667,
-        "hinge_angle_rad": 0.12006016820669174,
-        "hinge_angle_deg": 6.878940925874186,
-        "hinge_velocity_rad_s": 0.14879398047924042,
+        "time_s": 1.6,
+        "joint_angle_rad": 0.12006016820669174,
+        "joint_angle_deg": 6.878940925874186,
+        "joint_velocity_rad_s": 0.14879398047924042,
         "application_point_world": [
           -0.6318528652191162,
           0.34447741508483887,
@@ -938,10 +964,10 @@
         ]
       },
       {
-        "time_s": 1.6,
-        "hinge_angle_rad": 0.12507691979408264,
-        "hinge_angle_deg": 7.166379618697241,
-        "hinge_velocity_rad_s": 0.15180638432502747,
+        "time_s": 1.6333333333333333,
+        "joint_angle_rad": 0.12507691979408264,
+        "joint_angle_deg": 7.166379618697241,
+        "joint_velocity_rad_s": 0.15180638432502747,
         "application_point_world": [
           -0.6355844736099243,
           0.34382364153862,
@@ -954,10 +980,10 @@
         ]
       },
       {
-        "time_s": 1.6333333333333333,
-        "hinge_angle_rad": 0.13019391894340515,
-        "hinge_angle_deg": 7.459562073725453,
-        "hinge_velocity_rad_s": 0.15481214225292206,
+        "time_s": 1.6666666666666667,
+        "joint_angle_rad": 0.13019391894340515,
+        "joint_angle_deg": 7.459562073725453,
+        "joint_velocity_rad_s": 0.15481214225292206,
         "application_point_world": [
           -0.6393871903419495,
           0.343137264251709,
@@ -970,10 +996,10 @@
         ]
       },
       {
-        "time_s": 1.6666666666666667,
-        "hinge_angle_rad": 0.13541097939014435,
-        "hinge_angle_deg": 7.758477618788246,
-        "hinge_velocity_rad_s": 0.157810777425766,
+        "time_s": 1.7,
+        "joint_angle_rad": 0.13541097939014435,
+        "joint_angle_deg": 7.758477618788246,
+        "joint_velocity_rad_s": 0.157810777425766,
         "application_point_world": [
           -0.6432604193687439,
           0.3424175977706909,
@@ -986,10 +1012,10 @@
         ]
       },
       {
-        "time_s": 1.7,
-        "hinge_angle_rad": 0.1407279223203659,
-        "hinge_angle_deg": 8.063116008601861,
-        "hinge_velocity_rad_s": 0.16080215573310852,
+        "time_s": 1.7333333333333334,
+        "joint_angle_rad": 0.1407279223203659,
+        "joint_angle_deg": 8.063116008601861,
+        "joint_velocity_rad_s": 0.16080215573310852,
         "application_point_world": [
           -0.6472039222717285,
           0.34166350960731506,
@@ -1002,10 +1028,10 @@
         ]
       },
       {
-        "time_s": 1.7333333333333334,
-        "hinge_angle_rad": 0.14614440500736237,
-        "hinge_angle_deg": 8.373457606372439,
-        "hinge_velocity_rad_s": 0.16378580033779144,
+        "time_s": 1.7666666666666666,
+        "joint_angle_rad": 0.14614440500736237,
+        "joint_angle_deg": 8.373457606372439,
+        "joint_velocity_rad_s": 0.16378580033779144,
         "application_point_world": [
           -0.6512172818183899,
           0.3408733904361725,
@@ -1018,10 +1044,10 @@
         ]
       },
       {
-        "time_s": 1.7666666666666666,
-        "hinge_angle_rad": 0.15166020393371582,
-        "hinge_angle_deg": 8.689489605495282,
-        "hinge_velocity_rad_s": 0.16676172614097595,
+        "time_s": 1.8,
+        "joint_angle_rad": 0.15166020393371582,
+        "joint_angle_deg": 8.689489605495282,
+        "joint_velocity_rad_s": 0.16676172614097595,
         "application_point_world": [
           -0.6552998423576355,
           0.34004682302474976,
@@ -1034,10 +1060,10 @@
         ]
       },
       {
-        "time_s": 1.8,
-        "hinge_angle_rad": 0.15727506577968597,
-        "hinge_angle_deg": 9.011197491818406,
-        "hinge_velocity_rad_s": 0.16972942650318146,
+        "time_s": 1.8333333333333333,
+        "joint_angle_rad": 0.15727506577968597,
+        "joint_angle_deg": 9.011197491818406,
+        "joint_velocity_rad_s": 0.16972942650318146,
         "application_point_world": [
           -0.659450888633728,
           0.3391817808151245,
@@ -1050,10 +1076,10 @@
         ]
       },
       {
-        "time_s": 1.8333333333333333,
-        "hinge_angle_rad": 0.16298869252204895,
-        "hinge_angle_deg": 9.338564189868887,
-        "hinge_velocity_rad_s": 0.17268873751163483,
+        "time_s": 1.8666666666666667,
+        "joint_angle_rad": 0.16298869252204895,
+        "joint_angle_deg": 9.338564189868887,
+        "joint_velocity_rad_s": 0.17268873751163483,
         "application_point_world": [
           -0.6636698246002197,
           0.33827826380729675,
@@ -1066,10 +1092,10 @@
         ]
       },
       {
-        "time_s": 1.8666666666666667,
-        "hinge_angle_rad": 0.16880083084106445,
-        "hinge_angle_deg": 9.671575185494735,
-        "hinge_velocity_rad_s": 0.17563949525356293,
+        "time_s": 1.9,
+        "joint_angle_rad": 0.16880083084106445,
+        "joint_angle_deg": 9.671575185494735,
+        "joint_velocity_rad_s": 0.17563949525356293,
         "application_point_world": [
           -0.6679560542106628,
           0.3373339772224426,
@@ -1082,10 +1108,10 @@
         ]
       },
       {
-        "time_s": 1.9,
-        "hinge_angle_rad": 0.1747111678123474,
-        "hinge_angle_deg": 10.010212549449383,
-        "hinge_velocity_rad_s": 0.1785813421010971,
+        "time_s": 1.9333333333333333,
+        "joint_angle_rad": 0.1747111678123474,
+        "joint_angle_deg": 10.010212549449383,
+        "joint_velocity_rad_s": 0.1785813421010971,
         "application_point_world": [
           -0.6723091006278992,
           0.33634841442108154,
@@ -1098,10 +1124,10 @@
         ]
       },
       {
-        "time_s": 1.9333333333333333,
-        "hinge_angle_rad": 0.18071940541267395,
-        "hinge_angle_deg": 10.354459206259902,
-        "hinge_velocity_rad_s": 0.18151409924030304,
+        "time_s": 1.9666666666666666,
+        "joint_angle_rad": 0.18071940541267395,
+        "joint_angle_deg": 10.354459206259902,
+        "joint_velocity_rad_s": 0.18151409924030304,
         "application_point_world": [
           -0.6767281889915466,
           0.3353201746940613,
@@ -1114,10 +1140,10 @@
         ]
       },
       {
-        "time_s": 1.9666666666666666,
-        "hinge_angle_rad": 0.186825230717659,
-        "hinge_angle_deg": 10.704297226679724,
-        "hinge_velocity_rad_s": 0.18443742394447327,
+        "time_s": 2.0,
+        "joint_angle_rad": 0.186825230717659,
+        "joint_angle_deg": 10.704297226679724,
+        "joint_velocity_rad_s": 0.18443742394447327,
         "application_point_world": [
           -0.681212842464447,
           0.33424752950668335,
@@ -1130,10 +1156,10 @@
         ]
       },
       {
-        "time_s": 2.0,
-        "hinge_angle_rad": 0.19302833080291748,
-        "hinge_angle_deg": 11.059708681462277,
-        "hinge_velocity_rad_s": 0.18735097348690033,
+        "time_s": 2.033333333333333,
+        "joint_angle_rad": 0.19302833080291748,
+        "joint_angle_deg": 11.059708681462277,
+        "joint_velocity_rad_s": 0.18735097348690033,
         "application_point_world": [
           -0.6857616901397705,
           0.3331305682659149,
@@ -1146,10 +1172,10 @@
         ]
       },
       {
-        "time_s": 2.033333333333333,
-        "hinge_angle_rad": 0.19932837784290314,
-        "hinge_angle_deg": 11.420674787587341,
-        "hinge_velocity_rad_s": 0.19025453925132751,
+        "time_s": 2.0666666666666664,
+        "joint_angle_rad": 0.19932837784290314,
+        "joint_angle_deg": 11.420674787587341,
+        "joint_velocity_rad_s": 0.19025453925132751,
         "application_point_world": [
           -0.6903749108314514,
           0.3319670855998993,
@@ -1162,10 +1188,10 @@
         ]
       },
       {
-        "time_s": 2.066666666666667,
-        "hinge_angle_rad": 0.20572501420974731,
-        "hinge_angle_deg": 11.78717505448741,
-        "hinge_velocity_rad_s": 0.1931479126214981,
+        "time_s": 2.1,
+        "joint_angle_rad": 0.20572501420974731,
+        "joint_angle_deg": 11.78717505448741,
+        "joint_velocity_rad_s": 0.1931479126214981,
         "application_point_world": [
           -0.6950509548187256,
           0.3307560682296753,
@@ -1178,10 +1204,10 @@
         ]
       },
       {
-        "time_s": 2.1,
-        "hinge_angle_rad": 0.21221791207790375,
-        "hinge_angle_deg": 12.159190699142263,
-        "hinge_velocity_rad_s": 0.19603055715560913,
+        "time_s": 2.1333333333333333,
+        "joint_angle_rad": 0.21221791207790375,
+        "joint_angle_deg": 12.159190699142263,
+        "joint_velocity_rad_s": 0.19603055715560913,
         "application_point_world": [
           -0.6997894644737244,
           0.3294961154460907,
@@ -1194,10 +1220,10 @@
         ]
       },
       {
-        "time_s": 2.1333333333333333,
-        "hinge_angle_rad": 0.2188066691160202,
-        "hinge_angle_deg": 12.536698669663453,
-        "hinge_velocity_rad_s": 0.198902428150177,
+        "time_s": 2.1666666666666665,
+        "joint_angle_rad": 0.2188066691160202,
+        "joint_angle_deg": 12.536698669663453,
+        "joint_velocity_rad_s": 0.198902428150177,
         "application_point_world": [
           -0.7045892477035522,
           0.3281862735748291,
@@ -1210,10 +1236,10 @@
         ]
       },
       {
-        "time_s": 2.1666666666666665,
-        "hinge_angle_rad": 0.2254909723997116,
-        "hinge_angle_deg": 12.919681036804407,
-        "hinge_velocity_rad_s": 0.20176315307617188,
+        "time_s": 2.2,
+        "joint_angle_rad": 0.2254909723997116,
+        "joint_angle_deg": 12.919681036804407,
+        "joint_velocity_rad_s": 0.20176315307617188,
         "application_point_world": [
           -0.7094500660896301,
           0.326824814081192,
@@ -1226,10 +1252,10 @@
         ]
       },
       {
-        "time_s": 2.2,
-        "hinge_angle_rad": 0.23227043449878693,
-        "hinge_angle_deg": 13.308115602450325,
-        "hinge_velocity_rad_s": 0.2046123445034027,
+        "time_s": 2.2333333333333334,
+        "joint_angle_rad": 0.23227043449878693,
+        "joint_angle_deg": 13.308115602450325,
+        "joint_velocity_rad_s": 0.2046123445034027,
         "application_point_world": [
           -0.7143703699111938,
           0.3254110515117645,
@@ -1242,10 +1268,10 @@
         ]
       },
       {
-        "time_s": 2.2333333333333334,
-        "hinge_angle_rad": 0.2391446828842163,
-        "hinge_angle_deg": 13.70198102226005,
-        "hinge_velocity_rad_s": 0.2074497491121292,
+        "time_s": 2.2666666666666666,
+        "joint_angle_rad": 0.2391446828842163,
+        "joint_angle_deg": 13.70198102226005,
+        "joint_velocity_rad_s": 0.2074497491121292,
         "application_point_world": [
           -0.7193499803543091,
           0.32394343614578247,
@@ -1258,10 +1284,10 @@
         ]
       },
       {
-        "time_s": 2.2666666666666666,
-        "hinge_angle_rad": 0.24611328542232513,
-        "hinge_angle_deg": 14.101252536797839,
-        "hinge_velocity_rad_s": 0.21027514338493347,
+        "time_s": 2.3,
+        "joint_angle_rad": 0.24611328542232513,
+        "joint_angle_deg": 14.101252536797839,
+        "joint_velocity_rad_s": 0.21027514338493347,
         "application_point_world": [
           -0.7243871688842773,
           0.3224208354949951,
@@ -1274,10 +1300,10 @@
         ]
       },
       {
-        "time_s": 2.3,
-        "hinge_angle_rad": 0.2531760036945343,
-        "hinge_angle_deg": 14.505916485685352,
-        "hinge_velocity_rad_s": 0.2130882740020752,
+        "time_s": 2.3333333333333335,
+        "joint_angle_rad": 0.2531760036945343,
+        "joint_angle_deg": 14.505916485685352,
+        "joint_velocity_rad_s": 0.2130882740020752,
         "application_point_world": [
           -0.7294816374778748,
           0.3208416700363159,
@@ -1290,10 +1316,10 @@
         ]
       },
       {
-        "time_s": 2.3333333333333335,
-        "hinge_angle_rad": 0.2603321075439453,
-        "hinge_angle_deg": 14.915931034013926,
-        "hinge_velocity_rad_s": 0.21588855981826782,
+        "time_s": 2.3666666666666667,
+        "joint_angle_rad": 0.2603321075439453,
+        "joint_angle_deg": 14.915931034013926,
+        "joint_velocity_rad_s": 0.21588855981826782,
         "application_point_world": [
           -0.7346317768096924,
           0.31920549273490906,
@@ -1306,10 +1332,10 @@
         ]
       },
       {
-        "time_s": 2.3666666666666667,
-        "hinge_angle_rad": 0.2675813138484955,
-        "hinge_angle_deg": 15.331279960084279,
-        "hinge_velocity_rad_s": 0.21867580711841583,
+        "time_s": 2.4,
+        "joint_angle_rad": 0.2675813138484955,
+        "joint_angle_deg": 15.331279960084279,
+        "joint_velocity_rad_s": 0.21867580711841583,
         "application_point_world": [
           -0.7398369908332825,
           0.3175102174282074,
@@ -1322,10 +1348,10 @@
         ]
       },
       {
-        "time_s": 2.4,
-        "hinge_angle_rad": 0.274923175573349,
-        "hinge_angle_deg": 15.751937650687024,
-        "hinge_velocity_rad_s": 0.22144973278045654,
+        "time_s": 2.433333333333333,
+        "joint_angle_rad": 0.274923175573349,
+        "joint_angle_deg": 15.751937650687024,
+        "joint_velocity_rad_s": 0.22144973278045654,
         "application_point_world": [
           -0.7450957894325256,
           0.3157549798488617,
@@ -1338,10 +1364,10 @@
         ]
       },
       {
-        "time_s": 2.433333333333333,
-        "hinge_angle_rad": 0.28235724568367004,
-        "hinge_angle_deg": 16.177878492612773,
-        "hinge_velocity_rad_s": 0.22421005368232727,
+        "time_s": 2.466666666666667,
+        "joint_angle_rad": 0.28235724568367004,
+        "joint_angle_deg": 16.177878492612773,
+        "joint_velocity_rad_s": 0.22421005368232727,
         "application_point_world": [
           -0.7504077553749084,
           0.3139379918575287,
@@ -1354,10 +1380,10 @@
         ]
       },
       {
-        "time_s": 2.466666666666667,
-        "hinge_angle_rad": 0.28988316655158997,
-        "hinge_angle_deg": 16.60908199529402,
-        "hinge_velocity_rad_s": 0.22695650160312653,
+        "time_s": 2.5,
+        "joint_angle_rad": 0.28988316655158997,
+        "joint_angle_deg": 16.60908199529402,
+        "joint_velocity_rad_s": 0.22695650160312653,
         "application_point_world": [
           -0.7557709813117981,
           0.31205886602401733,
@@ -1370,10 +1396,10 @@
         ]
       },
       {
-        "time_s": 2.5,
-        "hinge_angle_rad": 0.2975003719329834,
-        "hinge_angle_deg": 17.0455157153322,
-        "hinge_velocity_rad_s": 0.2296888381242752,
+        "time_s": 2.533333333333333,
+        "joint_angle_rad": 0.2975003719329834,
+        "joint_angle_deg": 17.0455157153322,
+        "joint_velocity_rad_s": 0.2296888381242752,
         "application_point_world": [
           -0.7611852884292603,
           0.31011560559272766,
@@ -1386,10 +1412,10 @@
         ]
       },
       {
-        "time_s": 2.533333333333333,
-        "hinge_angle_rad": 0.30520835518836975,
-        "hinge_angle_deg": 17.48715062442335,
-        "hinge_velocity_rad_s": 0.23240625858306885,
+        "time_s": 2.5666666666666664,
+        "joint_angle_rad": 0.30520835518836975,
+        "joint_angle_deg": 17.48715062442335,
+        "joint_velocity_rad_s": 0.23240625858306885,
         "application_point_world": [
           -0.7666485905647278,
           0.30810728669166565,
@@ -1402,10 +1428,10 @@
         ]
       },
       {
-        "time_s": 2.566666666666667,
-        "hinge_angle_rad": 0.31300660967826843,
-        "hinge_angle_deg": 17.933957694263487,
-        "hinge_velocity_rad_s": 0.23510883748531342,
+        "time_s": 2.6,
+        "joint_angle_rad": 0.31300660967826843,
+        "joint_angle_deg": 17.933957694263487,
+        "joint_velocity_rad_s": 0.23510883748531342,
         "application_point_world": [
           -0.7721598148345947,
           0.306032657623291,
@@ -1418,10 +1444,10 @@
         ]
       },
       {
-        "time_s": 2.6,
-        "hinge_angle_rad": 0.320894718170166,
-        "hinge_angle_deg": 18.385913019190525,
-        "hinge_velocity_rad_s": 0.23779626190662384,
+        "time_s": 2.6333333333333333,
+        "joint_angle_rad": 0.320894718170166,
+        "joint_angle_deg": 18.385913019190525,
+        "joint_velocity_rad_s": 0.23779626190662384,
         "application_point_world": [
           -0.7777181267738342,
           0.3038906455039978,
@@ -1434,10 +1460,10 @@
         ]
       },
       {
-        "time_s": 2.6333333333333333,
-        "hinge_angle_rad": 0.32887208461761475,
-        "hinge_angle_deg": 18.842982448258606,
-        "hinge_velocity_rad_s": 0.24046790599822998,
+        "time_s": 2.6666666666666665,
+        "joint_angle_rad": 0.32887208461761475,
+        "joint_angle_deg": 18.842982448258606,
+        "joint_velocity_rad_s": 0.24046790599822998,
         "application_point_world": [
           -0.7833220958709717,
           0.3016795516014099,
@@ -1450,10 +1476,10 @@
         ]
       },
       {
-        "time_s": 2.6666666666666665,
-        "hinge_angle_rad": 0.3369382917881012,
-        "hinge_angle_deg": 19.30514207580564,
-        "hinge_velocity_rad_s": 0.24312368035316467,
+        "time_s": 2.7,
+        "joint_angle_rad": 0.3369382917881012,
+        "joint_angle_deg": 19.30514207580564,
+        "joint_velocity_rad_s": 0.24312368035316467,
         "application_point_world": [
           -0.7889698147773743,
           0.29939866065979004,
@@ -1466,10 +1492,10 @@
         ]
       },
       {
-        "time_s": 2.7,
-        "hinge_angle_rad": 0.34509265422821045,
-        "hinge_angle_deg": 19.7723526282439,
-        "hinge_velocity_rad_s": 0.24576319754123688,
+        "time_s": 2.7333333333333334,
+        "joint_angle_rad": 0.34509265422821045,
+        "joint_angle_deg": 19.7723526282439,
+        "joint_velocity_rad_s": 0.24576319754123688,
         "application_point_world": [
           -0.7946608066558838,
           0.29704686999320984,
@@ -1482,10 +1508,10 @@
         ]
       },
       {
-        "time_s": 2.7333333333333334,
-        "hinge_angle_rad": 0.3533347249031067,
-        "hinge_angle_deg": 20.244588492364,
-        "hinge_velocity_rad_s": 0.24838587641716003,
+        "time_s": 2.7666666666666666,
+        "joint_angle_rad": 0.3533347249031067,
+        "joint_angle_deg": 20.244588492364,
+        "joint_velocity_rad_s": 0.24838587641716003,
         "application_point_world": [
           -0.8003931045532227,
           0.2946222722530365,
@@ -1498,10 +1524,10 @@
         ]
       },
       {
-        "time_s": 2.7666666666666666,
-        "hinge_angle_rad": 0.36166393756866455,
-        "hinge_angle_deg": 20.721817224767374,
-        "hinge_velocity_rad_s": 0.2509915232658386,
+        "time_s": 2.8,
+        "joint_angle_rad": 0.36166393756866455,
+        "joint_angle_deg": 20.721817224767374,
+        "joint_velocity_rad_s": 0.2509915232658386,
         "application_point_world": [
           -0.8061659336090088,
           0.29212409257888794,
@@ -1514,10 +1540,10 @@
         ]
       },
       {
-        "time_s": 2.8,
-        "hinge_angle_rad": 0.3700796663761139,
-        "hinge_angle_deg": 21.204002966960886,
-        "hinge_velocity_rad_s": 0.25357988476753235,
+        "time_s": 2.8333333333333335,
+        "joint_angle_rad": 0.3700796663761139,
+        "joint_angle_deg": 21.204002966960886,
+        "joint_velocity_rad_s": 0.25357988476753235,
         "application_point_world": [
           -0.8119769096374512,
           0.28955164551734924,
@@ -1530,10 +1556,10 @@
         ]
       },
       {
-        "time_s": 2.8333333333333335,
-        "hinge_angle_rad": 0.37858128547668457,
-        "hinge_angle_deg": 21.691109860451395,
-        "hinge_velocity_rad_s": 0.2561504542827606,
+        "time_s": 2.8666666666666667,
+        "joint_angle_rad": 0.37858128547668457,
+        "joint_angle_deg": 21.691109860451395,
+        "joint_velocity_rad_s": 0.2561504542827606,
         "application_point_world": [
           -0.817825436592102,
           0.28690284490585327,
@@ -1546,10 +1572,10 @@
         ]
       },
       {
-        "time_s": 2.8666666666666667,
-        "hinge_angle_rad": 0.3871683180332184,
-        "hinge_angle_deg": 22.183110584482215,
-        "hinge_velocity_rad_s": 0.2587028741836548,
+        "time_s": 2.9,
+        "joint_angle_rad": 0.3871683180332184,
+        "joint_angle_deg": 22.183110584482215,
+        "joint_velocity_rad_s": 0.2587028741836548,
         "application_point_world": [
           -0.8237091898918152,
           0.2841777205467224,
@@ -1562,10 +1588,10 @@
         ]
       },
       {
-        "time_s": 2.9,
-        "hinge_angle_rad": 0.3958401381969452,
-        "hinge_angle_deg": 22.679969280560208,
-        "hinge_velocity_rad_s": 0.2612367868423462,
+        "time_s": 2.933333333333333,
+        "joint_angle_rad": 0.3958401381969452,
+        "joint_angle_deg": 22.679969280560208,
+        "joint_velocity_rad_s": 0.2612367868423462,
         "application_point_world": [
           -0.8296273946762085,
           0.28137367963790894,
@@ -1578,10 +1604,10 @@
         ]
       },
       {
-        "time_s": 2.933333333333333,
-        "hinge_angle_rad": 0.4045960605144501,
-        "hinge_angle_deg": 23.181646675097646,
-        "hinge_velocity_rad_s": 0.2637518644332886,
+        "time_s": 2.966666666666667,
+        "joint_angle_rad": 0.4045960605144501,
+        "joint_angle_deg": 23.181646675097646,
+        "joint_velocity_rad_s": 0.2637518644332886,
         "application_point_world": [
           -0.8355777263641357,
           0.27849113941192627,
@@ -1594,10 +1620,10 @@
         ]
       },
       {
-        "time_s": 2.966666666666667,
-        "hinge_angle_rad": 0.4134354889392853,
-        "hinge_angle_deg": 23.688108617148675,
-        "hinge_velocity_rad_s": 0.26624786853790283,
+        "time_s": 3.0,
+        "joint_angle_rad": 0.4134354889392853,
+        "joint_angle_deg": 23.688108617148675,
+        "joint_velocity_rad_s": 0.26624786853790283,
         "application_point_world": [
           -0.8415592908859253,
           0.2755281925201416,
@@ -1610,10 +1636,10 @@
         ]
       },
       {
-        "time_s": 3.0,
-        "hinge_angle_rad": 0.4223576784133911,
-        "hinge_angle_deg": 24.199312418030985,
-        "hinge_velocity_rad_s": 0.2687240242958069,
+        "time_s": 3.033333333333333,
+        "joint_angle_rad": 0.4223576784133911,
+        "joint_angle_deg": 24.199312418030985,
+        "joint_velocity_rad_s": 0.2687240242958069,
         "application_point_world": [
           -0.8475700616836548,
           0.2724839448928833,
@@ -1626,10 +1652,10 @@
         ]
       },
       {
-        "time_s": 3.033333333333333,
-        "hinge_angle_rad": 0.43136218190193176,
-        "hinge_angle_deg": 24.71523246453519,
-        "hinge_velocity_rad_s": 0.27118030190467834,
+        "time_s": 3.0666666666666664,
+        "joint_angle_rad": 0.43136218190193176,
+        "joint_angle_deg": 24.71523246453519,
+        "joint_velocity_rad_s": 0.27118030190467834,
         "application_point_world": [
           -0.8536083698272705,
           0.26935771107673645,
@@ -1642,10 +1668,10 @@
         ]
       },
       {
-        "time_s": 3.066666666666667,
-        "hinge_angle_rad": 0.44044819474220276,
-        "hinge_angle_deg": 25.235822652884394,
-        "hinge_velocity_rad_s": 0.27361637353897095,
+        "time_s": 3.1,
+        "joint_angle_rad": 0.44044819474220276,
+        "joint_angle_deg": 25.235822652884394,
+        "joint_velocity_rad_s": 0.27361637353897095,
         "application_point_world": [
           -0.8596729636192322,
           0.2661477029323578,
@@ -1658,10 +1684,10 @@
         ]
       },
       {
-        "time_s": 3.1,
-        "hinge_angle_rad": 0.44961491227149963,
-        "hinge_angle_deg": 25.761036879301695,
-        "hinge_velocity_rad_s": 0.276031494140625,
+        "time_s": 3.1333333333333333,
+        "joint_angle_rad": 0.44961491227149963,
+        "joint_angle_deg": 25.761036879301695,
+        "joint_velocity_rad_s": 0.276031494140625,
         "application_point_world": [
           -0.8657609224319458,
           0.2628536522388458,
@@ -1674,10 +1700,10 @@
         ]
       },
       {
-        "time_s": 3.1333333333333333,
-        "hinge_angle_rad": 0.4588618576526642,
-        "hinge_angle_deg": 26.290847823030415,
-        "hinge_velocity_rad_s": 0.27842578291893005,
+        "time_s": 3.1666666666666665,
+        "joint_angle_rad": 0.4588618576526642,
+        "joint_angle_deg": 26.290847823030415,
+        "joint_velocity_rad_s": 0.27842578291893005,
         "application_point_world": [
           -0.8718716502189636,
           0.25947442650794983,
@@ -1690,10 +1716,10 @@
         ]
       },
       {
-        "time_s": 3.1666666666666665,
-        "hinge_angle_rad": 0.46818816661834717,
-        "hinge_angle_deg": 26.825205965199068,
-        "hinge_velocity_rad_s": 0.28079867362976074,
+        "time_s": 3.2,
+        "joint_angle_rad": 0.46818816661834717,
+        "joint_angle_deg": 26.825205965199068,
+        "joint_velocity_rad_s": 0.28079867362976074,
         "application_point_world": [
           -0.8780028820037842,
           0.2560090124607086,
@@ -1706,10 +1732,10 @@
         ]
       },
       {
-        "time_s": 3.2,
-        "hinge_angle_rad": 0.47759324312210083,
-        "hinge_angle_deg": 27.36407715486181,
-        "hinge_velocity_rad_s": 0.2831498682498932,
+        "time_s": 3.2333333333333334,
+        "joint_angle_rad": 0.47759324312210083,
+        "joint_angle_deg": 27.36407715486181,
+        "joint_velocity_rad_s": 0.2831498682498932,
         "application_point_world": [
           -0.884152889251709,
           0.2524567246437073,
@@ -1722,10 +1748,10 @@
         ]
       },
       {
-        "time_s": 3.2333333333333334,
-        "hinge_angle_rad": 0.4870762228965759,
-        "hinge_angle_deg": 27.907411873147154,
-        "hinge_velocity_rad_s": 0.2854786813259125,
+        "time_s": 3.2666666666666666,
+        "joint_angle_rad": 0.4870762228965759,
+        "joint_angle_deg": 27.907411873147154,
+        "joint_velocity_rad_s": 0.2854786813259125,
         "application_point_world": [
           -0.8903197050094604,
           0.24881649017333984,
@@ -1738,10 +1764,10 @@
         ]
       },
       {
-        "time_s": 3.2666666666666666,
-        "hinge_angle_rad": 0.49663668870925903,
-        "hinge_angle_deg": 28.455186214393006,
-        "hinge_velocity_rad_s": 0.28778475522994995,
+        "time_s": 3.3,
+        "joint_angle_rad": 0.49663668870925903,
+        "joint_angle_deg": 28.455186214393006,
+        "joint_velocity_rad_s": 0.28778475522994995,
         "application_point_world": [
           -0.8965017795562744,
           0.24508747458457947,
@@ -1754,10 +1780,10 @@
         ]
       },
       {
-        "time_s": 3.3,
-        "hinge_angle_rad": 0.5062735676765442,
-        "hinge_angle_deg": 29.00733870689684,
-        "hinge_velocity_rad_s": 0.2900679409503937,
+        "time_s": 3.3333333333333335,
+        "joint_angle_rad": 0.5062735676765442,
+        "joint_angle_deg": 29.00733870689684,
+        "joint_velocity_rad_s": 0.2900679409503937,
         "application_point_world": [
           -0.902696967124939,
           0.24126920104026794,
@@ -1770,10 +1796,10 @@
         ]
       },
       {
-        "time_s": 3.3333333333333335,
-        "hinge_angle_rad": 0.5159867405891418,
-        "hinge_angle_deg": 29.563862520469478,
-        "hinge_velocity_rad_s": 0.2923276126384735,
+        "time_s": 3.3666666666666667,
+        "joint_angle_rad": 0.5159867405891418,
+        "joint_angle_deg": 29.563862520469478,
+        "joint_velocity_rad_s": 0.2923276126384735,
         "application_point_world": [
           -0.9089036583900452,
           0.23736026883125305,
@@ -1786,10 +1812,10 @@
         ]
       },
       {
-        "time_s": 3.3666666666666667,
-        "hinge_angle_rad": 0.5257742404937744,
-        "hinge_angle_deg": 30.12464495698962,
-        "hinge_velocity_rad_s": 0.2945636808872223,
+        "time_s": 3.4,
+        "joint_angle_rad": 0.5257742404937744,
+        "joint_angle_deg": 30.12464495698962,
+        "joint_velocity_rad_s": 0.2945636808872223,
         "application_point_world": [
           -0.9151188135147095,
           0.23336103558540344,
@@ -1802,10 +1828,10 @@
         ]
       },
       {
-        "time_s": 3.4,
-        "hinge_angle_rad": 0.535635232925415,
-        "hinge_angle_deg": 30.689638205133072,
-        "hinge_velocity_rad_s": 0.2967757284641266,
+        "time_s": 3.433333333333333,
+        "joint_angle_rad": 0.535635232925415,
+        "joint_angle_deg": 30.689638205133072,
+        "joint_velocity_rad_s": 0.2967757284641266,
         "application_point_world": [
           -0.9213413000106812,
           0.2292696237564087,
@@ -1818,10 +1844,10 @@
         ]
       },
       {
-        "time_s": 3.433333333333333,
-        "hinge_angle_rad": 0.5455697774887085,
-        "hinge_angle_deg": 31.258845679994426,
-        "hinge_velocity_rad_s": 0.2989627420902252,
+        "time_s": 3.466666666666667,
+        "joint_angle_rad": 0.5455697774887085,
+        "joint_angle_deg": 31.258845679994426,
+        "joint_velocity_rad_s": 0.2989627420902252,
         "application_point_world": [
           -0.9275686740875244,
           0.22508648037910461,
@@ -1834,10 +1860,10 @@
         ]
       },
       {
-        "time_s": 3.466666666666667,
-        "hinge_angle_rad": 0.5555769205093384,
-        "hinge_angle_deg": 31.832212740060317,
-        "hinge_velocity_rad_s": 0.3011249601840973,
+        "time_s": 3.5,
+        "joint_angle_rad": 0.5555769205093384,
+        "joint_angle_deg": 31.832212740060317,
+        "joint_velocity_rad_s": 0.3011249601840973,
         "application_point_world": [
           -0.9337995052337646,
           0.22080999612808228,
@@ -1850,10 +1876,10 @@
         ]
       },
       {
-        "time_s": 3.5,
-        "hinge_angle_rad": 0.565655529499054,
-        "hinge_angle_deg": 32.409674498533626,
-        "hinge_velocity_rad_s": 0.30326196551322937,
+        "time_s": 3.533333333333333,
+        "joint_angle_rad": 0.565655529499054,
+        "joint_angle_deg": 32.409674498533626,
+        "joint_velocity_rad_s": 0.30326196551322937,
         "application_point_world": [
           -0.9400309324264526,
           0.2164408564567566,
@@ -1866,10 +1892,10 @@
         ]
       },
       {
-        "time_s": 3.533333333333333,
-        "hinge_angle_rad": 0.5758050084114075,
-        "hinge_angle_deg": 32.991196804468515,
-        "hinge_velocity_rad_s": 0.30537304282188416,
+        "time_s": 3.5666666666666664,
+        "joint_angle_rad": 0.5758050084114075,
+        "joint_angle_deg": 32.991196804468515,
+        "joint_velocity_rad_s": 0.30537304282188416,
         "application_point_world": [
           -0.9462615251541138,
           0.21197736263275146,
@@ -1882,10 +1908,10 @@
         ]
       },
       {
-        "time_s": 3.566666666666667,
-        "hinge_angle_rad": 0.5860245227813721,
-        "hinge_angle_deg": 33.57673184654078,
-        "hinge_velocity_rad_s": 0.3074581027030945,
+        "time_s": 3.6,
+        "joint_angle_rad": 0.5860245227813721,
+        "joint_angle_deg": 33.57673184654078,
+        "joint_velocity_rad_s": 0.3074581027030945,
         "application_point_world": [
           -0.9524890184402466,
           0.20741906762123108,
@@ -1898,10 +1924,10 @@
         ]
       },
       {
-        "time_s": 3.6,
-        "hinge_angle_rad": 0.5963127613067627,
-        "hinge_angle_deg": 34.166204492669564,
-        "hinge_velocity_rad_s": 0.3095167875289917,
+        "time_s": 3.6333333333333333,
+        "joint_angle_rad": 0.5963127613067627,
+        "joint_angle_deg": 34.166204492669564,
+        "joint_velocity_rad_s": 0.3095167875289917,
         "application_point_world": [
           -0.9587109088897705,
           0.20276659727096558,
@@ -1914,10 +1940,10 @@
         ]
       },
       {
-        "time_s": 3.6333333333333333,
-        "hinge_angle_rad": 0.6066691875457764,
-        "hinge_angle_deg": 34.75958400700359,
-        "hinge_velocity_rad_s": 0.31154865026474,
+        "time_s": 3.6666666666666665,
+        "joint_angle_rad": 0.6066691875457764,
+        "joint_angle_deg": 34.75958400700359,
+        "joint_velocity_rad_s": 0.31154865026474,
         "application_point_world": [
           -0.9649255275726318,
           0.19801881909370422,
@@ -1930,10 +1956,10 @@
         ]
       },
       {
-        "time_s": 3.6666666666666665,
-        "hinge_angle_rad": 0.6170928478240967,
-        "hinge_angle_deg": 35.356815748029504,
-        "hinge_velocity_rad_s": 0.31355294585227966,
+        "time_s": 3.6999999999999997,
+        "joint_angle_rad": 0.6170928478240967,
+        "joint_angle_deg": 35.356815748029504,
+        "joint_velocity_rad_s": 0.31355294585227966,
         "application_point_world": [
           -0.97113037109375,
           0.19317543506622314,
@@ -1946,10 +1972,10 @@
         ]
       },
       {
-        "time_s": 3.7,
-        "hinge_angle_rad": 0.627582848072052,
-        "hinge_angle_deg": 35.95784848932853,
-        "hinge_velocity_rad_s": 0.31552988290786743,
+        "time_s": 3.7333333333333334,
+        "joint_angle_rad": 0.627582848072052,
+        "joint_angle_deg": 35.95784848932853,
+        "joint_velocity_rad_s": 0.31552988290786743,
         "application_point_world": [
           -0.9773235321044922,
           0.18823611736297607,
@@ -1962,10 +1988,10 @@
         ]
       },
       {
-        "time_s": 3.7333333333333334,
-        "hinge_angle_rad": 0.6381384134292603,
-        "hinge_angle_deg": 36.562637834671065,
-        "hinge_velocity_rad_s": 0.3174787759780884,
+        "time_s": 3.7666666666666666,
+        "joint_angle_rad": 0.6381384134292603,
+        "joint_angle_deg": 36.562637834671065,
+        "joint_velocity_rad_s": 0.3174787759780884,
         "application_point_world": [
           -0.9835028648376465,
           0.18320053815841675,
@@ -1978,10 +2004,10 @@
         ]
       },
       {
-        "time_s": 3.7666666666666666,
-        "hinge_angle_rad": 0.6487581133842468,
-        "hinge_angle_deg": 37.17110182178707,
-        "hinge_velocity_rad_s": 0.3193992078304291,
+        "time_s": 3.8,
+        "joint_angle_rad": 0.6487581133842468,
+        "joint_angle_deg": 37.17110182178707,
+        "joint_velocity_rad_s": 0.3193992078304291,
         "application_point_world": [
           -0.9896653890609741,
           0.17806896567344666,
@@ -1994,10 +2020,10 @@
         ]
       },
       {
-        "time_s": 3.8,
-        "hinge_angle_rad": 0.659441351890564,
-        "hinge_angle_deg": 37.783206299730686,
-        "hinge_velocity_rad_s": 0.3212907314300537,
+        "time_s": 3.8333333333333335,
+        "joint_angle_rad": 0.659441351890564,
+        "joint_angle_deg": 37.783206299730686,
+        "joint_velocity_rad_s": 0.3212907314300537,
         "application_point_world": [
           -0.9958094954490662,
           0.1728411614894867,
@@ -2010,10 +2036,10 @@
         ]
       },
       {
-        "time_s": 3.8333333333333335,
-        "hinge_angle_rad": 0.67018723487854,
-        "hinge_angle_deg": 38.39890004208314,
-        "hinge_velocity_rad_s": 0.3231532871723175,
+        "time_s": 3.8666666666666667,
+        "joint_angle_rad": 0.67018723487854,
+        "joint_angle_deg": 38.39890004208314,
+        "joint_velocity_rad_s": 0.3231532871723175,
         "application_point_world": [
           -1.001933217048645,
           0.16751635074615479,
@@ -2026,10 +2052,10 @@
         ]
       },
       {
-        "time_s": 3.8666666666666667,
-        "hinge_angle_rad": 0.6809946298599243,
-        "hinge_angle_deg": 39.01811816204733,
-        "hinge_velocity_rad_s": 0.3249861001968384,
+        "time_s": 3.9,
+        "joint_angle_rad": 0.6809946298599243,
+        "joint_angle_deg": 39.01811816204733,
+        "joint_velocity_rad_s": 0.3249861001968384,
         "application_point_world": [
           -1.0080337524414062,
           0.16209512948989868,
@@ -2042,10 +2068,10 @@
         ]
       },
       {
-        "time_s": 3.9,
-        "hinge_angle_rad": 0.6918627023696899,
-        "hinge_angle_deg": 39.640812848299056,
-        "hinge_velocity_rad_s": 0.32678911089897156,
+        "time_s": 3.933333333333333,
+        "joint_angle_rad": 0.6918627023696899,
+        "joint_angle_deg": 39.640812848299056,
+        "joint_velocity_rad_s": 0.32678911089897156,
         "application_point_world": [
           -1.0141088962554932,
           0.15657758712768555,
@@ -2058,10 +2084,10 @@
         ]
       },
       {
-        "time_s": 3.933333333333333,
-        "hinge_angle_rad": 0.7027901411056519,
-        "hinge_angle_deg": 40.26690896875744,
-        "hinge_velocity_rad_s": 0.328561931848526,
+        "time_s": 3.966666666666667,
+        "joint_angle_rad": 0.7027901411056519,
+        "joint_angle_deg": 40.26690896875744,
+        "joint_velocity_rad_s": 0.328561931848526,
         "application_point_world": [
           -1.020156979560852,
           0.1509634256362915,
@@ -2074,10 +2100,10 @@
         ]
       },
       {
-        "time_s": 3.966666666666667,
-        "hinge_angle_rad": 0.7137761116027832,
-        "hinge_angle_deg": 40.896358712098305,
-        "hinge_velocity_rad_s": 0.3303040564060211,
+        "time_s": 4.0,
+        "joint_angle_rad": 0.7137761116027832,
+        "joint_angle_deg": 40.896358712098305,
+        "joint_velocity_rad_s": 0.3303040564060211,
         "application_point_world": [
           -1.0261749029159546,
           0.14525273442268372,
@@ -2087,1928 +2113,6 @@
           -0.5,
           0.0,
           0.0
-        ]
-      }
-    ],
-    "closing_force": [
-      {
-        "time_s": 0.0,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.03333333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.06666666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.1,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.13333333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.16666666666666666,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.2,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.23333333333333334,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.26666666666666666,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.3,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.3333333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.36666666666666664,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.4,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.43333333333333335,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.4666666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.5,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.5333333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.5666666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.6,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.6333333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.6666666666666666,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.7,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.7333333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.7666666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.8,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.8333333333333334,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.8666666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.9,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.9333333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 0.9666666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.0,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.0333333333333334,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.0666666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.1,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.1333333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.1666666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.2,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.2333333333333334,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.2666666666666666,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.3,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.3333333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.3666666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.4,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.4333333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.4666666666666666,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.5,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.5333333333333334,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.5666666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.6,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.6333333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.6666666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.7,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.7333333333333334,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.7666666666666666,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.8,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.8333333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.8666666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.9,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.9333333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 1.9666666666666666,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.0,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.033333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.066666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.1,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.1333333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.1666666666666665,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.2,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.2333333333333334,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.2666666666666666,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.3,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.3333333333333335,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.3666666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.4,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.433333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.466666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.5,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.533333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.566666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.6,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.6333333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.6666666666666665,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.7,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.7333333333333334,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.7666666666666666,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.8,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.8333333333333335,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.8666666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.9,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.933333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 2.966666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.0,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.033333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.066666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.1,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.1333333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.1666666666666665,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.2,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.2333333333333334,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.2666666666666666,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.3,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.3333333333333335,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.3666666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.4,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.433333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.466666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.5,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.533333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.566666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.6,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.6333333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.6666666666666665,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.7,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.7333333333333334,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.7666666666666666,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.8,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.8333333333333335,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.8666666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.9,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.933333333333333,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
-        ]
-      },
-      {
-        "time_s": 3.966666666666667,
-        "hinge_angle_rad": -1.187305028599317e-12,
-        "hinge_angle_deg": -6.802756713340037e-11,
-        "hinge_velocity_rad_s": 1.7077095293416278e-10,
-        "application_point_world": [
-          -0.5418000221252441,
-          0.3545089662075043,
-          0.2929910719394684
-        ],
-        "applied_force_world": [
-          0.5,
-          -0.0,
-          -0.0
         ]
       }
     ]

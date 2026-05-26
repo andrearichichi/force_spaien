@@ -12,6 +12,7 @@ import xml.etree.ElementTree as ET
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DATASET_DIR = REPO_ROOT / "dataset"
+DEFAULT_CONTACT_POINTS_CONFIG = DATASET_DIR / "contact_points.json"
 
 
 def resolve_model_dir(model_dir_arg: str | Path) -> Path:
@@ -91,6 +92,142 @@ def mesh_has_vertices(mesh_path: Path) -> bool:
             if line.startswith("v "):
                 return True
     return False
+
+
+def mesh_vertices(mesh_path: Path) -> list[list[float]]:
+    vertices = []
+    with mesh_path.open("r", encoding="utf-8", errors="ignore") as mesh_file:
+        for line in mesh_file:
+            if line.startswith("v "):
+                parts = line.split()
+                if len(parts) >= 4:
+                    vertices.append([float(parts[1]), float(parts[2]), float(parts[3])])
+    if not vertices:
+        raise RuntimeError(f"No vertices found in {mesh_path}")
+    return vertices
+
+
+def visual_origin(visual: ET.Element) -> list[float]:
+    origin = visual.find("origin")
+    if origin is None:
+        return [0.0, 0.0, 0.0]
+    return [float(value) for value in origin.attrib.get("xyz", "0 0 0").split()]
+
+
+def link_visual_vertices(model_dir: Path, link_name: str) -> list[list[float]]:
+    root = ET.parse(model_dir / "mobility.urdf").getroot()
+    link = root.find(f".//link[@name='{link_name}']")
+    if link is None:
+        raise RuntimeError(f"Could not find {link_name} in {model_dir / 'mobility.urdf'}")
+
+    vertices: list[list[float]] = []
+    for visual in link.findall("visual"):
+        mesh = visual.find("./geometry/mesh")
+        filename = mesh.attrib.get("filename") if mesh is not None else None
+        if not filename:
+            continue
+        origin = visual_origin(visual)
+        vertices.extend(
+            [
+                [point[0] + origin[0], point[1] + origin[1], point[2] + origin[2]]
+                for point in mesh_vertices(model_dir / filename)
+            ]
+        )
+    if not vertices:
+        raise RuntimeError(f"No visual mesh found for {link_name}.")
+    return vertices
+
+
+def aabb_local_point(model_dir: Path, link_name: str, spec: dict[str, object]) -> list[float]:
+    vertices = link_visual_vertices(model_dir, link_name)
+    mins = [min(point[axis] for point in vertices) for axis in range(3)]
+    maxs = [max(point[axis] for point in vertices) for axis in range(3)]
+    centers = [(mins[axis] + maxs[axis]) * 0.5 for axis in range(3)]
+    choices = {"min": mins, "max": maxs, "center": centers}
+    point = []
+    for axis, name in enumerate(("x", "y", "z")):
+        value = spec.get(name, "center")
+        if isinstance(value, (int, float)):
+            point.append(float(value))
+            continue
+        if value not in choices:
+            raise RuntimeError(f"Unsupported aabb_local value for {name}: {value!r}")
+        point.append(float(choices[value][axis]))
+    return point
+
+
+def load_contact_points_config(path: Path) -> dict[str, object]:
+    if not path.exists():
+        return {}
+    with path.open("r", encoding="utf-8") as config_file:
+        data = json.load(config_file)
+    if not isinstance(data, dict):
+        raise RuntimeError(f"{path} must contain a JSON object.")
+    objects = data.get("objects", data)
+    if not isinstance(objects, dict):
+        raise RuntimeError(f"{path} field 'objects' must be a JSON object.")
+    return objects
+
+
+def contact_config_for(model_dir_arg: str, model_dir: Path, configs: dict[str, object]) -> dict[str, object]:
+    keys = [
+        model_dir.name,
+        str(model_dir),
+        str(Path(model_dir_arg)),
+    ]
+    for key in keys:
+        value = configs.get(key)
+        if value is not None:
+            if not isinstance(value, dict):
+                raise RuntimeError(f"Contact point config for {key} must be an object.")
+            return value
+    return {}
+
+
+def config_float(config: dict[str, object], name: str, fallback: float | None) -> float | None:
+    value = config.get(name)
+    return fallback if value is None else float(value)
+
+
+def config_vector(config: dict[str, object], name: str, fallback: list[float] | None) -> list[float] | None:
+    value = config.get(name)
+    if value is None:
+        return fallback
+    if not isinstance(value, list) or len(value) != 3:
+        raise RuntimeError(f"Config field {name!r} must be a 3-value list.")
+    return [float(item) for item in value]
+
+
+def apply_contact_point_config(
+    model_dir: Path,
+    link_name: str,
+    config: dict[str, object],
+    args: argparse.Namespace,
+) -> None:
+    point_spec = config.get("application_point")
+    if point_spec is None:
+        return
+    if not isinstance(point_spec, dict):
+        raise RuntimeError("Config field 'application_point' must be an object.")
+
+    point_type = str(point_spec.get("type", "auto"))
+    description = point_spec.get("description")
+    if point_type == "auto":
+        return
+    if point_type == "local_point":
+        point = point_spec.get("point")
+        if not isinstance(point, list) or len(point) != 3:
+            raise RuntimeError("application_point.point must be a 3-value list.")
+        args.contact_point_local = [float(value) for value in point]
+    elif point_type == "aabb_local":
+        args.contact_point_local = aabb_local_point(model_dir, link_name, point_spec)
+    else:
+        raise RuntimeError(f"Unsupported application_point.type: {point_type!r}")
+
+    strategy = f"config {point_type}"
+    if description:
+        strategy += f": {description}"
+    args.contact_point_strategy = strategy
 
 
 def has_valid_handle(model_dir: Path, link_name: str) -> bool:
@@ -266,7 +403,7 @@ def ensure_contact_point(
         print("Unrecognized answer. Use Enter, preview, pick, or cancel.")
 
 
-def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path) -> int:
+def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path, contact_configs: dict[str, object]) -> int:
     args.contact_point_local = None
     args.contact_point_strategy = None
     model_dir = resolve_model_dir(model_dir_arg)
@@ -274,11 +411,17 @@ def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path) 
         raise FileNotFoundError(model_dir / "mobility.urdf")
 
     detected_type, detected_joint, detected_link, limits = first_moving_joint(model_dir)
-    joint_type = detected_type if args.joint_type == "auto" else args.joint_type
+    config = contact_config_for(model_dir_arg, model_dir, contact_configs)
+    joint_type_override = config.get("joint_type")
+    joint_type = str(joint_type_override) if joint_type_override is not None else detected_type if args.joint_type == "auto" else args.joint_type
     preferred_joint_name, preferred_link_name = preferred_joint(model_dir, detected_joint, detected_link)
-    joint_name = args.joint or preferred_joint_name
-    link_name = args.link or preferred_link_name
-    direction = args.direction or default_direction(model_dir, joint_type)
+    joint_name = args.joint or str(config.get("joint", preferred_joint_name))
+    link_name = args.link or str(config.get("link", preferred_link_name))
+    direction = config_vector(config, "direction", args.direction or default_direction(model_dir, joint_type))
+    force = config_float(config, "force", args.force)
+    initial_angle = config_float(config, "initial_angle", args.initial_angle)
+    movement = str(config.get("movement", args.movement))
+    apply_contact_point_config(model_dir, link_name, config, args)
 
     if args.preview_points or args.pick_point or args.select_point is not None:
         print(f"Detected {detected_type}: {detected_joint}/{detected_link}")
@@ -291,9 +434,12 @@ def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path) 
     else:
         print(f"Detected {detected_type}: {detected_joint}/{detected_link}")
         print(f"Selected {joint_type}: {joint_name}/{link_name}")
-        contact_point_exit_code = ensure_contact_point(model_dir, joint_type, joint_name, link_name, limits, args, scripts_dir)
-        if contact_point_exit_code != 0:
-            return contact_point_exit_code
+        if args.contact_point_local is not None:
+            print(f"Using configured contact point: {args.contact_point_strategy}.")
+        else:
+            contact_point_exit_code = ensure_contact_point(model_dir, joint_type, joint_name, link_name, limits, args, scripts_dir)
+            if contact_point_exit_code != 0:
+                return contact_point_exit_code
 
     command = [sys.executable]
     if joint_type == "prismatic":
@@ -311,7 +457,7 @@ def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path) 
             command += ["--joint", joint_name, "--link", link_name]
         command += [
             "--force",
-            str(args.force),
+            str(force),
             "--seconds",
             str(args.seconds),
             "--fps",
@@ -322,6 +468,8 @@ def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path) 
             str(direction[2]),
             "--output-root",
             args.output_root,
+            "--movement",
+            movement,
         ]
         if args.contact_point_local is not None:
             command += ["--contact-point-local", *(str(value) for value in args.contact_point_local)]
@@ -340,7 +488,7 @@ def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path) 
             "--link",
             link_name,
             "--force",
-            str(args.force),
+            str(force),
             "--seconds",
             str(args.seconds),
             "--fps",
@@ -350,16 +498,18 @@ def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path) 
             str(direction[1]),
             str(direction[2]),
             "--initial-angle",
-            str(args.initial_angle if args.initial_angle is not None else default_initial_angle(model_dir, limits)),
+            str(initial_angle if initial_angle is not None else default_initial_angle(model_dir, limits)),
             "--output-root",
             args.output_root,
+            "--movement",
+            movement,
         ]
         if args.contact_point_local is not None:
             command += ["--contact-point-local", *(str(value) for value in args.contact_point_local)]
         if args.contact_point_strategy is not None:
             command += ["--contact-point-strategy", args.contact_point_strategy]
         if args.mode == "render":
-            command += ["--closing-force", str(args.force)]
+            command += ["--closing-force", str(force)]
     else:
         raise RuntimeError(f"Unsupported joint type: {joint_type}")
 
@@ -401,7 +551,18 @@ def main() -> int:
     parser.add_argument("--fps", type=int, default=30)
     parser.add_argument("--end-hold-seconds", type=float, default=2.0)
     parser.add_argument("--initial-angle", type=float, default=None)
+    parser.add_argument(
+        "--movement",
+        choices=["single", "comparison"],
+        default="single",
+        help="single: render only the configured force/direction; comparison: render the old two-motion comparison",
+    )
     parser.add_argument("--output-root", default="outputs")
+    parser.add_argument(
+        "--contact-points-config",
+        default=str(DEFAULT_CONTACT_POINTS_CONFIG),
+        help="JSON file with per-object joint/link/contact-point/direction overrides",
+    )
     parser.add_argument(
         "--contact-point-mode",
         choices=["confirm", "manual", "auto"],
@@ -421,11 +582,12 @@ def main() -> int:
         parser.error("pass at least one object ID or directory, e.g. python3 scripts/main.py 101062")
 
     scripts_dir = Path(__file__).resolve().parent
+    contact_configs = load_contact_points_config(Path(args.contact_points_config).expanduser())
     exit_code = 0
     for index, model_dir in enumerate(objects, start=1):
         if len(objects) > 1:
             print(f"\n[{index}/{len(objects)}] {model_dir}")
-        exit_code = run_object(model_dir, args, scripts_dir) or exit_code
+        exit_code = run_object(model_dir, args, scripts_dir, contact_configs) or exit_code
 
     return exit_code
 
