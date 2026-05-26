@@ -49,7 +49,7 @@ TIMESTEP = 1.0 / 240.0
 LINEAR_DAMPING = 0.0
 ANGULAR_DAMPING = 0.02
 CAMERA_ZOOM_OUT = 1.35
-COLOR_BG = (246, 248, 251)
+COLOR_BG = (180, 180, 180)
 COLOR_PANEL = (255, 255, 255)
 COLOR_PANEL_2 = (250, 252, 255)
 COLOR_BORDER = (214, 224, 235)
@@ -284,8 +284,8 @@ def render_panel(sim: DrawerSim) -> np.ndarray:
     channel_range = image.max(axis=2) - image.min(axis=2)
     luminance = image.mean(axis=2)
     background_mask = (channel_range < 55) & (luminance > 110)
-    top = np.array([238, 243, 249], dtype=np.float32)
-    bottom = np.array([250, 252, 255], dtype=np.float32)
+    top = np.array([160, 160, 160], dtype=np.float32)
+    bottom = np.array([200, 200, 200], dtype=np.float32)
     t = np.linspace(0.0, 1.0, image.shape[0], dtype=np.float32)[:, None]
     gradient = (top * (1.0 - t) + bottom * t).astype(np.uint8)
     gradient = np.repeat(gradient[:, None, :], image.shape[1], axis=1)
