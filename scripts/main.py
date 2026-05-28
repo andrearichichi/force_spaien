@@ -13,8 +13,8 @@ import xml.etree.ElementTree as ET
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DATASET_DIR = REPO_ROOT / "dataset"
 DEFAULT_CONTACT_POINTS_CONFIG = DATASET_DIR / "contact_points.json"
-DEFAULT_VIDEO_WIDTH = 1080
-DEFAULT_VIDEO_HEIGHT = 1920
+DEFAULT_VIDEO_WIDTH = 1920
+DEFAULT_VIDEO_HEIGHT = 1080
 
 
 def resolve_model_dir(model_dir_arg: str | Path) -> Path:
@@ -528,6 +528,91 @@ def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path, 
             command += ["--contact-point-strategy", args.contact_point_strategy]
         if args.mode == "render":
             command += ["--closing-force", str(force)]
+    elif joint_type == "screw":
+        script = scripts_dir / "render_screw_video.py"
+        torque = config.get("torque", {})
+        if not isinstance(torque, dict):
+            torque = {}
+        torque_axis = torque.get("axis_world", direction)
+        if not isinstance(torque_axis, list) or len(torque_axis) != 3:
+            raise RuntimeError("screw torque.axis_world must be a 3-value list.")
+        torque_magnitude = float(torque.get("magnitude_nm", force))
+        axial_force = config.get("axial_force")
+        screw_dynamics = config.get("screw_dynamics")
+        screw_coupling = config.get("screw_coupling")
+        command += [
+            str(script),
+            "--mode",
+            args.mode,
+            "--model-dir",
+            str(model_dir),
+            "--linear-joint",
+            str(config.get("linear_joint", joint_name)),
+            "--rotary-joint",
+            str(config.get("rotary_joint", "joint_0")),
+            "--link",
+            link_name,
+            "--torque",
+            str(torque_magnitude),
+            "--seconds",
+            str(args.seconds),
+            "--fps",
+            str(args.fps),
+            "--panel-width",
+            str(args.video_width),
+            "--panel-height",
+            str(args.video_height),
+            "--info-height",
+            "0",
+            "--plot-height",
+            "0",
+            "--direction",
+            str(float(torque_axis[0])),
+            str(float(torque_axis[1])),
+            str(float(torque_axis[2])),
+            "--output-root",
+            args.output_root,
+        ]
+        if isinstance(screw_dynamics, dict):
+            dynamic_args = {
+                "rotational_inertia_kg_m2": "--rotational-inertia",
+                "friction_torque_nm": "--friction-torque",
+                "friction_velocity_scale_rad_s": "--friction-velocity-scale",
+                "damping_nm_s_rad": "--rotary-damping",
+            }
+            for config_name, cli_name in dynamic_args.items():
+                if screw_dynamics.get(config_name) is not None:
+                    command += [cli_name, str(screw_dynamics[config_name])]
+        if isinstance(screw_coupling, dict):
+            if screw_coupling.get("pitch_m_per_revolution") is not None:
+                command += ["--pitch", str(screw_coupling["pitch_m_per_revolution"])]
+            if screw_coupling.get("z0") is not None:
+                command += ["--z0", str(screw_coupling["z0"])]
+        if isinstance(axial_force, dict):
+            magnitude = axial_force.get("magnitude_n")
+            direction_world = axial_force.get("direction_world")
+            if magnitude is not None:
+                command += ["--axial-force", str(magnitude)]
+            if isinstance(direction_world, list) and len(direction_world) == 3:
+                command += ["--axial-force-direction", *(str(float(value)) for value in direction_world)]
+        translation = config.get("translation")
+        if isinstance(translation, dict):
+            if translation.get("start") is not None:
+                command += ["--translation-start", str(translation["start"])]
+            if translation.get("end") is not None:
+                command += ["--translation-end", str(translation["end"])]
+        rotation = config.get("rotation")
+        if isinstance(rotation, dict):
+            if rotation.get("start_degrees") is not None:
+                command += ["--rotation-start-degrees", str(rotation["start_degrees"])]
+            if rotation.get("end_degrees") is not None:
+                command += ["--rotation-end-degrees", str(rotation["end_degrees"])]
+        elif config.get("rotation_degrees") is not None:
+            command += ["--rotation-end-degrees", str(config["rotation_degrees"])]
+        if args.contact_point_local is not None:
+            command += ["--contact-point-local", *(str(value) for value in args.contact_point_local)]
+        if args.contact_point_strategy is not None:
+            command += ["--contact-point-strategy", args.contact_point_strategy]
     else:
         raise RuntimeError(f"Unsupported joint type: {joint_type}")
 
@@ -560,7 +645,7 @@ def main() -> int:
     parser.add_argument("objects", nargs="*", help="Object IDs from dataset/ or object paths, e.g. 11691 44817 45384")
     parser.add_argument("--model-dir", default=None, help="Backward-compatible single object path")
     parser.add_argument("--mode", choices=["render", "apply"], default="render")
-    parser.add_argument("--joint-type", choices=["auto", "prismatic", "revolute"], default="auto")
+    parser.add_argument("--joint-type", choices=["auto", "prismatic", "revolute", "screw"], default="auto")
     parser.add_argument("--joint", default=None)
     parser.add_argument("--link", default=None)
     parser.add_argument("--force", type=float, default=0.5)

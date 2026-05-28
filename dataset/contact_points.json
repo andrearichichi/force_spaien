@@ -36,6 +36,43 @@
         "type": "auto",
         "description": "uses cover handle; default 0.5 N +Z does not open this lid"
       }
+    },
+    "3763": {
+      "joint_type": "screw",
+      "joint": "joint_2",
+      "linear_joint": "joint_2",
+      "rotary_joint": "joint_0",
+      "link": "link_0",
+      "torque": {
+        "magnitude_nm": 0.01,
+        "axis_world": [0.0, -1.0, 0.0],
+        "description": "twist torque around the screw axis"
+      },
+      "screw_dynamics": {
+        "rotational_inertia_kg_m2": 0.002,
+        "friction_torque_nm": 0.005,
+        "friction_velocity_scale_rad_s": 0.05,
+        "damping_nm_s_rad": 0.02
+      },
+      "screw_coupling": {
+        "pitch_m_per_revolution": -0.2,
+        "z0": -0.008000000000000007
+      },
+      "translation": {
+        "start": -0.008000000000000007,
+        "end": -0.1080000000000001
+      },
+      "rotation": {
+        "start_degrees": 0.0,
+        "end_degrees": 180.0
+      },
+      "application_point": {
+        "type": "aabb_local",
+        "x": "center",
+        "y": "max",
+        "z": "center",
+        "description": "cap contact point for screw torque cue"
+      }
     }
   }
 }

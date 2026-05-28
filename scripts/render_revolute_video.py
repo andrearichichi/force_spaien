@@ -49,7 +49,10 @@ TIMESTEP = 1.0 / 240.0
 LINEAR_DAMPING = 0.0
 ANGULAR_DAMPING = 0.02
 CAMERA_ZOOM_OUT = 1.35
-COLOR_BG = (246, 248, 251)
+DEFAULT_VIDEO_WIDTH = 1920
+DEFAULT_PANEL_HEIGHT = 1080
+DEFAULT_INFO_HEIGHT = 0
+COLOR_BG = (242, 244, 246)
 COLOR_PANEL = (255, 255, 255)
 COLOR_PANEL_2 = (248, 249, 250)
 COLOR_BORDER = (210, 216, 224)
@@ -96,6 +99,20 @@ def border_connected_mask(mask: np.ndarray) -> np.ndarray:
     if len(border_labels) == 0:
         return np.zeros_like(mask, dtype=bool)
     return np.isin(labels, border_labels)
+
+
+def background_mask_from_render(camera: sapien.render.RenderCameraComponent, image: np.ndarray) -> np.ndarray:
+    try:
+        segmentation = camera.get_picture("Segmentation")
+    except Exception:
+        channel_range = image.max(axis=2) - image.min(axis=2)
+        luminance = image.mean(axis=2)
+        return border_connected_mask((channel_range < 70) & (luminance > 128))
+
+    mask = segmentation[..., 0] == 0
+    if mask.shape != image.shape[:2]:
+        mask = cv2.resize(mask.astype(np.uint8), (image.shape[1], image.shape[0]), interpolation=cv2.INTER_NEAREST).astype(bool)
+    return mask
 
 
 def output_paths(model_dir: Path, output_root: Path, output: str | None, json_output: str | None) -> tuple[Path, Path]:
@@ -278,14 +295,10 @@ def render_panel(sim: LaptopSim) -> np.ndarray:
     sim.scene.update_render()
     sim.camera.take_picture()
     image = (sim.camera.get_picture("Color")[..., :3].clip(0, 1) * 255).astype(np.uint8)
-    image = cv2.convertScaleAbs(image, alpha=1.08, beta=4)
-    blur = cv2.GaussianBlur(image, (0, 0), 1.15)
-    image = cv2.addWeighted(image, 1.18, blur, -0.18, 0)
-    channel_range = image.max(axis=2) - image.min(axis=2)
-    luminance = image.mean(axis=2)
-    background_mask = (channel_range < 55) & (luminance > 110)
-    top = np.array([238, 243, 249], dtype=np.float32)
-    bottom = np.array([250, 252, 255], dtype=np.float32)
+    image = cv2.convertScaleAbs(image, alpha=1.0, beta=0)
+    background_mask = background_mask_from_render(sim.camera, image)
+    top = np.array([246, 248, 251], dtype=np.float32)
+    bottom = np.array([229, 236, 243], dtype=np.float32)
     t = np.linspace(0.0, 1.0, image.shape[0], dtype=np.float32)[:, None]
     gradient = (top * (1.0 - t) + bottom * t).astype(np.uint8)
     gradient = np.repeat(gradient[:, None, :], image.shape[1], axis=1)

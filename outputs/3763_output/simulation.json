@@ -1,0 +1,5620 @@
+{
+  "metadata": {
+    "schema_version": 3,
+    "pipeline": {
+      "mode": "render"
+    },
+    "object": {
+      "model_dir": "/teamspace/studios/this_studio/dataset/3763",
+      "joint_type": "screw",
+      "joint": "joint_2+joint_0",
+      "link": "link_0"
+    },
+    "output": {
+      "json_output": "/teamspace/studios/this_studio/outputs/3763_output/simulation.json",
+      "video_output": "/teamspace/studios/this_studio/outputs/3763_output/final_video.mp4"
+    },
+    "timing": {
+      "fps": 30,
+      "requested_seconds": 4.0,
+      "simulated_seconds": 4.0,
+      "sample_interval_s": 0.03333333333333333,
+      "timestep_s": 0.004166666666666667,
+      "end_hold_seconds": 2.0,
+      "video_duration_seconds": 6.0
+    },
+    "actuation": {
+      "motion_type": "screw",
+      "control_mode": "virtual_screw_constraint_dynamics",
+      "virtual_physics": true,
+      "real_thread_contact": false,
+      "constraint_equation": "translation = z0 + pitch * theta / (2*pi)",
+      "constraint_error_max": 1.8067030163604336e-09,
+      "constraint_error_mean": 5.282060472171224e-10,
+      "master_joint": "joint_0",
+      "coupled_joint": "joint_2",
+      "torque": {
+        "magnitude_nm": 0.01,
+        "axis_world": [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        "application": "free_moment_about_screw_axis",
+        "visual_anchor": "application_point"
+      },
+      "axial_force": {
+        "magnitude_n": 0.0,
+        "direction_world": [
+          0.0,
+          0.0,
+          -1.0
+        ]
+      },
+      "linear_joint": "joint_2",
+      "rotary_joint": "joint_0",
+      "linear_limits_m": [
+        [
+          -0.1080000028014183,
+          -0.00800000037997961
+        ]
+      ],
+      "rotary_limits_rad": [
+        [
+          -Infinity,
+          Infinity
+        ]
+      ],
+      "screw_dynamics": {
+        "motion_type": "screw",
+        "virtual_physics": true,
+        "real_thread_contact": false,
+        "master_joint": "joint_0",
+        "coupled_joint": "joint_2",
+        "theta": 0.9707891305234617,
+        "omega": 0.2500226783536422,
+        "translation": -0.03890117630362511,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "torque": 0.01,
+        "damping": 0.02,
+        "friction": 0.005,
+        "inertia": 0.002,
+        "rotational_inertia_kg_m2": 0.002,
+        "friction_torque_nm": 0.005,
+        "friction_velocity_scale_rad_s": 0.05,
+        "rotary_damping_nm_s_rad": 0.02,
+        "constraint_equation": "translation = z0 + pitch * theta / (2*pi)",
+        "constraint_error_max": 1.8067030163604336e-09,
+        "constraint_error_mean": 5.282060472171224e-10
+      },
+      "screw": {
+        "motion_type": "screw",
+        "virtual_physics": true,
+        "real_thread_contact": false,
+        "master_joint": "joint_0",
+        "coupled_joint": "joint_2",
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "torque": 0.01,
+        "damping": 0.02,
+        "friction": 0.005,
+        "inertia": 0.002,
+        "constraint_equation": "translation = z0 + pitch * theta / (2*pi)",
+        "theta": 0.9707891305234617,
+        "omega": 0.2500226783536422,
+        "translation": -0.03890117630362511,
+        "theta_limit_rad": 3.141592653589793,
+        "translation_start_m": -0.008000000000000007,
+        "translation_end_m": -0.1080000000000001,
+        "constraint_error_max": 1.8067030163604336e-09,
+        "constraint_error_mean": 5.282060472171224e-10,
+        "positive_theta_translation_axis": "negative"
+      },
+      "motion_bounds": {
+        "translation_start_m": -0.008000000000000007,
+        "translation_end_m": -0.1080000000000001,
+        "theta_start_rad": 0.0,
+        "theta_end_rad": 3.141592653589793,
+        "rotation_start_rad": 0.0,
+        "rotation_end_rad": 3.141592653589793,
+        "rotation_start_deg": 0.0,
+        "rotation_end_deg": 180.0
+      },
+      "screw_coupling": {
+        "linear_delta_m": -0.10000000000000009,
+        "rotation_delta_rad": 3.141592653589793,
+        "pitch": -0.2,
+        "pitch_m_per_revolution": -0.2,
+        "pitch_m_per_rad": -0.03183098861837907,
+        "z0": -0.008000000000000007,
+        "constraint": "translation = z0 + pitch * theta / (2*pi)"
+      }
+    },
+    "application_point": {
+      "strategy": "config aabb_local: cap contact point for screw torque cue",
+      "local_on_link": [
+        -5.7900464867088886e-08,
+        0.9920349717140198,
+        -1.4248988655651829e-08
+      ],
+      "role": "visual_anchor_for_torque_cue",
+      "note": "A pure torque/free moment is not applied at a point; this point anchors the cue on the moving link."
+    },
+    "summary": {
+      "physics_step_count": 960,
+      "total_sample_count": 120,
+      "sample_series": {
+        "screw_motion": {
+          "sample_count": 120,
+          "initial_joint_position_m": -0.008000000000000007,
+          "final_joint_position_m": -0.03890117630362511,
+          "delta_joint_position_m": -0.0309011763036251,
+          "max_abs_joint_velocity_m_s": 0.007958469029011437,
+          "time_of_max_abs_joint_velocity_s": 3.3,
+          "initial_joint_angle_deg": 0.0,
+          "final_joint_angle_deg": 55.62211997616916,
+          "delta_joint_angle_deg": 55.62211997616916
+        }
+      }
+    },
+    "physics": {
+      "urdf_joint_dynamics": null,
+      "uses_separate_static_dynamic_friction": false,
+      "uses_air_friction_model": false,
+      "overrides": {
+        "link_linear_damping": 0.0,
+        "link_angular_damping": 0.02,
+        "joint_drive": {
+          "stiffness": 0.0,
+          "damping": 0.0,
+          "force_limit": 0.0
+        }
+      }
+    },
+    "articulation": {
+      "links": [
+        {
+          "name": "base",
+          "mass": 9.999999974752427e-07,
+          "inertia": [
+            9.999999974752427e-07,
+            9.999999974752427e-07,
+            9.999999974752427e-07
+          ],
+          "cmass_local_pose": {
+            "p": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "q": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "linear_damping": 0.0,
+          "angular_damping": 0.019999999552965164,
+          "disable_gravity": true
+        },
+        {
+          "name": "link_1",
+          "mass": 382.25634765625,
+          "inertia": [
+            81.85185241699219,
+            18.502933502197266,
+            71.80445098876953
+          ],
+          "cmass_local_pose": {
+            "p": [
+              -0.005474540404975414,
+              -0.111831434071064,
+              -0.0010581569513306022
+            ],
+            "q": [
+              1.0,
+              -1.6623118881398113e-06,
+              3.5242464946350083e-07,
+              4.197937073513458e-07
+            ]
+          },
+          "linear_damping": 0.0,
+          "angular_damping": 0.019999999552965164,
+          "disable_gravity": true
+        },
+        {
+          "name": "link_0_helper",
+          "mass": 9.999999974752427e-07,
+          "inertia": [
+            9.999999974752427e-07,
+            9.999999974752427e-07,
+            9.999999974752427e-07
+          ],
+          "cmass_local_pose": {
+            "p": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "q": [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "linear_damping": 0.0,
+          "angular_damping": 0.019999999552965164,
+          "disable_gravity": true
+        },
+        {
+          "name": "link_0",
+          "mass": 18.797607421875,
+          "inertia": [
+            0.22102220356464386,
+            0.20387901365756989,
+            0.2210226058959961
+          ],
+          "cmass_local_pose": {
+            "p": [
+              1.5273690223693848e-07,
+              0.8540436625480652,
+              -5.681067705154419e-08
+            ],
+            "q": [
+              0.9238795638084412,
+              0.0,
+              0.3826834261417389,
+              0.0
+            ]
+          },
+          "linear_damping": 0.0,
+          "angular_damping": 0.019999999552965164,
+          "disable_gravity": true
+        }
+      ],
+      "joints": [
+        {
+          "name": "joint_1",
+          "limits": [],
+          "friction": 0.05000000074505806,
+          "damping": null,
+          "drive_mode": null,
+          "drive_target": [],
+          "drive_velocity_target": [],
+          "force_limit": null
+        },
+        {
+          "name": "joint_2",
+          "limits": [
+            [
+              -0.1080000028014183,
+              -0.00800000037997961
+            ]
+          ],
+          "friction": 0.05000000074505806,
+          "damping": 0.0,
+          "drive_mode": "force",
+          "drive_target": [
+            0.0
+          ],
+          "drive_velocity_target": [
+            0.0
+          ],
+          "force_limit": 0.0
+        },
+        {
+          "name": "joint_0",
+          "limits": [
+            [
+              -Infinity,
+              Infinity
+            ]
+          ],
+          "friction": 0.05000000074505806,
+          "damping": 0.0,
+          "drive_mode": "force",
+          "drive_target": [
+            0.0
+          ],
+          "drive_velocity_target": [
+            0.0
+          ],
+          "force_limit": 0.0
+        }
+      ]
+    },
+    "motion_type": "screw",
+    "virtual_physics": true,
+    "real_thread_contact": false,
+    "constraint_equation": "translation = z0 + pitch * theta / (2*pi)",
+    "constraint_error_max": 1.8067030163604336e-09,
+    "constraint_error_mean": 5.282060472171224e-10
+  },
+  "samples": {
+    "screw_motion": [
+      {
+        "frame": 0,
+        "time": 0.03333333333333333,
+        "time_s": 0.03333333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.0,
+        "theta_rad": 0.0,
+        "theta_deg": 0.0,
+        "omega_rad_s": 0.0,
+        "translation_m": -0.00800000037997961,
+        "expected_translation_m": -0.008000000000000007,
+        "constraint_error_m": -3.799796033376879e-10,
+        "theta": 0.0,
+        "omega": 0.0,
+        "translation": -0.00800000037997961,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.00800000037997961,
+        "joint_velocity_m_s": -0.0,
+        "joint_angle_rad": 0.0,
+        "joint_angle_deg": 0.0,
+        "joint_velocity_rad_s": 0.0,
+        "friction_torque_nm": 0.0,
+        "application_point_world": [
+          0.0010574974585324526,
+          0.005474502220749855,
+          0.9840349555015564
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574974585324526,
+          0.005474502220749855,
+          0.9840349555015564
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 1,
+        "time": 0.06666666666666667,
+        "time_s": 0.06666666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.0006589091340773359,
+        "theta_rad": 0.0020700240950005705,
+        "theta_deg": 0.11860364413392047,
+        "omega_rad_s": 0.09410705809012365,
+        "translation_m": -0.008065890520811081,
+        "expected_translation_m": -0.008065890913407741,
+        "constraint_error_m": 3.925966600426545e-10,
+        "theta": 0.0020700240950005705,
+        "omega": 0.09410705809012365,
+        "translation": -0.008065890520811081,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.008065890520811081,
+        "joint_velocity_m_s": -0.002995520694975864,
+        "joint_angle_rad": 0.0020700240950005705,
+        "joint_angle_deg": 0.11860364413392047,
+        "joint_velocity_rad_s": 0.09410705809012365,
+        "friction_torque_nm": 0.004697294537345804,
+        "application_point_world": [
+          0.0010574973421171308,
+          0.005474383942782879,
+          0.9839692115783691
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574973421171308,
+          0.005474383942782879,
+          0.9839692115783691
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 2,
+        "time": 0.1,
+        "time_s": 0.1,
+        "motion_type": "screw",
+        "screw_progress": 0.0019515973126361076,
+        "theta_rad": 0.006131123780143178,
+        "theta_deg": 0.35128751627449933,
+        "omega_rad_s": 0.14060402337094072,
+        "translation_m": -0.008195159956812859,
+        "expected_translation_m": -0.008195159731263618,
+        "constraint_error_m": -2.255492407426951e-10,
+        "theta": 0.006131123780143178,
+        "omega": 0.14060402337094072,
+        "translation": -0.008195159956812859,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.008195159956812859,
+        "joint_velocity_m_s": -0.004475565067618719,
+        "joint_angle_rad": 0.006131123780143178,
+        "joint_angle_deg": 0.35128751627449933,
+        "joint_velocity_rad_s": 0.14060402337094072,
+        "friction_torque_nm": 0.0049563652167860205,
+        "application_point_world": [
+          0.001057497109286487,
+          0.005474502220749855,
+          0.9838398098945618
+        ],
+        "torque_visual_anchor_world": [
+          0.001057497109286487,
+          0.005474502220749855,
+          0.9838398098945618
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 3,
+        "time": 0.13333333333333333,
+        "time_s": 0.13333333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.0036434545203726243,
+        "theta_rad": 0.01144624995489116,
+        "theta_deg": 0.6558218136670724,
+        "omega_rad_s": 0.17246872940692146,
+        "translation_m": -0.008364345878362656,
+        "expected_translation_m": -0.00836434545203727,
+        "constraint_error_m": -4.2632538645170914e-10,
+        "theta": 0.01144624995489116,
+        "omega": 0.17246872940692146,
+        "translation": -0.008364345878362656,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.008364345878362656,
+        "joint_velocity_m_s": -0.005489850162778016,
+        "joint_angle_rad": 0.01144624995489116,
+        "joint_angle_deg": 0.6558218136670724,
+        "joint_velocity_rad_s": 0.17246872940692146,
+        "friction_torque_nm": 0.004988454717287157,
+        "application_point_world": [
+          0.0010574967600405216,
+          0.005474383942782879,
+          0.9836707711219788
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574967600405216,
+          0.005474383942782879,
+          0.9836707711219788
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 4,
+        "time": 0.16666666666666666,
+        "time_s": 0.16666666666666666,
+        "motion_type": "screw",
+        "screw_progress": 0.0056142485217772755,
+        "theta_rad": 0.017637681911442844,
+        "theta_deg": 1.0105647339199095,
+        "omega_rad_s": 0.19493844412927724,
+        "translation_m": -0.008561424911022186,
+        "expected_translation_m": -0.008561424852177734,
+        "constraint_error_m": -5.884445188064635e-11,
+        "theta": 0.017637681911442844,
+        "omega": 0.19493844412927724,
+        "translation": -0.008561424911022186,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.008561424911022186,
+        "joint_velocity_m_s": -0.006205083396363549,
+        "joint_angle_rad": 0.017637681911442844,
+        "joint_angle_deg": 1.0105647339199095,
+        "joint_velocity_rad_s": 0.19493844412927724,
+        "friction_torque_nm": 0.0049954800416633464,
+        "application_point_world": [
+          0.0010574964107945561,
+          0.005474384408444166,
+          0.9834736585617065
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574964107945561,
+          0.005474384408444166,
+          0.9834736585617065
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 5,
+        "time": 0.2,
+        "time_s": 0.2,
+        "motion_type": "screw",
+        "screw_progress": 0.007782445204935818,
+        "theta_rad": 0.024449272682791477,
+        "theta_deg": 1.400840136888447,
+        "omega_rad_s": 0.21087150603224383,
+        "translation_m": -0.008778244256973267,
+        "expected_translation_m": -0.008778244520493588,
+        "constraint_error_m": 2.6352032188314833e-10,
+        "theta": 0.024449272682791477,
+        "omega": 0.21087150603224383,
+        "translation": -0.008778244256973267,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.008778244256973267,
+        "joint_velocity_m_s": -0.006712248508452807,
+        "joint_angle_rad": 0.024449272682791477,
+        "joint_angle_deg": 1.400840136888447,
+        "joint_velocity_rad_s": 0.21087150603224383,
+        "friction_torque_nm": 0.004997675513070977,
+        "application_point_world": [
+          0.0010574960615485907,
+          0.005474502686411142,
+          0.9832566976547241
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574960615485907,
+          0.005474502686411142,
+          0.9832566976547241
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 6,
+        "time": 0.23333333333333334,
+        "time_s": 0.23333333333333334,
+        "motion_type": "screw",
+        "screw_progress": 0.010090761115009849,
+        "theta_rad": 0.03170106098804449,
+        "theta_deg": 1.8163370007017727,
+        "omega_rad_s": 0.2221880497084092,
+        "translation_m": -0.009009076282382011,
+        "expected_translation_m": -0.009009076111500992,
+        "constraint_error_m": -1.7088101940399003e-10,
+        "theta": 0.03170106098804449,
+        "omega": 0.2221880497084092,
+        "translation": -0.009009076282382011,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.009009076282382011,
+        "joint_velocity_m_s": -0.007072465281408216,
+        "joint_angle_rad": 0.03170106098804449,
+        "joint_angle_deg": 1.8163370007017727,
+        "joint_velocity_rad_s": 0.2221880497084092,
+        "friction_torque_nm": 0.004998550573332129,
+        "application_point_world": [
+          0.0010574955958873034,
+          0.005474502686411142,
+          0.9830259084701538
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574955958873034,
+          0.005474502686411142,
+          0.9830259084701538
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 7,
+        "time": 0.26666666666666666,
+        "time_s": 0.26666666666666666,
+        "motion_type": "screw",
+        "screw_progress": 0.012498635642189523,
+        "theta_rad": 0.03926562191339815,
+        "theta_deg": 2.249754415594114,
+        "omega_rad_s": 0.2302307895987478,
+        "translation_m": -0.009249863214790821,
+        "expected_translation_m": -0.00924986356421896,
+        "constraint_error_m": 3.494281392013576e-10,
+        "theta": 0.03926562191339815,
+        "omega": 0.2302307895987478,
+        "translation": -0.009249863214790821,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.009249863214790821,
+        "joint_velocity_m_s": -0.007328473643318167,
+        "joint_angle_rad": 0.03926562191339815,
+        "joint_angle_deg": 2.249754415594114,
+        "joint_velocity_rad_s": 0.2302307895987478,
+        "friction_torque_nm": 0.004998963886697073,
+        "application_point_world": [
+          0.001057495130226016,
+          0.005474384408444166,
+          0.9827852249145508
+        ],
+        "torque_visual_anchor_world": [
+          0.001057495130226016,
+          0.005474384408444166,
+          0.9827852249145508
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 8,
+        "time": 0.3,
+        "time_s": 0.3,
+        "motion_type": "screw",
+        "screw_progress": 0.014977279465467947,
+        "theta_rad": 0.04705251113947537,
+        "theta_deg": 2.6959103037842307,
+        "omega_rad_s": 0.2359485012432362,
+        "translation_m": -0.009497728198766708,
+        "expected_translation_m": -0.009497727946546802,
+        "constraint_error_m": -2.522199064186603e-10,
+        "theta": 0.04705251113947537,
+        "omega": 0.2359485012432362,
+        "translation": -0.009497728198766708,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.009497728198766708,
+        "joint_velocity_m_s": -0.007510474057597052,
+        "joint_angle_rad": 0.04705251113947537,
+        "joint_angle_deg": 2.6959103037842307,
+        "joint_velocity_rad_s": 0.2359485012432362,
+        "friction_torque_nm": 0.004999183862911249,
+        "application_point_world": [
+          0.0010574947809800506,
+          0.005474502686411142,
+          0.9825372695922852
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574947809800506,
+          0.005474502686411142,
+          0.9825372695922852
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 9,
+        "time": 0.3333333333333333,
+        "time_s": 0.3333333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.017506238867673034,
+        "theta_rad": 0.0549974714186697,
+        "theta_deg": 3.151122996181146,
+        "omega_rad_s": 0.2400139447588672,
+        "translation_m": -0.009750624187290668,
+        "expected_translation_m": -0.00975062388676731,
+        "constraint_error_m": -3.0052335793506746e-10,
+        "theta": 0.0549974714186697,
+        "omega": 0.2400139447588672,
+        "translation": -0.009750624187290668,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.009750624187290668,
+        "joint_velocity_m_s": -0.007639881143871765,
+        "joint_angle_rad": 0.0549974714186697,
+        "joint_angle_deg": 3.151122996181146,
+        "joint_velocity_rad_s": 0.2400139447588672,
+        "friction_torque_nm": 0.004999311237900964,
+        "application_point_world": [
+          0.0010574943153187633,
+          0.0054743848741054535,
+          0.9822844862937927
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574943153187633,
+          0.0054743848741054535,
+          0.9822844862937927
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 10,
+        "time": 0.36666666666666664,
+        "time_s": 0.36666666666666664,
+        "motion_type": "screw",
+        "screw_progress": 0.020070975818912696,
+        "theta_rad": 0.0630548301830745,
+        "theta_deg": 3.6127756474042854,
+        "omega_rad_s": 0.24290484057567205,
+        "translation_m": -0.010007097385823727,
+        "expected_translation_m": -0.010007097581891278,
+        "constraint_error_m": 1.9606755108370066e-10,
+        "theta": 0.0630548301830745,
+        "omega": 0.24290484057567205,
+        "translation": -0.010007097385823727,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.010007097385823727,
+        "joint_velocity_m_s": -0.0077319012157134,
+        "joint_angle_rad": 0.0630548301830745,
+        "joint_angle_deg": 3.6127756474042854,
+        "joint_velocity_rad_s": 0.24290484057567205,
+        "friction_torque_nm": 0.004999389527363508,
+        "application_point_world": [
+          0.001057493849657476,
+          0.00547450315207243,
+          0.9820278882980347
+        ],
+        "torque_visual_anchor_world": [
+          0.001057493849657476,
+          0.00547450315207243,
+          0.9820278882980347
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 11,
+        "time": 0.4,
+        "time_s": 0.4,
+        "motion_type": "screw",
+        "screw_progress": 0.02266115462255391,
+        "theta_rad": 0.07119211688407774,
+        "theta_deg": 4.079007832059704,
+        "omega_rad_s": 0.2449606399319989,
+        "translation_m": -0.010266115888953209,
+        "expected_translation_m": -0.010266115462255398,
+        "constraint_error_m": -4.2669781076531965e-10,
+        "theta": 0.07119211688407774,
+        "omega": 0.2449606399319989,
+        "translation": -0.010266115888953209,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.010266115888953209,
+        "joint_velocity_m_s": -0.007797339341626311,
+        "joint_angle_rad": 0.07119211688407774,
+        "joint_angle_deg": 4.079007832059704,
+        "joint_velocity_rad_s": 0.2449606399319989,
+        "friction_torque_nm": 0.00499943972549639,
+        "application_point_world": [
+          0.0010574933839961886,
+          0.0054743848741054535,
+          0.9817689657211304
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574933839961886,
+          0.0054743848741054535,
+          0.9817689657211304
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 12,
+        "time": 0.43333333333333335,
+        "time_s": 0.43333333333333335,
+        "motion_type": "screw",
+        "screw_progress": 0.025269426222311667,
+        "theta_rad": 0.07938624378044361,
+        "theta_deg": 4.5484967200161,
+        "omega_rad_s": 0.2464226293165038,
+        "translation_m": -0.010526943020522594,
+        "expected_translation_m": -0.010526942622231174,
+        "constraint_error_m": -3.98291420677932e-10,
+        "theta": 0.07938624378044361,
+        "omega": 0.2464226293165038,
+        "translation": -0.010526943020522594,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.010526943020522594,
+        "joint_velocity_m_s": -0.007843875909084676,
+        "joint_angle_rad": 0.07938624378044361,
+        "joint_angle_deg": 4.5484967200161,
+        "joint_velocity_rad_s": 0.2464226293165038,
+        "friction_torque_nm": 0.004999472892182016,
+        "application_point_world": [
+          0.0010574929183349013,
+          0.0054743848741054535,
+          0.9815081357955933
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574929183349013,
+          0.0054743848741054535,
+          0.9815081357955933
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 13,
+        "time": 0.4666666666666667,
+        "time_s": 0.4666666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.027890564750473894,
+        "theta_rad": 0.08762079332455923,
+        "theta_deg": 5.0203016550853015,
+        "omega_rad_s": 0.24746235254204113,
+        "translation_m": -0.010789056308567524,
+        "expected_translation_m": -0.010789056475047396,
+        "constraint_error_m": 1.664798715550475e-10,
+        "theta": 0.08762079332455923,
+        "omega": 0.24746235254204113,
+        "translation": -0.010789056308567524,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.010789056308567524,
+        "joint_velocity_m_s": -0.00787697132724302,
+        "joint_angle_rad": 0.08762079332455923,
+        "joint_angle_deg": 5.0203016550853015,
+        "joint_velocity_rad_s": 0.24746235254204113,
+        "friction_torque_nm": 0.0049994952777567495,
+        "application_point_world": [
+          0.0010574923362582922,
+          0.005474503617733717,
+          0.9812459349632263
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574923362582922,
+          0.005474503617733717,
+          0.9812459349632263
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 14,
+        "time": 0.5,
+        "time_s": 0.5,
+        "motion_type": "screw",
+        "screw_progress": 0.030520853934961505,
+        "theta_rad": 0.09588409050336219,
+        "theta_deg": 5.49375370829307,
+        "omega_rad_s": 0.24820178419249533,
+        "translation_m": -0.0110520850867033,
+        "expected_translation_m": -0.011052085393496159,
+        "constraint_error_m": 3.0679285847878823e-10,
+        "theta": 0.09588409050336219,
+        "omega": 0.24820178419249533,
+        "translation": -0.0110520850867033,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.0110520850867033,
+        "joint_velocity_m_s": -0.007900508167692697,
+        "joint_angle_rad": 0.09588409050336219,
+        "joint_angle_deg": 5.49375370829307,
+        "joint_velocity_rad_s": 0.24820178419249533,
+        "friction_torque_nm": 0.004999510617089728,
+        "application_point_world": [
+          0.0010574918705970049,
+          0.005474503617733717,
+          0.9809828996658325
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574918705970049,
+          0.005474503617733717,
+          0.9809828996658325
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 15,
+        "time": 0.5333333333333333,
+        "time_s": 0.5333333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.03315765093380685,
+        "theta_rad": 0.10416783258394234,
+        "theta_deg": 5.968377168085233,
+        "omega_rad_s": 0.24872765971752836,
+        "translation_m": -0.011315764859318733,
+        "expected_translation_m": -0.011315765093380692,
+        "constraint_error_m": 2.3406195905073535e-10,
+        "theta": 0.10416783258394234,
+        "omega": 0.24872765971752836,
+        "translation": -0.011315764859318733,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.011315764859318733,
+        "joint_velocity_m_s": -0.007917247305544706,
+        "joint_angle_rad": 0.10416783258394234,
+        "joint_angle_deg": 5.968377168085233,
+        "joint_velocity_rad_s": 0.24872765971752836,
+        "friction_torque_nm": 0.004999521241745488,
+        "application_point_world": [
+          0.0010574914049357176,
+          0.005474385339766741,
+          0.9807193279266357
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574914049357176,
+          0.005474385339766741,
+          0.9807193279266357
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 16,
+        "time": 0.5666666666666667,
+        "time_s": 0.5666666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.03579907623679135,
+        "theta_rad": 0.11246611491080465,
+        "theta_deg": 6.443833722622443,
+        "omega_rad_s": 0.24910165927460054,
+        "translation_m": -0.01157990749925375,
+        "expected_translation_m": -0.011579907623679142,
+        "constraint_error_m": 1.2442539186474644e-10,
+        "theta": 0.11246611491080465,
+        "omega": 0.24910165927460054,
+        "translation": -0.01157990749925375,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.01157990749925375,
+        "joint_velocity_m_s": -0.007929152081189151,
+        "joint_angle_rad": 0.11246611491080465,
+        "joint_angle_deg": 6.443833722622443,
+        "joint_velocity_rad_s": 0.24910165927460054,
+        "friction_torque_nm": 0.004999528657284767,
+        "application_point_world": [
+          0.0010574909392744303,
+          0.005474503617733717,
+          0.9804550409317017
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574909392744303,
+          0.005474503617733717,
+          0.9804550409317017
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 17,
+        "time": 0.6,
+        "time_s": 0.6,
+        "motion_type": "screw",
+        "screw_progress": 0.038443793171823636,
+        "theta_rad": 0.12077473820472658,
+        "theta_deg": 6.919882770928254,
+        "omega_rad_s": 0.2493676469135671,
+        "translation_m": -0.011844378896057606,
+        "expected_translation_m": -0.011844379317182371,
+        "constraint_error_m": 4.2112476526801057e-10,
+        "theta": 0.12077473820472658,
+        "omega": 0.2493676469135671,
+        "translation": -0.011844378896057606,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.011844378896057606,
+        "joint_velocity_m_s": -0.007937618730697725,
+        "joint_angle_rad": 0.12077473820472658,
+        "joint_angle_deg": 6.919882770928254,
+        "joint_velocity_rad_s": 0.2493676469135671,
+        "friction_torque_nm": 0.004999533861202842,
+        "application_point_world": [
+          0.001057490473613143,
+          0.005474385339766741,
+          0.9801906943321228
+        ],
+        "torque_visual_anchor_world": [
+          0.001057490473613143,
+          0.005474385339766741,
+          0.9801906943321228
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 18,
+        "time": 0.6333333333333333,
+        "time_s": 0.6333333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.041090851112894844,
+        "theta_rad": 0.12909071598602243,
+        "theta_deg": 7.396353200321072,
+        "omega_rad_s": 0.24955681740444988,
+        "translation_m": -0.012109084986150265,
+        "expected_translation_m": -0.012109085111289492,
+        "constraint_error_m": 1.2513922710566394e-10,
+        "theta": 0.12909071598602243,
+        "omega": 0.24955681740444988,
+        "translation": -0.012109084986150265,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.012109084986150265,
+        "joint_velocity_m_s": -0.007943640214439949,
+        "joint_angle_rad": 0.12909071598602243,
+        "joint_angle_deg": 7.396353200321072,
+        "joint_velocity_rad_s": 0.24955681740444988,
+        "friction_torque_nm": 0.004999537527232658,
+        "application_point_world": [
+          0.0010574898915365338,
+          0.005474562756717205,
+          0.979925811290741
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574898915365338,
+          0.005474562756717205,
+          0.979925811290741
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 19,
+        "time": 0.6666666666666666,
+        "time_s": 0.6666666666666666,
+        "motion_type": "screw",
+        "screw_progress": 0.043739573980572696,
+        "theta_rad": 0.13741192428851445,
+        "theta_deg": 7.873123316503086,
+        "omega_rad_s": 0.24969135585843263,
+        "translation_m": -0.01237395778298378,
+        "expected_translation_m": -0.012373957398057278,
+        "constraint_error_m": -3.849265021310666e-10,
+        "theta": 0.13741192428851445,
+        "omega": 0.24969135585843263,
+        "translation": -0.01237395778298378,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.01237395778298378,
+        "joint_velocity_m_s": -0.007947922706437408,
+        "joint_angle_rad": 0.13741192428851445,
+        "joint_angle_deg": 7.873123316503086,
+        "joint_velocity_rad_s": 0.24969135585843263,
+        "friction_torque_nm": 0.004999540116963116,
+        "application_point_world": [
+          0.0010574894258752465,
+          0.005474385339766741,
+          0.9796611070632935
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574894258752465,
+          0.005474385339766741,
+          0.9796611070632935
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 20,
+        "time": 0.7,
+        "time_s": 0.7,
+        "motion_type": "screw",
+        "screw_progress": 0.04638948094878127,
+        "theta_rad": 0.1457368525525349,
+        "theta_deg": 8.350106570780628,
+        "omega_rad_s": 0.24978704006406224,
+        "translation_m": -0.012638947926461697,
+        "expected_translation_m": -0.012638948094878134,
+        "constraint_error_m": 1.6841643704634812e-10,
+        "theta": 0.1457368525525349,
+        "omega": 0.24978704006406224,
+        "translation": -0.012638947926461697,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.012638947926461697,
+        "joint_velocity_m_s": -0.007950968429297763,
+        "joint_angle_rad": 0.1457368525525349,
+        "joint_angle_deg": 8.350106570780628,
+        "joint_velocity_rad_s": 0.24978704006406224,
+        "friction_torque_nm": 0.004999541949959039,
+        "application_point_world": [
+          0.0010574889602139592,
+          0.005474385339766741,
+          0.9793961644172668
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574889602139592,
+          0.005474385339766741,
+          0.9793961644172668
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 21,
+        "time": 0.7333333333333333,
+        "time_s": 0.7333333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.049040230053914696,
+        "theta_rad": 0.1540644264677318,
+        "theta_deg": 8.827241409704646,
+        "omega_rad_s": 0.24985509108284293,
+        "translation_m": -0.012904022820293903,
+        "expected_translation_m": -0.012904023005391476,
+        "constraint_error_m": 1.8509757268581062e-10,
+        "theta": 0.1540644264677318,
+        "omega": 0.24985509108284293,
+        "translation": -0.012904022820293903,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.012904022820293903,
+        "joint_velocity_m_s": -0.00795313456050204,
+        "joint_angle_rad": 0.1540644264677318,
+        "joint_angle_deg": 8.827241409704646,
+        "joint_velocity_rad_s": 0.24985509108284293,
+        "friction_torque_nm": 0.0049995432491462275,
+        "application_point_world": [
+          0.001057488494552672,
+          0.005474385805428028,
+          0.9791310429573059
+        ],
+        "torque_visual_anchor_world": [
+          0.001057488494552672,
+          0.005474385805428028,
+          0.9791310429573059
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 22,
+        "time": 0.7666666666666666,
+        "time_s": 0.7666666666666666,
+        "motion_type": "screw",
+        "screw_progress": 0.05169157809075719,
+        "theta_rad": 0.16239388198238588,
+        "theta_deg": 9.304484056336294,
+        "omega_rad_s": 0.24990348930388284,
+        "translation_m": -0.01316915825009346,
+        "expected_translation_m": -0.013169157809075727,
+        "constraint_error_m": -4.4101773274962675e-10,
+        "theta": 0.16239388198238588,
+        "omega": 0.24990348930388284,
+        "translation": -0.01316915825009346,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.01316915825009346,
+        "joint_velocity_m_s": -0.007954675123725111,
+        "joint_angle_rad": 0.16239388198238588,
+        "joint_angle_deg": 9.304484056336294,
+        "joint_velocity_rad_s": 0.24990348930388284,
+        "friction_torque_nm": 0.004999544170891663,
+        "application_point_world": [
+          0.0010574880288913846,
+          0.005474385805428028,
+          0.978865921497345
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574880288913846,
+          0.005474385805428028,
+          0.978865921497345
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 23,
+        "time": 0.8,
+        "time_s": 0.8,
+        "motion_type": "screw",
+        "screw_progress": 0.054343352090946165,
+        "theta_rad": 0.17072467570035998,
+        "theta_deg": 9.78180337637031,
+        "omega_rad_s": 0.24993791038002106,
+        "translation_m": -0.013434335589408875,
+        "expected_translation_m": -0.013434335209094622,
+        "constraint_error_m": -3.803142523128855e-10,
+        "theta": 0.17072467570035998,
+        "omega": 0.24993791038002106,
+        "translation": -0.013434335589408875,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.013434335589408875,
+        "joint_velocity_m_s": -0.007955770780607899,
+        "joint_angle_rad": 0.17072467570035998,
+        "joint_angle_deg": 9.78180337637031,
+        "joint_velocity_rad_s": 0.24993791038002106,
+        "friction_torque_nm": 0.004999544825309875,
+        "application_point_world": [
+          0.0010574875632300973,
+          0.005474504083395004,
+          0.9786006212234497
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574875632300973,
+          0.005474504083395004,
+          0.9786006212234497
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 24,
+        "time": 0.8333333333333334,
+        "time_s": 0.8333333333333334,
+        "motion_type": "screw",
+        "screw_progress": 0.05699542903864475,
+        "theta_rad": 0.1790564211560047,
+        "theta_deg": 10.259177226956055,
+        "omega_rad_s": 0.24996239084635483,
+        "translation_m": -0.013699542731046677,
+        "expected_translation_m": -0.013699542903864482,
+        "constraint_error_m": 1.728178052051721e-10,
+        "theta": 0.1790564211560047,
+        "omega": 0.24996239084635483,
+        "translation": -0.013699542731046677,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.013699542731046677,
+        "joint_velocity_m_s": -0.00795655001805314,
+        "joint_angle_rad": 0.1790564211560047,
+        "joint_angle_deg": 10.259177226956055,
+        "joint_velocity_rad_s": 0.24996239084635483,
+        "friction_torque_nm": 0.004999545290164067,
+        "application_point_world": [
+          0.0010574868647381663,
+          0.005474503617733717,
+          0.978335440158844
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574868647381663,
+          0.005474503617733717,
+          0.978335440158844
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 25,
+        "time": 0.8666666666666667,
+        "time_s": 0.8666666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.059647721444384995,
+        "theta_rad": 0.18738884349305027,
+        "theta_deg": 10.7365898599893,
+        "omega_rad_s": 0.24997980149972615,
+        "translation_m": -0.01396477222442627,
+        "expected_translation_m": -0.013964772144438507,
+        "constraint_error_m": -7.998776294093624e-11,
+        "theta": 0.18738884349305027,
+        "omega": 0.24997980149972615,
+        "translation": -0.01396477222442627,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.01396477222442627,
+        "joint_velocity_m_s": -0.007957104216362443,
+        "joint_angle_rad": 0.18738884349305027,
+        "joint_angle_deg": 10.7365898599893,
+        "joint_velocity_rad_s": 0.24997980149972615,
+        "friction_torque_nm": 0.004999545620482224,
+        "application_point_world": [
+          0.001057486399076879,
+          0.005474504083395004,
+          0.9780701994895935
+        ],
+        "torque_visual_anchor_world": [
+          0.001057486399076879,
+          0.005474504083395004,
+          0.9780701994895935
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 26,
+        "time": 0.9,
+        "time_s": 0.9,
+        "motion_type": "screw",
+        "screw_progress": 0.06230016708518673,
+        "theta_rad": 0.19572174723223926,
+        "theta_deg": 11.21403007533361,
+        "omega_rad_s": 0.2499921840628764,
+        "translation_m": -0.014230016618967056,
+        "expected_translation_m": -0.01423001670851868,
+        "constraint_error_m": 8.955162306145681e-11,
+        "theta": 0.19572174723223926,
+        "omega": 0.2499921840628764,
+        "translation": -0.014230016618967056,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.014230016618967056,
+        "joint_velocity_m_s": -0.007957498365589144,
+        "joint_angle_rad": 0.19572174723223926,
+        "joint_angle_deg": 11.21403007533361,
+        "joint_velocity_rad_s": 0.2499921840628764,
+        "friction_torque_nm": 0.004999545855260494,
+        "application_point_world": [
+          0.0010574859334155917,
+          0.005474385805428028,
+          0.9778050780296326
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574859334155917,
+          0.005474385805428028,
+          0.9778050780296326
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 27,
+        "time": 0.9333333333333333,
+        "time_s": 0.9333333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.0649527217077113,
+        "theta_rad": 0.2040549933476081,
+        "theta_deg": 11.691489907388034,
+        "omega_rad_s": 0.25000099061894804,
+        "translation_m": -0.014495272189378738,
+        "expected_translation_m": -0.014495272170771137,
+        "constraint_error_m": -1.8607601570685972e-11,
+        "theta": 0.2040549933476081,
+        "omega": 0.25000099061894804,
+        "translation": -0.014495272189378738,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.014495272189378738,
+        "joint_velocity_m_s": -0.007957778686975229,
+        "joint_angle_rad": 0.2040549933476081,
+        "joint_angle_deg": 11.691489907388034,
+        "joint_velocity_rad_s": 0.25000099061894804,
+        "friction_torque_nm": 0.004999546022162439,
+        "application_point_world": [
+          0.0010574854677543044,
+          0.005474504083395004,
+          0.9775397181510925
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574854677543044,
+          0.005474504083395004,
+          0.9775397181510925
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 28,
+        "time": 0.9666666666666667,
+        "time_s": 0.9666666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.06760535383872131,
+        "theta_rad": 0.21238848296306537,
+        "theta_deg": 12.168963690969834,
+        "omega_rad_s": 0.250007253897228,
+        "translation_m": -0.014760535210371017,
+        "expected_translation_m": -0.014760535383872137,
+        "constraint_error_m": 1.7350111972125326e-10,
+        "theta": 0.21238848296306537,
+        "omega": 0.250007253897228,
+        "translation": -0.014760535210371017,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.014760535210371017,
+        "joint_velocity_m_s": -0.00795797805331487,
+        "joint_angle_rad": 0.21238848296306537,
+        "joint_angle_deg": 12.168963690969834,
+        "joint_velocity_rad_s": 0.250007253897228,
+        "friction_torque_nm": 0.004999546140826832,
+        "application_point_world": [
+          0.001057485002093017,
+          0.005474563222378492,
+          0.9772743582725525
+        ],
+        "torque_visual_anchor_world": [
+          0.001057485002093017,
+          0.005474563222378492,
+          0.9772743582725525
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 29,
+        "time": 1.0,
+        "time_s": 1.0,
+        "motion_type": "screw",
+        "screw_progress": 0.07025804109425807,
+        "theta_rad": 0.22072214575733093,
+        "theta_deg": 12.646447396966451,
+        "omega_rad_s": 0.25001170838065195,
+        "translation_m": -0.015025803819298744,
+        "expected_translation_m": -0.015025804109425812,
+        "constraint_error_m": 2.9012706820319423e-10,
+        "theta": 0.22072214575733093,
+        "omega": 0.25001170838065195,
+        "translation": -0.015025803819298744,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.015025803819298744,
+        "joint_velocity_m_s": -0.00795811984392604,
+        "joint_angle_rad": 0.22072214575733093,
+        "joint_angle_deg": 12.646447396966451,
+        "joint_velocity_rad_s": 0.25001170838065195,
+        "friction_torque_nm": 0.004999546225202828,
+        "application_point_world": [
+          0.001057484420016408,
+          0.005474385805428028,
+          0.9770092964172363
+        ],
+        "torque_visual_anchor_world": [
+          0.001057484420016408,
+          0.005474385805428028,
+          0.9770092964172363
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 30,
+        "time": 1.0333333333333332,
+        "time_s": 1.0333333333333332,
+        "motion_type": "screw",
+        "screw_progress": 0.07291076755471083,
+        "theta_rad": 0.2290559317174726,
+        "theta_deg": 13.12393815984795,
+        "omega_rad_s": 0.2500148764378338,
+        "translation_m": -0.015291077084839344,
+        "expected_translation_m": -0.01529107675547109,
+        "constraint_error_m": -3.29368253157436e-10,
+        "theta": 0.2290559317174726,
+        "omega": 0.2500148764378338,
+        "translation": -0.015291077084839344,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.015291077084839344,
+        "joint_velocity_m_s": -0.007958220686318138,
+        "joint_angle_rad": 0.2290559317174726,
+        "joint_angle_deg": 13.12393815984795,
+        "joint_velocity_rad_s": 0.2500148764378338,
+        "friction_torque_nm": 0.0049995462852020335,
+        "application_point_world": [
+          0.0010574839543551207,
+          0.005474385805428028,
+          0.9767439961433411
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574839543551207,
+          0.005474385805428028,
+          0.9767439961433411
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 31,
+        "time": 1.0666666666666667,
+        "time_s": 1.0666666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.07556352189795196,
+        "theta_rad": 0.23738980527397735,
+        "theta_deg": 13.601433941631353,
+        "omega_rad_s": 0.250017129580515,
+        "translation_m": -0.015556352213025093,
+        "expected_translation_m": -0.015556352189795203,
+        "constraint_error_m": -2.322989023362254e-11,
+        "theta": 0.23738980527397735,
+        "omega": 0.250017129580515,
+        "translation": -0.015556352213025093,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.015556352213025093,
+        "joint_velocity_m_s": -0.007958292406077178,
+        "joint_angle_rad": 0.23738980527397735,
+        "joint_angle_deg": 13.601433941631353,
+        "joint_velocity_rad_s": 0.250017129580515,
+        "friction_torque_nm": 0.004999546327869028,
+        "application_point_world": [
+          0.0010574834886938334,
+          0.005474504083395004,
+          0.976478636264801
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574834886938334,
+          0.005474504083395004,
+          0.976478636264801
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 32,
+        "time": 1.1,
+        "time_s": 1.1,
+        "motion_type": "screw",
+        "screw_progress": 0.07821629607161217,
+        "theta_rad": 0.24572374112958098,
+        "theta_deg": 14.07893329289019,
+        "omega_rad_s": 0.2500187320301555,
+        "translation_m": -0.015821630135178566,
+        "expected_translation_m": -0.015821629607161224,
+        "constraint_error_m": -5.280173416555289e-10,
+        "theta": 0.24572374112958098,
+        "omega": 0.2500187320301555,
+        "translation": -0.015821630135178566,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.015821630135178566,
+        "joint_velocity_m_s": -0.007958343413633447,
+        "joint_angle_rad": 0.24572374112958098,
+        "joint_angle_deg": 14.07893329289019,
+        "joint_velocity_rad_s": 0.2500187320301555,
+        "friction_torque_nm": 0.004999546358211628,
+        "application_point_world": [
+          0.001057483023032546,
+          0.005474504083395004,
+          0.9762133359909058
+        ],
+        "torque_visual_anchor_world": [
+          0.001057483023032546,
+          0.005474504083395004,
+          0.9762133359909058
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 33,
+        "time": 1.1333333333333333,
+        "time_s": 1.1333333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.08086908434879478,
+        "theta_rad": 0.254057721292707,
+        "theta_deg": 14.55643518278306,
+        "omega_rad_s": 0.25001987170272305,
+        "translation_m": -0.01608690805733204,
+        "expected_translation_m": -0.016086908434879484,
+        "constraint_error_m": 3.7754744469653545e-10,
+        "theta": 0.254057721292707,
+        "omega": 0.25001987170272305,
+        "translation": -0.01608690805733204,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.01608690805733204,
+        "joint_velocity_m_s": -0.007958379690537972,
+        "joint_angle_rad": 0.254057721292707,
+        "joint_angle_deg": 14.55643518278306,
+        "joint_velocity_rad_s": 0.25001987170272305,
+        "friction_torque_nm": 0.004999546379790247,
+        "application_point_world": [
+          0.001057482440955937,
+          0.005474504083395004,
+          0.9759480953216553
+        ],
+        "torque_visual_anchor_world": [
+          0.001057482440955937,
+          0.005474504083395004,
+          0.9759480953216553
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 34,
+        "time": 1.1666666666666667,
+        "time_s": 1.1666666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.083521882656494,
+        "theta_rad": 0.2623917329676303,
+        "theta_deg": 15.03393887816892,
+        "omega_rad_s": 0.2500206822452498,
+        "translation_m": -0.01635218784213066,
+        "expected_translation_m": -0.01635218826564941,
+        "constraint_error_m": 4.235187478496272e-10,
+        "theta": 0.2623917329676303,
+        "omega": 0.2500206822452498,
+        "translation": -0.01635218784213066,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.01635218784213066,
+        "joint_velocity_m_s": -0.007958405490907917,
+        "joint_angle_rad": 0.2623917329676303,
+        "joint_angle_deg": 15.03393887816892,
+        "joint_velocity_rad_s": 0.2500206822452498,
+        "friction_torque_nm": 0.004999546395136475,
+        "application_point_world": [
+          0.0010574819752946496,
+          0.005474385805428028,
+          0.9756829142570496
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574819752946496,
+          0.005474385805428028,
+          0.9756829142570496
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 35,
+        "time": 1.2,
+        "time_s": 1.2,
+        "motion_type": "screw",
+        "screw_progress": 0.08617468809796178,
+        "theta_rad": 0.2707257670539485,
+        "theta_deg": 15.51144385763312,
+        "omega_rad_s": 0.2500212587083616,
+        "translation_m": -0.016617469489574432,
+        "expected_translation_m": -0.016617468809796185,
+        "constraint_error_m": -6.7977824758092e-10,
+        "theta": 0.2707257670539485,
+        "omega": 0.2500212587083616,
+        "translation": -0.016617469489574432,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.016617469489574432,
+        "joint_velocity_m_s": -0.007958423840298668,
+        "joint_angle_rad": 0.2707257670539485,
+        "joint_angle_deg": 15.51144385763312,
+        "joint_velocity_rad_s": 0.2500212587083616,
+        "friction_torque_nm": 0.004999546406050498,
+        "application_point_world": [
+          0.0010574815096333623,
+          0.005474385805428028,
+          0.9754176139831543
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574815096333623,
+          0.005474385805428028,
+          0.9754176139831543
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 36,
+        "time": 1.2333333333333334,
+        "time_s": 1.2333333333333334,
+        "motion_type": "screw",
+        "screw_progress": 0.08882749861301215,
+        "theta_rad": 0.2790598170793965,
+        "theta_deg": 15.988949750342185,
+        "omega_rad_s": 0.2500216686926756,
+        "translation_m": -0.016882749274373055,
+        "expected_translation_m": -0.01688274986130122,
+        "constraint_error_m": 5.869281657910896e-10,
+        "theta": 0.2790598170793965,
+        "omega": 0.2500216686926756,
+        "translation": -0.016882749274373055,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.016882749274373055,
+        "joint_velocity_m_s": -0.0079584368905047,
+        "joint_angle_rad": 0.2790598170793965,
+        "joint_angle_deg": 15.988949750342185,
+        "joint_velocity_rad_s": 0.2500216686926756,
+        "friction_torque_nm": 0.004999546413812461,
+        "application_point_world": [
+          0.001057481043972075,
+          0.005474504083395004,
+          0.9751521944999695
+        ],
+        "torque_visual_anchor_world": [
+          0.001057481043972075,
+          0.005474504083395004,
+          0.9751521944999695
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 37,
+        "time": 1.2666666666666666,
+        "time_s": 1.2666666666666666,
+        "motion_type": "screw",
+        "screw_progress": 0.09148031273642744,
+        "theta_rad": 0.28739387844085723,
+        "theta_deg": 16.466456292556938,
+        "omega_rad_s": 0.25002196027618756,
+        "translation_m": -0.017148030921816826,
+        "expected_translation_m": -0.017148031273642752,
+        "constraint_error_m": 3.5182592603155705e-10,
+        "theta": 0.28739387844085723,
+        "omega": 0.25002196027618756,
+        "translation": -0.017148030921816826,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.017148030921816826,
+        "joint_velocity_m_s": -0.007958446171896151,
+        "joint_angle_rad": 0.28739387844085723,
+        "joint_angle_deg": 16.466456292556938,
+        "joint_velocity_rad_s": 0.25002196027618756,
+        "friction_torque_nm": 0.004999546419332739,
+        "application_point_world": [
+          0.0010574804618954659,
+          0.005474504083395004,
+          0.974886953830719
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574804618954659,
+          0.005474504083395004,
+          0.974886953830719
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 38,
+        "time": 1.3,
+        "time_s": 1.3,
+        "motion_type": "screw",
+        "screw_progress": 0.09413312942613536,
+        "theta_rad": 0.295727947864564,
+        "theta_deg": 16.943963296704364,
+        "omega_rad_s": 0.25002216765227936,
+        "translation_m": -0.017413312569260597,
+        "expected_translation_m": -0.017413312942613543,
+        "constraint_error_m": 3.7335294578166867e-10,
+        "theta": 0.295727947864564,
+        "omega": 0.25002216765227936,
+        "translation": -0.017413312569260597,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.017413312569260597,
+        "joint_velocity_m_s": -0.007958452772882168,
+        "joint_angle_rad": 0.295727947864564,
+        "joint_angle_deg": 16.943963296704364,
+        "joint_velocity_rad_s": 0.25002216765227936,
+        "friction_torque_nm": 0.004999546423258756,
+        "application_point_world": [
+          0.0010574799962341785,
+          0.005474504083395004,
+          0.9746216535568237
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574799962341785,
+          0.005474504083395004,
+          0.9746216535568237
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 39,
+        "time": 1.3333333333333333,
+        "time_s": 1.3333333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.09678594794100728,
+        "theta_rad": 0.30406202302219265,
+        "theta_deg": 17.42147062938131,
+        "omega_rad_s": 0.25002231513950623,
+        "translation_m": -0.01767859421670437,
+        "expected_translation_m": -0.017678594794100735,
+        "constraint_error_m": 5.773963668298521e-10,
+        "theta": 0.30406202302219265,
+        "omega": 0.25002231513950623,
+        "translation": -0.01767859421670437,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.01767859421670437,
+        "joint_velocity_m_s": -0.007958457467546408,
+        "joint_angle_rad": 0.30406202302219265,
+        "joint_angle_deg": 17.42147062938131,
+        "joint_velocity_rad_s": 0.25002231513950623,
+        "friction_torque_nm": 0.004999546426050944,
+        "application_point_world": [
+          0.0010574795305728912,
+          0.005474504083395004,
+          0.9743563532829285
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574795305728912,
+          0.005474504083395004,
+          0.9743563532829285
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 40,
+        "time": 1.3666666666666667,
+        "time_s": 1.3666666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.09943876775394776,
+        "theta_rad": 0.3123961022578239,
+        "theta_deg": 17.898978195710598,
+        "omega_rad_s": 0.25002242003338254,
+        "translation_m": -0.01794387586414814,
+        "expected_translation_m": -0.017943876775394784,
+        "constraint_error_m": 9.112466441141276e-10,
+        "theta": 0.3123961022578239,
+        "omega": 0.25002242003338254,
+        "translation": -0.01794387586414814,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.01794387586414814,
+        "joint_velocity_m_s": -0.00795846080642219,
+        "joint_angle_rad": 0.3123961022578239,
+        "joint_angle_deg": 17.898978195710598,
+        "joint_velocity_rad_s": 0.25002242003338254,
+        "friction_torque_nm": 0.004999546428036757,
+        "application_point_world": [
+          0.001057478948496282,
+          0.005474503617733717,
+          0.974091112613678
+        ],
+        "torque_visual_anchor_world": [
+          0.001057478948496282,
+          0.005474503617733717,
+          0.974091112613678
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 41,
+        "time": 1.4,
+        "time_s": 1.4,
+        "motion_type": "screw",
+        "screw_progress": 0.10209158849008303,
+        "theta_rad": 0.3207301843937571,
+        "theta_deg": 18.376485928214944,
+        "omega_rad_s": 0.2500224946345906,
+        "translation_m": -0.01820915937423706,
+        "expected_translation_m": -0.01820915884900831,
+        "constraint_error_m": -5.252287493817676e-10,
+        "theta": 0.3207301843937571,
+        "omega": 0.2500224946345906,
+        "translation": -0.01820915937423706,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.01820915937423706,
+        "joint_velocity_m_s": -0.007958463181052394,
+        "joint_angle_rad": 0.3207301843937571,
+        "joint_angle_deg": 18.376485928214944,
+        "joint_velocity_rad_s": 0.2500224946345906,
+        "friction_torque_nm": 0.004999546429449073,
+        "application_point_world": [
+          0.0010574784828349948,
+          0.005474504083395004,
+          0.9738258123397827
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574784828349948,
+          0.005474504083395004,
+          0.9738258123397827
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 42,
+        "time": 1.4333333333333333,
+        "time_s": 1.4333333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.10474440988280043,
+        "theta_rad": 0.32906426859240395,
+        "theta_deg": 18.853993778904076,
+        "omega_rad_s": 0.2500225476914559,
+        "translation_m": -0.018474441021680832,
+        "expected_translation_m": -0.01847444098828005,
+        "constraint_error_m": -3.340078214009168e-11,
+        "theta": 0.32906426859240395,
+        "omega": 0.2500225476914559,
+        "translation": -0.018474441021680832,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.018474441021680832,
+        "joint_velocity_m_s": -0.00795846486990487,
+        "joint_angle_rad": 0.32906426859240395,
+        "joint_angle_deg": 18.853993778904076,
+        "joint_velocity_rad_s": 0.2500225476914559,
+        "friction_torque_nm": 0.00499954643045352,
+        "application_point_world": [
+          0.0010574780171737075,
+          0.005474504083395004,
+          0.9735605120658875
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574780171737075,
+          0.005474504083395004,
+          0.9735605120658875
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 43,
+        "time": 1.4666666666666666,
+        "time_s": 1.4666666666666666,
+        "motion_type": "screw",
+        "screw_progress": 0.10739723174248336,
+        "theta_rad": 0.33739835425806625,
+        "theta_deg": 19.331501713647004,
+        "omega_rad_s": 0.2500225854258441,
+        "translation_m": -0.018739722669124603,
+        "expected_translation_m": -0.018739723174248345,
+        "constraint_error_m": 5.051237414455123e-10,
+        "theta": 0.33739835425806625,
+        "omega": 0.2500225854258441,
+        "translation": -0.018739722669124603,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.018739722669124603,
+        "joint_velocity_m_s": -0.007958466071027752,
+        "joint_angle_rad": 0.33739835425806625,
+        "joint_angle_deg": 19.331501713647004,
+        "joint_velocity_rad_s": 0.2500225854258441,
+        "friction_torque_nm": 0.0049995464311678875,
+        "application_point_world": [
+          0.0010574774350970984,
+          0.005474562756717205,
+          0.9732952117919922
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574774350970984,
+          0.005474562756717205,
+          0.9732952117919922
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 44,
+        "time": 1.5,
+        "time_s": 1.5,
+        "motion_type": "screw",
+        "screw_progress": 0.11005005393427522,
+        "theta_rad": 0.34573244096707956,
+        "theta_deg": 19.80900970816954,
+        "omega_rad_s": 0.2500226122627869,
+        "translation_m": -0.019005006179213524,
+        "expected_translation_m": -0.019005005393427532,
+        "constraint_error_m": -7.857859918303234e-10,
+        "theta": 0.34573244096707956,
+        "omega": 0.2500226122627869,
+        "translation": -0.019005006179213524,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.019005006179213524,
+        "joint_velocity_m_s": -0.007958466925274172,
+        "joint_angle_rad": 0.34573244096707956,
+        "joint_angle_deg": 19.80900970816954,
+        "joint_velocity_rad_s": 0.2500226122627869,
+        "friction_torque_nm": 0.004999546431675949,
+        "application_point_world": [
+          0.001057476969435811,
+          0.005474385339766741,
+          0.9730300903320312
+        ],
+        "torque_visual_anchor_world": [
+          0.001057476969435811,
+          0.005474385339766741,
+          0.9730300903320312
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 45,
+        "time": 1.5333333333333332,
+        "time_s": 1.5333333333333332,
+        "motion_type": "screw",
+        "screw_progress": 0.11270287636226513,
+        "theta_rad": 0.35406652841813085,
+        "theta_deg": 20.28651774520772,
+        "omega_rad_s": 0.25002263134939545,
+        "translation_m": -0.019270287826657295,
+        "expected_translation_m": -0.01927028763622652,
+        "constraint_error_m": -1.9043077531533115e-10,
+        "theta": 0.35406652841813085,
+        "omega": 0.25002263134939545,
+        "translation": -0.019270287826657295,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.019270287826657295,
+        "joint_velocity_m_s": -0.007958467532819792,
+        "joint_angle_rad": 0.35406652841813085,
+        "joint_angle_deg": 20.28651774520772,
+        "joint_velocity_rad_s": 0.25002263134939545,
+        "friction_torque_nm": 0.004999546432037287,
+        "application_point_world": [
+          0.0010574766201898456,
+          0.005474504083395004,
+          0.9727646708488464
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574766201898456,
+          0.005474504083395004,
+          0.9727646708488464
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 46,
+        "time": 1.5666666666666667,
+        "time_s": 1.5666666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.11535569895824054,
+        "theta_rad": 0.3624006163969242,
+        "theta_deg": 20.764025812483297,
+        "omega_rad_s": 0.25002264492391585,
+        "translation_m": -0.019535569474101067,
+        "expected_translation_m": -0.01953556989582406,
+        "constraint_error_m": 4.2172299333231855e-10,
+        "theta": 0.3624006163969242,
+        "omega": 0.25002264492391585,
+        "translation": -0.019535569474101067,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.019535569474101067,
+        "joint_velocity_m_s": -0.007958467964910197,
+        "joint_angle_rad": 0.3624006163969242,
+        "joint_angle_deg": 20.764025812483297,
+        "joint_velocity_rad_s": 0.25002264492391585,
+        "friction_torque_nm": 0.004999546432294271,
+        "application_point_world": [
+          0.0010574760381132364,
+          0.005474503617733717,
+          0.972499430179596
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574760381132364,
+          0.005474503617733717,
+          0.972499430179596
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 47,
+        "time": 1.6,
+        "time_s": 1.6,
+        "motion_type": "screw",
+        "screw_progress": 0.1180085216736884,
+        "theta_rad": 0.37073470475105136,
+        "theta_deg": 21.241533901263914,
+        "omega_rad_s": 0.25002265457820316,
+        "translation_m": -0.019800852984189987,
+        "expected_translation_m": -0.01980085216736885,
+        "constraint_error_m": -8.168211385051194e-10,
+        "theta": 0.37073470475105136,
+        "omega": 0.25002265457820316,
+        "translation": -0.019800852984189987,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.019800852984189987,
+        "joint_velocity_m_s": -0.007958468272215706,
+        "joint_angle_rad": 0.37073470475105136,
+        "joint_angle_deg": 21.241533901263914,
+        "joint_velocity_rad_s": 0.25002265457820316,
+        "friction_torque_nm": 0.00499954643247704,
+        "application_point_world": [
+          0.0010574755724519491,
+          0.005474385339766741,
+          0.9722342491149902
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574755724519491,
+          0.005474385339766741,
+          0.9722342491149902
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 48,
+        "time": 1.6333333333333333,
+        "time_s": 1.6333333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.12066134447410584,
+        "theta_rad": 0.3790687933721183,
+        "theta_deg": 21.719042005339052,
+        "omega_rad_s": 0.2500226614443952,
+        "translation_m": -0.02006613463163376,
+        "expected_translation_m": -0.020066134447410594,
+        "constraint_error_m": -1.842231645010628e-10,
+        "theta": 0.3790687933721183,
+        "omega": 0.2500226614443952,
+        "translation": -0.02006613463163376,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.02006613463163376,
+        "joint_velocity_m_s": -0.007958468490773389,
+        "joint_angle_rad": 0.3790687933721183,
+        "joint_angle_deg": 21.719042005339052,
+        "joint_velocity_rad_s": 0.2500226614443952,
+        "friction_torque_nm": 0.004999546432607027,
+        "application_point_world": [
+          0.0010574751067906618,
+          0.005474385339766741,
+          0.971968948841095
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574751067906618,
+          0.005474385339766741,
+          0.971968948841095
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 49,
+        "time": 1.6666666666666667,
+        "time_s": 1.6666666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.12331416733495422,
+        "theta_rad": 0.3874028821830346,
+        "theta_deg": 22.196550120291757,
+        "omega_rad_s": 0.2500226663276758,
+        "translation_m": -0.02033141627907753,
+        "expected_translation_m": -0.02033141673349543,
+        "constraint_error_m": 4.544178991428005e-10,
+        "theta": 0.3874028821830346,
+        "omega": 0.2500226663276758,
+        "translation": -0.02033141627907753,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.02033141627907753,
+        "joint_velocity_m_s": -0.007958468646213036,
+        "joint_angle_rad": 0.3874028821830346,
+        "joint_angle_deg": 22.196550120291757,
+        "joint_velocity_rad_s": 0.2500226663276758,
+        "friction_torque_nm": 0.004999546432699474,
+        "application_point_world": [
+          0.0010574745247140527,
+          0.005474385339766741,
+          0.9717036485671997
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574745247140527,
+          0.005474385339766741,
+          0.9717036485671997
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 50,
+        "time": 1.7,
+        "time_s": 1.7,
+        "motion_type": "screw",
+        "screw_progress": 0.12596699023878144,
+        "theta_rad": 0.39573697112897294,
+        "theta_deg": 22.674058242980657,
+        "omega_rad_s": 0.25002266980069665,
+        "translation_m": -0.02059669978916645,
+        "expected_translation_m": -0.020596699023878152,
+        "constraint_error_m": -7.652882980102582e-10,
+        "theta": 0.39573697112897294,
+        "omega": 0.25002266980069665,
+        "translation": -0.02059669978916645,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.02059669978916645,
+        "joint_velocity_m_s": -0.007958468756762723,
+        "joint_angle_rad": 0.39573697112897294,
+        "joint_angle_deg": 22.674058242980657,
+        "joint_velocity_rad_s": 0.25002266980069665,
+        "friction_torque_nm": 0.0049995464327652235,
+        "application_point_world": [
+          0.0010574740590527654,
+          0.005474385339766741,
+          0.9714384078979492
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574740590527654,
+          0.005474385339766741,
+          0.9714384078979492
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 51,
+        "time": 1.7333333333333334,
+        "time_s": 1.7333333333333334,
+        "motion_type": "screw",
+        "screw_progress": 0.12861981317317547,
+        "theta_rad": 0.4040710601709398,
+        "theta_deg": 23.151566371171587,
+        "omega_rad_s": 0.25002267227073177,
+        "translation_m": -0.020861981436610222,
+        "expected_translation_m": -0.020861981317317556,
+        "constraint_error_m": -1.1929266602317412e-10,
+        "theta": 0.4040710601709398,
+        "omega": 0.25002267227073177,
+        "translation": -0.020861981436610222,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.020861981436610222,
+        "joint_velocity_m_s": -0.007958468835386383,
+        "joint_angle_rad": 0.4040710601709398,
+        "joint_angle_deg": 23.151566371171587,
+        "joint_velocity_rad_s": 0.25002267227073177,
+        "friction_torque_nm": 0.004999546432811985,
+        "application_point_world": [
+          0.001057473593391478,
+          0.005474562291055918,
+          0.9711729288101196
+        ],
+        "torque_visual_anchor_world": [
+          0.001057473593391478,
+          0.005474562291055918,
+          0.9711729288101196
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 52,
+        "time": 1.7666666666666666,
+        "time_s": 1.7666666666666666,
+        "motion_type": "screw",
+        "screw_progress": 0.1312726361293089,
+        "theta_rad": 0.41240514928120287,
+        "theta_deg": 23.6290745032756,
+        "omega_rad_s": 0.2500226740274368,
+        "translation_m": -0.021127263084053993,
+        "expected_translation_m": -0.021127263612930897,
+        "constraint_error_m": 5.288769040767693e-10,
+        "theta": 0.41240514928120287,
+        "omega": 0.2500226740274368,
+        "translation": -0.021127263084053993,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.021127263084053993,
+        "joint_velocity_m_s": -0.00795846889130404,
+        "joint_angle_rad": 0.41240514928120287,
+        "joint_angle_deg": 23.6290745032756,
+        "joint_velocity_rad_s": 0.2500226740274368,
+        "friction_torque_nm": 0.004999546432845242,
+        "application_point_world": [
+          0.0010574731277301908,
+          0.0054743848741054535,
+          0.9709078073501587
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574731277301908,
+          0.0054743848741054535,
+          0.9709078073501587
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 53,
+        "time": 1.8,
+        "time_s": 1.8,
+        "motion_type": "screw",
+        "screw_progress": 0.13392545910090342,
+        "theta_rad": 0.4207392384400385,
+        "theta_deg": 24.106582638162617,
+        "omega_rad_s": 0.25002267527681693,
+        "translation_m": -0.021392546594142914,
+        "expected_translation_m": -0.02139254591009035,
+        "constraint_error_m": -6.840525645923634e-10,
+        "theta": 0.4207392384400385,
+        "omega": 0.25002267527681693,
+        "translation": -0.021392546594142914,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.021392546594142914,
+        "joint_velocity_m_s": -0.007958468931073047,
+        "joint_angle_rad": 0.4207392384400385,
+        "joint_angle_deg": 24.106582638162617,
+        "joint_velocity_rad_s": 0.25002267527681693,
+        "friction_torque_nm": 0.004999546432868894,
+        "application_point_world": [
+          0.0010574726620689034,
+          0.005474502686411142,
+          0.9706424474716187
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574726620689034,
+          0.005474502686411142,
+          0.9706424474716187
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 54,
+        "time": 1.8333333333333333,
+        "time_s": 1.8333333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.13657828208349407,
+        "theta_rad": 0.42907332763341943,
+        "theta_deg": 24.584090775028933,
+        "omega_rad_s": 0.2500226761653842,
+        "translation_m": -0.021657828241586685,
+        "expected_translation_m": -0.021657828208349415,
+        "constraint_error_m": -3.3237270574693056e-11,
+        "theta": 0.42907332763341943,
+        "omega": 0.2500226761653842,
+        "translation": -0.021657828241586685,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.021657828241586685,
+        "joint_velocity_m_s": -0.00795846895935702,
+        "joint_angle_rad": 0.42907332763341943,
+        "joint_angle_deg": 24.584090775028933,
+        "joint_velocity_rad_s": 0.2500226761653842,
+        "friction_torque_nm": 0.004999546432885716,
+        "application_point_world": [
+          0.0010574720799922943,
+          0.00547450315207243,
+          0.9703771471977234
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574720799922943,
+          0.00547450315207243,
+          0.9703771471977234
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 55,
+        "time": 1.8666666666666667,
+        "time_s": 1.8666666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.1392311050739052,
+        "theta_rad": 0.4374074168513692,
+        "theta_deg": 25.061598913302937,
+        "omega_rad_s": 0.250022676797339,
+        "translation_m": -0.021923109889030457,
+        "expected_translation_m": -0.021923110507390528,
+        "constraint_error_m": 6.183600714804172e-10,
+        "theta": 0.4374074168513692,
+        "omega": 0.250022676797339,
+        "translation": -0.021923109889030457,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.021923109889030457,
+        "joint_velocity_m_s": -0.007958468979472767,
+        "joint_angle_rad": 0.4374074168513692,
+        "joint_angle_deg": 25.061598913302937,
+        "joint_velocity_rad_s": 0.250022676797339,
+        "friction_torque_nm": 0.00499954643289768,
+        "application_point_world": [
+          0.001057471614331007,
+          0.0054743848741054535,
+          0.9701119661331177
+        ],
+        "torque_visual_anchor_world": [
+          0.001057471614331007,
+          0.0054743848741054535,
+          0.9701119661331177
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 56,
+        "time": 1.9,
+        "time_s": 1.9,
+        "motion_type": "screw",
+        "screw_progress": 0.14188392806987835,
+        "theta_rad": 0.4457415060867924,
+        "theta_deg": 25.5391070525781,
+        "omega_rad_s": 0.25002267724678945,
+        "translation_m": -0.022188393399119377,
+        "expected_translation_m": -0.022188392806987842,
+        "constraint_error_m": -5.921315347767742e-10,
+        "theta": 0.4457415060867924,
+        "omega": 0.25002267724678945,
+        "translation": -0.022188393399119377,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.022188393399119377,
+        "joint_velocity_m_s": -0.007958468993779218,
+        "joint_angle_rad": 0.4457415060867924,
+        "joint_angle_deg": 25.5391070525781,
+        "joint_velocity_rad_s": 0.25002267724678945,
+        "friction_torque_nm": 0.004999546432906189,
+        "application_point_world": [
+          0.0010574415791779757,
+          0.005474502686411142,
+          0.9698465466499329
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574415791779757,
+          0.005474502686411142,
+          0.9698465466499329
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 57,
+        "time": 1.9333333333333333,
+        "time_s": 1.9333333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.14453675106980712,
+        "theta_rad": 0.45407559533464276,
+        "theta_deg": 26.016615192565283,
+        "omega_rad_s": 0.25002267756644153,
+        "translation_m": -0.02245367504656315,
+        "expected_translation_m": -0.022453675106980722,
+        "constraint_error_m": 6.041757372177159e-11,
+        "theta": 0.45407559533464276,
+        "omega": 0.25002267756644153,
+        "translation": -0.02245367504656315,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.02245367504656315,
+        "joint_velocity_m_s": -0.00795846900395406,
+        "joint_angle_rad": 0.45407559533464276,
+        "joint_angle_deg": 26.016615192565283,
+        "joint_velocity_rad_s": 0.25002267756644153,
+        "friction_torque_nm": 0.00499954643291224,
+        "application_point_world": [
+          0.0010574706830084324,
+          0.005474384408444166,
+          0.9695814251899719
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574706830084324,
+          0.005474384408444166,
+          0.9695814251899719
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 58,
+        "time": 1.9666666666666666,
+        "time_s": 1.9666666666666666,
+        "motion_type": "screw",
+        "screw_progress": 0.14718957407254932,
+        "theta_rad": 0.4624096845913316,
+        "theta_deg": 26.494123333058873,
+        "omega_rad_s": 0.2500226777937802,
+        "translation_m": -0.02271895669400692,
+        "expected_translation_m": -0.02271895740725494,
+        "constraint_error_m": 7.132480196736513e-10,
+        "theta": 0.4624096845913316,
+        "omega": 0.2500226777937802,
+        "translation": -0.02271895669400692,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.02271895669400692,
+        "joint_velocity_m_s": -0.007958469011190475,
+        "joint_angle_rad": 0.4624096845913316,
+        "joint_angle_deg": 26.494123333058873,
+        "joint_velocity_rad_s": 0.2500226777937802,
+        "friction_torque_nm": 0.0049995464329165434,
+        "application_point_world": [
+          0.001057470217347145,
+          0.005474384408444166,
+          0.9693161249160767
+        ],
+        "torque_visual_anchor_world": [
+          0.001057470217347145,
+          0.005474384408444166,
+          0.9693161249160767
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 59,
+        "time": 2.0,
+        "time_s": 2.0,
+        "motion_type": "screw",
+        "screw_progress": 0.1498423970772923,
+        "theta_rad": 0.47074377385430616,
+        "theta_deg": 26.971631473912613,
+        "omega_rad_s": 0.2500226779554649,
+        "translation_m": -0.02298424020409584,
+        "expected_translation_m": -0.02298423970772924,
+        "constraint_error_m": -4.963666005997069e-10,
+        "theta": 0.47074377385430616,
+        "omega": 0.2500226779554649,
+        "translation": -0.02298424020409584,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.02298424020409584,
+        "joint_velocity_m_s": -0.00795846901633706,
+        "joint_angle_rad": 0.47074377385430616,
+        "joint_angle_deg": 26.971631473912613,
+        "joint_velocity_rad_s": 0.2500226779554649,
+        "friction_torque_nm": 0.004999546432919604,
+        "application_point_world": [
+          0.0010574106127023697,
+          0.0054746209643781185,
+          0.9690506458282471
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574106127023697,
+          0.0054746209643781185,
+          0.9690506458282471
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 60,
+        "time": 2.033333333333333,
+        "time_s": 2.033333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.15249522008345834,
+        "theta_rad": 0.4790778631217514,
+        "theta_deg": 27.4491396150225,
+        "omega_rad_s": 0.25002267807045614,
+        "translation_m": -0.023249521851539612,
+        "expected_translation_m": -0.02324952200834584,
+        "constraint_error_m": 1.5680622772462627e-10,
+        "theta": 0.4790778631217514,
+        "omega": 0.25002267807045614,
+        "translation": -0.023249521851539612,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.023249521851539612,
+        "joint_velocity_m_s": -0.007958469019997343,
+        "joint_angle_rad": 0.4790778631217514,
+        "joint_angle_deg": 27.4491396150225,
+        "joint_velocity_rad_s": 0.25002267807045614,
+        "friction_torque_nm": 0.0049995464329217814,
+        "application_point_world": [
+          0.0010574397165328264,
+          0.005474561359733343,
+          0.9687854051589966
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574397165328264,
+          0.005474561359733343,
+          0.9687854051589966
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 61,
+        "time": 2.0666666666666664,
+        "time_s": 2.0666666666666664,
+        "motion_type": "screw",
+        "screw_progress": 0.15514804309063643,
+        "theta_rad": 0.48741195239237606,
+        "theta_deg": 27.926647756314555,
+        "omega_rad_s": 0.2500226781522386,
+        "translation_m": -0.023514803498983383,
+        "expected_translation_m": -0.02351480430906365,
+        "constraint_error_m": 8.100802667554419e-10,
+        "theta": 0.48741195239237606,
+        "omega": 0.2500226781522386,
+        "translation": -0.023514803498983383,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.023514803498983383,
+        "joint_velocity_m_s": -0.007958469022600561,
+        "joint_angle_rad": 0.48741195239237606,
+        "joint_angle_deg": 27.926647756314555,
+        "joint_velocity_rad_s": 0.2500226781522386,
+        "friction_torque_nm": 0.00499954643292333,
+        "application_point_world": [
+          0.0010574391344562173,
+          0.005474383942782879,
+          0.9685202836990356
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574391344562173,
+          0.005474383942782879,
+          0.9685202836990356
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 62,
+        "time": 2.1,
+        "time_s": 2.1,
+        "motion_type": "screw",
+        "screw_progress": 0.1578008660985343,
+        "theta_rad": 0.49574604166526204,
+        "theta_deg": 28.404155897736178,
+        "omega_rad_s": 0.2500226782104029,
+        "translation_m": -0.023780087009072304,
+        "expected_translation_m": -0.023780086609853437,
+        "constraint_error_m": -3.9921886629823433e-10,
+        "theta": 0.49574604166526204,
+        "omega": 0.2500226782104029,
+        "translation": -0.023780087009072304,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.023780087009072304,
+        "joint_velocity_m_s": -0.007958469024451988,
+        "joint_angle_rad": 0.49574604166526204,
+        "joint_angle_deg": 28.404155897736178,
+        "joint_velocity_rad_s": 0.2500226782104029,
+        "friction_torque_nm": 0.00499954643292443,
+        "application_point_world": [
+          0.001057468238286674,
+          0.005474383942782879,
+          0.9682549834251404
+        ],
+        "torque_visual_anchor_world": [
+          0.001057468238286674,
+          0.005474383942782879,
+          0.9682549834251404
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 63,
+        "time": 2.1333333333333333,
+        "time_s": 2.1333333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.1604536891069441,
+        "theta_rad": 0.5040801309397562,
+        "theta_deg": 28.88166403924994,
+        "omega_rad_s": 0.25002267825176966,
+        "translation_m": -0.024045368656516075,
+        "expected_translation_m": -0.02404536891069442,
+        "constraint_error_m": 2.5417834503826953e-10,
+        "theta": 0.5040801309397562,
+        "omega": 0.25002267825176966,
+        "translation": -0.024045368656516075,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.024045368656516075,
+        "joint_velocity_m_s": -0.007958469025768732,
+        "joint_angle_rad": 0.5040801309397562,
+        "joint_angle_deg": 28.88166403924994,
+        "joint_velocity_rad_s": 0.25002267825176966,
+        "friction_torque_nm": 0.004999546432925214,
+        "application_point_world": [
+          0.0010574677726253867,
+          0.005474502220749855,
+          0.9679896235466003
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574677726253867,
+          0.005474502220749855,
+          0.9679896235466003
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 64,
+        "time": 2.1666666666666665,
+        "time_s": 2.1666666666666665,
+        "motion_type": "screw",
+        "screw_progress": 0.16310651211571794,
+        "theta_rad": 0.5124142202153941,
+        "theta_deg": 29.35917218082923,
+        "omega_rad_s": 0.25002267828119,
+        "translation_m": -0.024310650303959846,
+        "expected_translation_m": -0.0243106512115718,
+        "constraint_error_m": 9.076119543427463e-10,
+        "theta": 0.5124142202153941,
+        "omega": 0.25002267828119,
+        "translation": -0.024310650303959846,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.024310650303959846,
+        "joint_velocity_m_s": -0.00795846902670521,
+        "joint_angle_rad": 0.5124142202153941,
+        "joint_angle_deg": 29.35917218082923,
+        "joint_velocity_rad_s": 0.25002267828119,
+        "friction_torque_nm": 0.004999546432925771,
+        "application_point_world": [
+          0.0010574377374723554,
+          0.005474383477121592,
+          0.9677243232727051
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574377374723554,
+          0.005474383477121592,
+          0.9677243232727051
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 65,
+        "time": 2.2,
+        "time_s": 2.2,
+        "motion_type": "screw",
+        "screw_progress": 0.1657593351247507,
+        "theta_rad": 0.5207483094918454,
+        "theta_deg": 29.836680322455127,
+        "omega_rad_s": 0.2500226783021139,
+        "translation_m": -0.024575933814048767,
+        "expected_translation_m": -0.024575933512475077,
+        "constraint_error_m": -3.015736896316845e-10,
+        "theta": 0.5207483094918454,
+        "omega": 0.2500226783021139,
+        "translation": -0.024575933814048767,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.024575933814048767,
+        "joint_velocity_m_s": -0.007958469027371238,
+        "joint_angle_rad": 0.5207483094918454,
+        "joint_angle_deg": 29.836680322455127,
+        "joint_velocity_rad_s": 0.2500226783021139,
+        "friction_torque_nm": 0.004999546432926167,
+        "application_point_world": [
+          0.001057466841302812,
+          0.005474501755088568,
+          0.9674590229988098
+        ],
+        "torque_visual_anchor_world": [
+          0.001057466841302812,
+          0.005474501755088568,
+          0.9674590229988098
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 66,
+        "time": 2.2333333333333334,
+        "time_s": 2.2333333333333334,
+        "motion_type": "screw",
+        "screw_progress": 0.16841215813396762,
+        "theta_rad": 0.5290823987688752,
+        "theta_deg": 30.31418846411417,
+        "omega_rad_s": 0.2500226783169951,
+        "translation_m": -0.02484121546149254,
+        "expected_translation_m": -0.02484121581339677,
+        "constraint_error_m": 3.5190423144926264e-10,
+        "theta": 0.5290823987688752,
+        "omega": 0.2500226783169951,
+        "translation": -0.02484121546149254,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.02484121546149254,
+        "joint_velocity_m_s": -0.007958469027844922,
+        "joint_angle_rad": 0.5290823987688752,
+        "joint_angle_deg": 30.31418846411417,
+        "joint_velocity_rad_s": 0.2500226783169951,
+        "friction_torque_nm": 0.004999546432926449,
+        "application_point_world": [
+          0.0010574663756415248,
+          0.005474383011460304,
+          0.9671939015388489
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574663756415248,
+          0.005474383011460304,
+          0.9671939015388489
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 67,
+        "time": 2.2666666666666666,
+        "time_s": 2.2666666666666666,
+        "motion_type": "screw",
+        "screw_progress": 0.17106498114331553,
+        "theta_rad": 0.5374164880463166,
+        "theta_deg": 30.791696605796798,
+        "omega_rad_s": 0.2500226783275788,
+        "translation_m": -0.02510649897158146,
+        "expected_translation_m": -0.025106498114331563,
+        "constraint_error_m": -8.572498960690567e-10,
+        "theta": 0.5374164880463166,
+        "omega": 0.2500226783275788,
+        "translation": -0.02510649897158146,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.02510649897158146,
+        "joint_velocity_m_s": -0.007958469028181812,
+        "joint_angle_rad": 0.5374164880463166,
+        "joint_angle_deg": 30.791696605796798,
+        "joint_velocity_rad_s": 0.2500226783275788,
+        "friction_torque_nm": 0.004999546432926649,
+        "application_point_world": [
+          0.0010574066545814276,
+          0.005474383477121592,
+          0.9669286012649536
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574066545814276,
+          0.005474383477121592,
+          0.9669286012649536
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 68,
+        "time": 2.3,
+        "time_s": 2.3,
+        "motion_type": "screw",
+        "screw_progress": 0.17371780415275662,
+        "theta_rad": 0.5457505773240506,
+        "theta_deg": 31.26920474749619,
+        "omega_rad_s": 0.25002267833510594,
+        "translation_m": -0.02537178061902523,
+        "expected_translation_m": -0.025371780415275668,
+        "constraint_error_m": -2.0374956236079989e-10,
+        "theta": 0.5457505773240506,
+        "omega": 0.25002267833510594,
+        "translation": -0.02537178061902523,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.02537178061902523,
+        "joint_velocity_m_s": -0.007958469028421409,
+        "joint_angle_rad": 0.5457505773240506,
+        "joint_angle_deg": 31.26920474749619,
+        "joint_velocity_rad_s": 0.25002267833510594,
+        "friction_torque_nm": 0.004999546432926791,
+        "application_point_world": [
+          0.0010574358748272061,
+          0.005474383011460304,
+          0.9666633009910583
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574358748272061,
+          0.005474383011460304,
+          0.9666633009910583
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 69,
+        "time": 2.3333333333333335,
+        "time_s": 2.3333333333333335,
+        "motion_type": "screw",
+        "screw_progress": 0.17637062716226398,
+        "theta_rad": 0.554084666601993,
+        "theta_deg": 31.74671288920752,
+        "omega_rad_s": 0.2500226783404593,
+        "translation_m": -0.025637062266469002,
+        "expected_translation_m": -0.025637062716226407,
+        "constraint_error_m": 4.49757404930029e-10,
+        "theta": 0.554084666601993,
+        "omega": 0.2500226783404593,
+        "translation": -0.025637062266469002,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.025637062266469002,
+        "joint_velocity_m_s": -0.007958469028591812,
+        "joint_angle_rad": 0.554084666601993,
+        "joint_angle_deg": 31.74671288920752,
+        "joint_velocity_rad_s": 0.2500226783404593,
+        "friction_torque_nm": 0.004999546432926893,
+        "application_point_world": [
+          0.001057435292750597,
+          0.00547450128942728,
+          0.9663978815078735
+        ],
+        "torque_visual_anchor_world": [
+          0.001057435292750597,
+          0.00547450128942728,
+          0.9663978815078735
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 70,
+        "time": 2.3666666666666667,
+        "time_s": 2.3666666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.1790234501718184,
+        "theta_rad": 0.562418755880083,
+        "theta_deg": 32.22422103092731,
+        "omega_rad_s": 0.25002267834426667,
+        "translation_m": -0.025902345776557922,
+        "expected_translation_m": -0.025902345017181846,
+        "constraint_error_m": -7.593760759094792e-10,
+        "theta": 0.562418755880083,
+        "omega": 0.25002267834426667,
+        "translation": -0.025902345776557922,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.025902345776557922,
+        "joint_velocity_m_s": -0.007958469028713003,
+        "joint_angle_rad": 0.562418755880083,
+        "joint_angle_deg": 32.22422103092731,
+        "joint_velocity_rad_s": 0.25002267834426667,
+        "friction_torque_nm": 0.004999546432926965,
+        "application_point_world": [
+          0.0010574645129963756,
+          0.005474382545799017,
+          0.9661327600479126
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574645129963756,
+          0.005474382545799017,
+          0.9661327600479126
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 71,
+        "time": 2.4,
+        "time_s": 2.4,
+        "motion_type": "screw",
+        "screw_progress": 0.1816762731814064,
+        "theta_rad": 0.5707528451582786,
+        "theta_deg": 32.701729172653145,
+        "omega_rad_s": 0.25002267834697445,
+        "translation_m": -0.026167627424001694,
+        "expected_translation_m": -0.026167627318140645,
+        "constraint_error_m": -1.058610490933809e-10,
+        "theta": 0.5707528451582786,
+        "omega": 0.25002267834697445,
+        "translation": -0.026167627424001694,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.026167627424001694,
+        "joint_velocity_m_s": -0.007958469028799195,
+        "joint_angle_rad": 0.5707528451582786,
+        "joint_angle_deg": 32.701729172653145,
+        "joint_velocity_rad_s": 0.25002267834697445,
+        "friction_torque_nm": 0.004999546432927016,
+        "application_point_world": [
+          0.0010574639309197664,
+          0.00547450128942728,
+          0.9658673405647278
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574639309197664,
+          0.00547450128942728,
+          0.9658673405647278
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 72,
+        "time": 2.433333333333333,
+        "time_s": 2.433333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.18432909619101817,
+        "theta_rad": 0.579086934436549,
+        "theta_deg": 33.17923731438327,
+        "omega_rad_s": 0.2500226783489003,
+        "translation_m": -0.026432909071445465,
+        "expected_translation_m": -0.026432909619101826,
+        "constraint_error_m": 5.476563612327734e-10,
+        "theta": 0.579086934436549,
+        "omega": 0.2500226783489003,
+        "translation": -0.026432909071445465,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.026432909071445465,
+        "joint_velocity_m_s": -0.007958469028860497,
+        "joint_angle_rad": 0.579086934436549,
+        "joint_angle_deg": 33.17923731438327,
+        "joint_velocity_rad_s": 0.2500226783489003,
+        "friction_torque_nm": 0.004999546432927053,
+        "application_point_world": [
+          0.001057433895766735,
+          0.005474500823765993,
+          0.9656020402908325
+        ],
+        "torque_visual_anchor_world": [
+          0.001057433895766735,
+          0.005474500823765993,
+          0.9656020402908325
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 73,
+        "time": 2.466666666666667,
+        "time_s": 2.466666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.1869819192006469,
+        "theta_rad": 0.5874210237148726,
+        "theta_deg": 33.65674545611644,
+        "omega_rad_s": 0.25002267835026987,
+        "translation_m": -0.026698192581534386,
+        "expected_translation_m": -0.026698191920064698,
+        "constraint_error_m": -6.614696880513637e-10,
+        "theta": 0.5874210237148726,
+        "omega": 0.25002267835026987,
+        "translation": -0.026698192581534386,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.026698192581534386,
+        "joint_velocity_m_s": -0.00795846902890409,
+        "joint_angle_rad": 0.5874210237148726,
+        "joint_angle_deg": 33.65674545611644,
+        "joint_velocity_rad_s": 0.25002267835026987,
+        "friction_torque_nm": 0.004999546432927078,
+        "application_point_world": [
+          0.0010574334301054478,
+          0.005474500358104706,
+          0.965336799621582
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574334301054478,
+          0.005474500358104706,
+          0.965336799621582
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 74,
+        "time": 2.5,
+        "time_s": 2.5,
+        "motion_type": "screw",
+        "screw_progress": 0.18963474221028767,
+        "theta_rad": 0.595755112993234,
+        "theta_deg": 34.13425359785178,
+        "omega_rad_s": 0.250022678351244,
+        "translation_m": -0.026963474228978157,
+        "expected_translation_m": -0.026963474221028776,
+        "constraint_error_m": -7.949380737004574e-12,
+        "theta": 0.595755112993234,
+        "omega": 0.250022678351244,
+        "translation": -0.026963474228978157,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.026963474228978157,
+        "joint_velocity_m_s": -0.007958469028935098,
+        "joint_angle_rad": 0.595755112993234,
+        "joint_angle_deg": 34.13425359785178,
+        "joint_velocity_rad_s": 0.250022678351244,
+        "friction_torque_nm": 0.0049995464329270975,
+        "application_point_world": [
+          0.0010574625339359045,
+          0.005474500358104706,
+          0.9650714993476868
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574625339359045,
+          0.005474500358104706,
+          0.9650714993476868
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 75,
+        "time": 2.533333333333333,
+        "time_s": 2.533333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.1922875652199371,
+        "theta_rad": 0.6040892022716225,
+        "theta_deg": 34.61176173958867,
+        "omega_rad_s": 0.2500226783519368,
+        "translation_m": -0.02722875587642193,
+        "expected_translation_m": -0.027228756521993715,
+        "constraint_error_m": 6.455717870001987e-10,
+        "theta": 0.6040892022716225,
+        "omega": 0.2500226783519368,
+        "translation": -0.02722875587642193,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.02722875587642193,
+        "joint_velocity_m_s": -0.007958469028957152,
+        "joint_angle_rad": 0.6040892022716225,
+        "joint_angle_deg": 34.61176173958867,
+        "joint_velocity_rad_s": 0.2500226783519368,
+        "friction_torque_nm": 0.0049995464329271105,
+        "application_point_world": [
+          0.0010574620682746172,
+          0.005474381614476442,
+          0.964806318283081
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574620682746172,
+          0.005474381614476442,
+          0.964806318283081
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 76,
+        "time": 2.5666666666666664,
+        "time_s": 2.5666666666666664,
+        "motion_type": "screw",
+        "screw_progress": 0.1949403882295926,
+        "theta_rad": 0.6124232915500303,
+        "theta_deg": 35.089269881326665,
+        "omega_rad_s": 0.25002267835242953,
+        "translation_m": -0.02749403938651085,
+        "expected_translation_m": -0.02749403882295927,
+        "constraint_error_m": -5.635515804014446e-10,
+        "theta": 0.6124232915500303,
+        "omega": 0.25002267835242953,
+        "translation": -0.02749403938651085,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.02749403938651085,
+        "joint_velocity_m_s": -0.007958469028972836,
+        "joint_angle_rad": 0.6124232915500303,
+        "joint_angle_deg": 35.089269881326665,
+        "joint_velocity_rad_s": 0.25002267835242953,
+        "friction_torque_nm": 0.004999546432927119,
+        "application_point_world": [
+          0.0010574616026133299,
+          0.00547438208013773,
+          0.9645410776138306
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574616026133299,
+          0.00547438208013773,
+          0.9645410776138306
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 77,
+        "time": 2.6,
+        "time_s": 2.6,
+        "motion_type": "screw",
+        "screw_progress": 0.19759321123925247,
+        "theta_rad": 0.6207573808284517,
+        "theta_deg": 35.566778023065446,
+        "omega_rad_s": 0.25002267835277997,
+        "translation_m": -0.02775932103395462,
+        "expected_translation_m": -0.027759321123925252,
+        "constraint_error_m": 8.99706316392912e-11,
+        "theta": 0.6207573808284517,
+        "omega": 0.25002267835277997,
+        "translation": -0.02775932103395462,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.02775932103395462,
+        "joint_velocity_m_s": -0.00795846902898399,
+        "joint_angle_rad": 0.6207573808284517,
+        "joint_angle_deg": 35.566778023065446,
+        "joint_velocity_rad_s": 0.25002267835277997,
+        "friction_torque_nm": 0.004999546432927126,
+        "application_point_world": [
+          0.0010574612533673644,
+          0.0054744998924434185,
+          0.9642756581306458
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574612533673644,
+          0.0054744998924434185,
+          0.9642756581306458
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 78,
+        "time": 2.6333333333333333,
+        "time_s": 2.6333333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.20024603424891532,
+        "theta_rad": 0.6290914701068825,
+        "theta_deg": 36.04428616480476,
+        "omega_rad_s": 0.25002267835302916,
+        "translation_m": -0.02802460268139839,
+        "expected_translation_m": -0.02802460342489154,
+        "constraint_error_m": 7.434931489913588e-10,
+        "theta": 0.6290914701068825,
+        "omega": 0.25002267835302916,
+        "translation": -0.02802460268139839,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.02802460268139839,
+        "joint_velocity_m_s": -0.007958469028991923,
+        "joint_angle_rad": 0.6290914701068825,
+        "joint_angle_deg": 36.04428616480476,
+        "joint_velocity_rad_s": 0.25002267835302916,
+        "friction_torque_nm": 0.004999546432927131,
+        "application_point_world": [
+          0.0010574606712907553,
+          0.005474381614476442,
+          0.96401047706604
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574606712907553,
+          0.005474381614476442,
+          0.96401047706604
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 79,
+        "time": 2.6666666666666665,
+        "time_s": 2.6666666666666665,
+        "motion_type": "screw",
+        "screw_progress": 0.20289885725858037,
+        "theta_rad": 0.6374255593853202,
+        "theta_deg": 36.52179430654447,
+        "omega_rad_s": 0.2500226783532064,
+        "translation_m": -0.028289886191487312,
+        "expected_translation_m": -0.028289885725858045,
+        "constraint_error_m": -4.656292677818197e-10,
+        "theta": 0.6374255593853202,
+        "omega": 0.2500226783532064,
+        "translation": -0.028289886191487312,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.028289886191487312,
+        "joint_velocity_m_s": -0.007958469028997564,
+        "joint_angle_rad": 0.6374255593853202,
+        "joint_angle_deg": 36.52179430654447,
+        "joint_velocity_rad_s": 0.2500226783532064,
+        "friction_torque_nm": 0.004999546432927135,
+        "application_point_world": [
+          0.001057460205629468,
+          0.005474381148815155,
+          0.9637452363967896
+        ],
+        "torque_visual_anchor_world": [
+          0.001057460205629468,
+          0.005474381148815155,
+          0.9637452363967896
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 80,
+        "time": 2.7,
+        "time_s": 2.7,
+        "motion_type": "screw",
+        "screw_progress": 0.20555168026824705,
+        "theta_rad": 0.645759648663763,
+        "theta_deg": 36.999302448284475,
+        "omega_rad_s": 0.2500226783533325,
+        "translation_m": -0.028555167838931084,
+        "expected_translation_m": -0.028555168026824715,
+        "constraint_error_m": 1.878936312094126e-10,
+        "theta": 0.645759648663763,
+        "omega": 0.2500226783533325,
+        "translation": -0.028555167838931084,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.028555167838931084,
+        "joint_velocity_m_s": -0.007958469029001576,
+        "joint_angle_rad": 0.645759648663763,
+        "joint_angle_deg": 36.999302448284475,
+        "joint_velocity_rad_s": 0.2500226783533325,
+        "friction_torque_nm": 0.0049995464329271365,
+        "application_point_world": [
+          0.0010574007174000144,
+          0.005474498961120844,
+          0.9634798169136047
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574007174000144,
+          0.005474498961120844,
+          0.9634798169136047
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 81,
+        "time": 2.7333333333333334,
+        "time_s": 2.7333333333333334,
+        "motion_type": "screw",
+        "screw_progress": 0.20820450327791484,
+        "theta_rad": 0.6540937379422093,
+        "theta_deg": 37.47681059002467,
+        "omega_rad_s": 0.25002267835342207,
+        "translation_m": -0.028820449486374855,
+        "expected_translation_m": -0.028820450327791493,
+        "constraint_error_m": 8.414166377535004e-10,
+        "theta": 0.6540937379422093,
+        "omega": 0.25002267835342207,
+        "translation": -0.028820449486374855,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.028820449486374855,
+        "joint_velocity_m_s": -0.007958469029004428,
+        "joint_angle_rad": 0.6540937379422093,
+        "joint_angle_deg": 37.47681059002467,
+        "joint_velocity_rad_s": 0.25002267835342207,
+        "friction_torque_nm": 0.004999546432927138,
+        "application_point_world": [
+          0.0010574592743068933,
+          0.005474381148815155,
+          0.963214635848999
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574592743068933,
+          0.005474381148815155,
+          0.963214635848999
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 82,
+        "time": 2.7666666666666666,
+        "time_s": 2.7666666666666666,
+        "motion_type": "screw",
+        "screw_progress": 0.21085732628758336,
+        "theta_rad": 0.6624278272206578,
+        "theta_deg": 37.95431873176501,
+        "omega_rad_s": 0.2500226783534858,
+        "translation_m": -0.029085732996463776,
+        "expected_translation_m": -0.029085732628758344,
+        "constraint_error_m": -3.6770543207498285e-10,
+        "theta": 0.6624278272206578,
+        "omega": 0.2500226783534858,
+        "translation": -0.029085732996463776,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.029085732996463776,
+        "joint_velocity_m_s": -0.007958469029006458,
+        "joint_angle_rad": 0.6624278272206578,
+        "joint_angle_deg": 37.95431873176501,
+        "joint_velocity_rad_s": 0.2500226783534858,
+        "friction_torque_nm": 0.004999546432927139,
+        "application_point_world": [
+          0.0010574589250609279,
+          0.005474498961120844,
+          0.9629492163658142
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574589250609279,
+          0.005474498961120844,
+          0.9629492163658142
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 83,
+        "time": 2.8,
+        "time_s": 2.8,
+        "motion_type": "screw",
+        "screw_progress": 0.21351014929725248,
+        "theta_rad": 0.6707619164991083,
+        "theta_deg": 38.43182687350544,
+        "omega_rad_s": 0.25002267835353115,
+        "translation_m": -0.029351014643907547,
+        "expected_translation_m": -0.029351014929725257,
+        "constraint_error_m": 2.8581770977753607e-10,
+        "theta": 0.6707619164991083,
+        "omega": 0.25002267835353115,
+        "translation": -0.029351014643907547,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.029351014643907547,
+        "joint_velocity_m_s": -0.007958469029007901,
+        "joint_angle_rad": 0.6707619164991083,
+        "joint_angle_deg": 38.43182687350544,
+        "joint_velocity_rad_s": 0.25002267835353115,
+        "friction_torque_nm": 0.004999546432927141,
+        "application_point_world": [
+          0.0010574584593996406,
+          0.005474498495459557,
+          0.9626839756965637
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574584593996406,
+          0.005474498495459557,
+          0.9626839756965637
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 84,
+        "time": 2.8333333333333335,
+        "time_s": 2.8333333333333335,
+        "motion_type": "screw",
+        "screw_progress": 0.21616297230692197,
+        "theta_rad": 0.6790960057775599,
+        "theta_deg": 38.90933501524595,
+        "omega_rad_s": 0.2500226783535634,
+        "translation_m": -0.029616298153996468,
+        "expected_translation_m": -0.029616297230692205,
+        "constraint_error_m": -9.233042629064325e-10,
+        "theta": 0.6790960057775599,
+        "omega": 0.2500226783535634,
+        "translation": -0.029616298153996468,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.029616298153996468,
+        "joint_velocity_m_s": -0.007958469029008928,
+        "joint_angle_rad": 0.6790960057775599,
+        "joint_angle_deg": 38.90933501524595,
+        "joint_velocity_rad_s": 0.2500226783535634,
+        "friction_torque_nm": 0.004999546432927141,
+        "application_point_world": [
+          0.0010574579937383533,
+          0.005474498495459557,
+          0.9624186754226685
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574579937383533,
+          0.005474498495459557,
+          0.9624186754226685
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 85,
+        "time": 2.8666666666666667,
+        "time_s": 2.8666666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.21881579531659176,
+        "theta_rad": 0.6874300950560125,
+        "theta_deg": 39.386843156986515,
+        "omega_rad_s": 0.2500226783535863,
+        "translation_m": -0.02988157980144024,
+        "expected_translation_m": -0.02988157953165918,
+        "constraint_error_m": -2.6978105860386847e-10,
+        "theta": 0.6874300950560125,
+        "omega": 0.2500226783535863,
+        "translation": -0.02988157980144024,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.02988157980144024,
+        "joint_velocity_m_s": -0.007958469029009657,
+        "joint_angle_rad": 0.6874300950560125,
+        "joint_angle_deg": 39.386843156986515,
+        "joint_velocity_rad_s": 0.2500226783535863,
+        "friction_torque_nm": 0.004999546432927142,
+        "application_point_world": [
+          0.0010573983890935779,
+          0.005474379751831293,
+          0.9621534943580627
+        ],
+        "torque_visual_anchor_world": [
+          0.0010573983890935779,
+          0.005474379751831293,
+          0.9621534943580627
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 86,
+        "time": 2.9,
+        "time_s": 2.9,
+        "motion_type": "screw",
+        "screw_progress": 0.22146861832626175,
+        "theta_rad": 0.6957641843344657,
+        "theta_deg": 39.864351298727115,
+        "omega_rad_s": 0.25002267835360265,
+        "translation_m": -0.03014686144888401,
+        "expected_translation_m": -0.03014686183262618,
+        "constraint_error_m": 3.8374216998482424e-10,
+        "theta": 0.6957641843344657,
+        "omega": 0.25002267835360265,
+        "translation": -0.03014686144888401,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03014686144888401,
+        "joint_velocity_m_s": -0.007958469029010177,
+        "joint_angle_rad": 0.6957641843344657,
+        "joint_angle_deg": 39.864351298727115,
+        "joint_velocity_rad_s": 0.25002267835360265,
+        "friction_torque_nm": 0.004999546432927142,
+        "application_point_world": [
+          0.0010574570624157786,
+          0.005474379751831293,
+          0.9618882536888123
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574570624157786,
+          0.005474379751831293,
+          0.9618882536888123
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 87,
+        "time": 2.933333333333333,
+        "time_s": 2.933333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.22412144133593187,
+        "theta_rad": 0.7040982736129193,
+        "theta_deg": 40.341859440467736,
+        "omega_rad_s": 0.2500226783536142,
+        "translation_m": -0.03041214495897293,
+        "expected_translation_m": -0.030412144133593194,
+        "constraint_error_m": -8.253797367796523e-10,
+        "theta": 0.7040982736129193,
+        "omega": 0.2500226783536142,
+        "translation": -0.03041214495897293,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03041214495897293,
+        "joint_velocity_m_s": -0.007958469029010545,
+        "joint_angle_rad": 0.7040982736129193,
+        "joint_angle_deg": 40.341859440467736,
+        "joint_velocity_rad_s": 0.2500226783536142,
+        "friction_torque_nm": 0.004999546432927142,
+        "application_point_world": [
+          0.0010574565967544913,
+          0.005474379751831293,
+          0.961622953414917
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574565967544913,
+          0.005474379751831293,
+          0.961622953414917
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 88,
+        "time": 2.966666666666667,
+        "time_s": 2.966666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.22677426434560205,
+        "theta_rad": 0.7124323628913731,
+        "theta_deg": 40.819367582208365,
+        "omega_rad_s": 0.2500226783536225,
+        "translation_m": -0.030677426606416702,
+        "expected_translation_m": -0.03067742643456021,
+        "constraint_error_m": -1.7185649084372479e-10,
+        "theta": 0.7124323628913731,
+        "omega": 0.2500226783536225,
+        "translation": -0.030677426606416702,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.030677426606416702,
+        "joint_velocity_m_s": -0.007958469029010809,
+        "joint_angle_rad": 0.7124323628913731,
+        "joint_angle_deg": 40.819367582208365,
+        "joint_velocity_rad_s": 0.2500226783536225,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574266780167818,
+          0.005474379286170006,
+          0.9613576531410217
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574266780167818,
+          0.005474379286170006,
+          0.9613576531410217
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 89,
+        "time": 3.0,
+        "time_s": 3.0,
+        "motion_type": "screw",
+        "screw_progress": 0.22942708735527242,
+        "theta_rad": 0.7207664521698276,
+        "theta_deg": 41.296875723949036,
+        "omega_rad_s": 0.25002267835362835,
+        "translation_m": -0.030942708253860474,
+        "expected_translation_m": -0.03094270873552725,
+        "constraint_error_m": 4.816667759088844e-10,
+        "theta": 0.7207664521698276,
+        "omega": 0.25002267835362835,
+        "translation": -0.030942708253860474,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.030942708253860474,
+        "joint_velocity_m_s": -0.007958469029010994,
+        "joint_angle_rad": 0.7207664521698276,
+        "joint_angle_deg": 41.296875723949036,
+        "joint_velocity_rad_s": 0.25002267835362835,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574557818472385,
+          0.0054743788205087185,
+          0.9610923528671265
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574557818472385,
+          0.0054743788205087185,
+          0.9610923528671265
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 90,
+        "time": 3.033333333333333,
+        "time_s": 3.033333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.23207991036494283,
+        "theta_rad": 0.7291005414482821,
+        "theta_deg": 41.77438386568971,
+        "omega_rad_s": 0.2500226783536325,
+        "translation_m": -0.031207991763949394,
+        "expected_translation_m": -0.03120799103649429,
+        "constraint_error_m": -7.274551031000165e-10,
+        "theta": 0.7291005414482821,
+        "omega": 0.2500226783536325,
+        "translation": -0.031207991763949394,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.031207991763949394,
+        "joint_velocity_m_s": -0.007958469029011128,
+        "joint_angle_rad": 0.7291005414482821,
+        "joint_angle_deg": 41.77438386568971,
+        "joint_velocity_rad_s": 0.2500226783536325,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574257466942072,
+          0.0054743788205087185,
+          0.960827112197876
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574257466942072,
+          0.0054743788205087185,
+          0.960827112197876
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 91,
+        "time": 3.0666666666666664,
+        "time_s": 3.0666666666666664,
+        "motion_type": "screw",
+        "screw_progress": 0.23473273337461323,
+        "theta_rad": 0.7374346307267365,
+        "theta_deg": 42.25189200743038,
+        "omega_rad_s": 0.2500226783536355,
+        "translation_m": -0.031473271548748016,
+        "expected_translation_m": -0.03147327333746133,
+        "constraint_error_m": 1.7887133163529967e-09,
+        "theta": 0.7374346307267365,
+        "omega": 0.2500226783536355,
+        "translation": -0.031473271548748016,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.031473271548748016,
+        "joint_velocity_m_s": -0.007958469029011223,
+        "joint_angle_rad": 0.7374346307267365,
+        "joint_angle_deg": 42.25189200743038,
+        "joint_velocity_rad_s": 0.2500226783536355,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574549669399858,
+          0.005474497098475695,
+          0.9605616927146912
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574549669399858,
+          0.005474497098475695,
+          0.9605616927146912
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 92,
+        "time": 3.1,
+        "time_s": 3.1,
+        "motion_type": "screw",
+        "screw_progress": 0.2373855563842836,
+        "theta_rad": 0.745768720005191,
+        "theta_deg": 42.72940014917105,
+        "omega_rad_s": 0.2500226783536376,
+        "translation_m": -0.031738556921482086,
+        "expected_translation_m": -0.03173855563842837,
+        "constraint_error_m": -1.2830537188257551e-09,
+        "theta": 0.745768720005191,
+        "omega": 0.2500226783536376,
+        "translation": -0.031738556921482086,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.031738556921482086,
+        "joint_velocity_m_s": -0.00795846902901129,
+        "joint_angle_rad": 0.745768720005191,
+        "joint_angle_deg": 42.72940014917105,
+        "joint_velocity_rad_s": 0.2500226783536376,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574249317869544,
+          0.005474378354847431,
+          0.9602965116500854
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574249317869544,
+          0.005474378354847431,
+          0.9602965116500854
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 93,
+        "time": 3.1333333333333333,
+        "time_s": 3.1333333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.240038379393954,
+        "theta_rad": 0.7541028092836455,
+        "theta_deg": 43.20690829091172,
+        "omega_rad_s": 0.2500226783536391,
+        "translation_m": -0.03200383856892586,
+        "expected_translation_m": -0.03200383793939541,
+        "constraint_error_m": -6.29530448603699e-10,
+        "theta": 0.7541028092836455,
+        "omega": 0.2500226783536391,
+        "translation": -0.03200383856892586,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03200383856892586,
+        "joint_velocity_m_s": -0.007958469029011338,
+        "joint_angle_rad": 0.7541028092836455,
+        "joint_angle_deg": 43.20690829091172,
+        "joint_velocity_rad_s": 0.2500226783536391,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574539192020893,
+          0.005474496632814407,
+          0.9600311517715454
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574539192020893,
+          0.005474496632814407,
+          0.9600311517715454
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 94,
+        "time": 3.1666666666666665,
+        "time_s": 3.1666666666666665,
+        "motion_type": "screw",
+        "screw_progress": 0.2426912024036244,
+        "theta_rad": 0.7624368985621,
+        "theta_deg": 43.68441643265239,
+        "omega_rad_s": 0.25002267835364017,
+        "translation_m": -0.03226912021636963,
+        "expected_translation_m": -0.03226912024036245,
+        "constraint_error_m": 2.399282161835714e-11,
+        "theta": 0.7624368985621,
+        "omega": 0.25002267835364017,
+        "translation": -0.03226912021636963,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03226912021636963,
+        "joint_velocity_m_s": -0.007958469029011372,
+        "joint_angle_rad": 0.7624368985621,
+        "joint_angle_deg": 43.68441643265239,
+        "joint_velocity_rad_s": 0.25002267835364017,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574241168797016,
+          0.00547449616715312,
+          0.9597658514976501
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574241168797016,
+          0.00547449616715312,
+          0.9597658514976501
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 95,
+        "time": 3.2,
+        "time_s": 3.2,
+        "motion_type": "screw",
+        "screw_progress": 0.24534402541329478,
+        "theta_rad": 0.7707709878405544,
+        "theta_deg": 44.16192457439306,
+        "omega_rad_s": 0.250022678353641,
+        "translation_m": -0.0325344018638134,
+        "expected_translation_m": -0.032534402541329485,
+        "constraint_error_m": 6.775160849015194e-10,
+        "theta": 0.7707709878405544,
+        "omega": 0.250022678353641,
+        "translation": -0.0325344018638134,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.0325344018638134,
+        "joint_velocity_m_s": -0.007958469029011398,
+        "joint_angle_rad": 0.7707709878405544,
+        "joint_angle_deg": 44.16192457439306,
+        "joint_velocity_rad_s": 0.250022678353641,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574531042948365,
+          0.005474377423524857,
+          0.9595006704330444
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574531042948365,
+          0.005474377423524857,
+          0.9595006704330444
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 96,
+        "time": 3.2333333333333334,
+        "time_s": 3.2333333333333334,
+        "motion_type": "screw",
+        "screw_progress": 0.24799684842296518,
+        "theta_rad": 0.7791050771190089,
+        "theta_deg": 44.63943271613373,
+        "omega_rad_s": 0.25002267835364145,
+        "translation_m": -0.03279968351125717,
+        "expected_translation_m": -0.03279968484229653,
+        "constraint_error_m": 1.3310393551235755e-09,
+        "theta": 0.7791050771190089,
+        "omega": 0.25002267835364145,
+        "translation": -0.03279968351125717,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03279968351125717,
+        "joint_velocity_m_s": -0.007958469029011412,
+        "joint_angle_rad": 0.7791050771190089,
+        "joint_angle_deg": 44.63943271613373,
+        "joint_velocity_rad_s": 0.25002267835364145,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.001057452755048871,
+          0.005474377889186144,
+          0.959235429763794
+        ],
+        "torque_visual_anchor_world": [
+          0.001057452755048871,
+          0.005474377889186144,
+          0.959235429763794
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 97,
+        "time": 3.2666666666666666,
+        "time_s": 3.2666666666666666,
+        "motion_type": "screw",
+        "screw_progress": 0.25064967143263556,
+        "theta_rad": 0.7874391663974634,
+        "theta_deg": 45.116940857874404,
+        "omega_rad_s": 0.2500226783536419,
+        "translation_m": -0.03306496888399124,
+        "expected_translation_m": -0.03306496714326357,
+        "constraint_error_m": -1.7407276731162824e-09,
+        "theta": 0.7874391663974634,
+        "omega": 0.2500226783536419,
+        "translation": -0.03306496888399124,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03306496888399124,
+        "joint_velocity_m_s": -0.007958469029011426,
+        "joint_angle_rad": 0.7874391663974634,
+        "joint_angle_deg": 45.116940857874404,
+        "joint_velocity_rad_s": 0.2500226783536419,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574522893875837,
+          0.005474495701491833,
+          0.9589700102806091
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574522893875837,
+          0.005474495701491833,
+          0.9589700102806091
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 98,
+        "time": 3.3,
+        "time_s": 3.3,
+        "motion_type": "screw",
+        "screw_progress": 0.25330249444230596,
+        "theta_rad": 0.7957732556759178,
+        "theta_deg": 45.594448999615075,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.03333025053143501,
+        "expected_translation_m": -0.0333302494442306,
+        "constraint_error_m": -1.0872044098331202e-09,
+        "theta": 0.7957732556759178,
+        "omega": 0.2500226783536422,
+        "translation": -0.03333025053143501,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03333025053143501,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.7957732556759178,
+        "joint_angle_deg": 45.594448999615075,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574519401416183,
+          0.005474495235830545,
+          0.9587047100067139
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574519401416183,
+          0.005474495235830545,
+          0.9587047100067139
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 99,
+        "time": 3.3333333333333335,
+        "time_s": 3.3333333333333335,
+        "motion_type": "screw",
+        "screw_progress": 0.25595531745197636,
+        "theta_rad": 0.8041073449543723,
+        "theta_deg": 46.071957141355746,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.033595532178878784,
+        "expected_translation_m": -0.033595531745197645,
+        "constraint_error_m": -4.3368113961106403e-10,
+        "theta": 0.8041073449543723,
+        "omega": 0.2500226783536422,
+        "translation": -0.033595532178878784,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.033595532178878784,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.8041073449543723,
+        "joint_angle_deg": 46.071957141355746,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.001057451474480331,
+          0.005474494770169258,
+          0.9584394693374634
+        ],
+        "torque_visual_anchor_world": [
+          0.001057451474480331,
+          0.005474494770169258,
+          0.9584394693374634
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 100,
+        "time": 3.3666666666666667,
+        "time_s": 3.3666666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.25860814046164676,
+        "theta_rad": 0.8124414342328268,
+        "theta_deg": 46.54946528309642,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.033860813826322556,
+        "expected_translation_m": -0.033860814046164686,
+        "constraint_error_m": 2.1984213061099211e-10,
+        "theta": 0.8124414342328268,
+        "omega": 0.2500226783536422,
+        "translation": -0.033860813826322556,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.033860813826322556,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.8124414342328268,
+        "joint_angle_deg": 46.54946528309642,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010573918698355556,
+          0.005474376492202282,
+          0.9581742882728577
+        ],
+        "torque_visual_anchor_world": [
+          0.0010573918698355556,
+          0.005474376492202282,
+          0.9581742882728577
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 101,
+        "time": 3.4,
+        "time_s": 3.4,
+        "motion_type": "screw",
+        "screw_progress": 0.26126096347131716,
+        "theta_rad": 0.8207755235112812,
+        "theta_deg": 47.02697342483709,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.03412609547376633,
+        "expected_translation_m": -0.03412609634713172,
+        "constraint_error_m": 8.733653938941544e-10,
+        "theta": 0.8207755235112812,
+        "omega": 0.2500226783536422,
+        "translation": -0.03412609547376633,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03412609547376633,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.8207755235112812,
+        "joint_angle_deg": 47.02697342483709,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574209736660123,
+          0.005474376026540995,
+          0.9579089879989624
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574209736660123,
+          0.005474376026540995,
+          0.9579089879989624
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 102,
+        "time": 3.433333333333333,
+        "time_s": 3.433333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.26391378648098757,
+        "theta_rad": 0.8291096127897357,
+        "theta_deg": 47.50448156657776,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.0343913771212101,
+        "expected_translation_m": -0.03439137864809876,
+        "constraint_error_m": 1.5268886641162105e-09,
+        "theta": 0.8291096127897357,
+        "omega": 0.2500226783536422,
+        "translation": -0.0343913771212101,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.0343913771212101,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.8291096127897357,
+        "joint_angle_deg": 47.50448156657776,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574206244200468,
+          0.005474494304507971,
+          0.9576435685157776
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574206244200468,
+          0.005474494304507971,
+          0.9576435685157776
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 103,
+        "time": 3.466666666666667,
+        "time_s": 3.466666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.2665666094906579,
+        "theta_rad": 0.8374437020681902,
+        "theta_deg": 47.98198970831843,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.03465666249394417,
+        "expected_translation_m": -0.034656660949065804,
+        "constraint_error_m": -1.5448783641236474e-09,
+        "theta": 0.8374437020681902,
+        "omega": 0.2500226783536422,
+        "translation": -0.03465666249394417,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03465666249394417,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.8374437020681902,
+        "joint_angle_deg": 47.98198970831843,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010573907056823373,
+          0.0054744938388466835,
+          0.9573784470558167
+        ],
+        "torque_visual_anchor_world": [
+          0.0010573907056823373,
+          0.0054744938388466835,
+          0.9573784470558167
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 104,
+        "time": 3.5,
+        "time_s": 3.5,
+        "motion_type": "screw",
+        "screw_progress": 0.2692194325003283,
+        "theta_rad": 0.8457777913466447,
+        "theta_deg": 48.4594978500591,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.03492194414138794,
+        "expected_translation_m": -0.03492194325003284,
+        "constraint_error_m": -8.913551008404852e-10,
+        "theta": 0.8457777913466447,
+        "omega": 0.2500226783536422,
+        "translation": -0.03492194414138794,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03492194414138794,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.8457777913466447,
+        "joint_angle_deg": 48.4594978500591,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.001057449379004538,
+          0.005474493373185396,
+          0.9571130275726318
+        ],
+        "torque_visual_anchor_world": [
+          0.001057449379004538,
+          0.005474493373185396,
+          0.9571130275726318
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 105,
+        "time": 3.533333333333333,
+        "time_s": 3.533333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.2718722555099987,
+        "theta_rad": 0.8541118806250991,
+        "theta_deg": 48.93700599179977,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.03518722578883171,
+        "expected_translation_m": -0.03518722555099988,
+        "constraint_error_m": -2.3783183061842905e-10,
+        "theta": 0.8541118806250991,
+        "omega": 0.2500226783536422,
+        "translation": -0.03518722578883171,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03518722578883171,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.8541118806250991,
+        "joint_angle_deg": 48.93700599179977,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574193438515067,
+          0.005474493373185396,
+          0.9568477272987366
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574193438515067,
+          0.005474493373185396,
+          0.9568477272987366
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 106,
+        "time": 3.5666666666666664,
+        "time_s": 3.5666666666666664,
+        "motion_type": "screw",
+        "screw_progress": 0.2745250785196691,
+        "theta_rad": 0.8624459699035536,
+        "theta_deg": 49.41451413354044,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.03545250743627548,
+        "expected_translation_m": -0.03545250785196692,
+        "constraint_error_m": 4.156914396036271e-10,
+        "theta": 0.8624459699035536,
+        "omega": 0.2500226783536422,
+        "translation": -0.03545250743627548,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03545250743627548,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.8624459699035536,
+        "joint_angle_deg": 49.41451413354044,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574485640972853,
+          0.005474374629557133,
+          0.9565826058387756
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574485640972853,
+          0.005474374629557133,
+          0.9565826058387756
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 107,
+        "time": 3.6,
+        "time_s": 3.6,
+        "motion_type": "screw",
+        "screw_progress": 0.2771779015293395,
+        "theta_rad": 0.8707800591820081,
+        "theta_deg": 49.89202227528111,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.035717789083719254,
+        "expected_translation_m": -0.035717790152933956,
+        "constraint_error_m": 1.0692147028867893e-09,
+        "theta": 0.8707800591820081,
+        "omega": 0.2500226783536422,
+        "translation": -0.035717789083719254,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.035717789083719254,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.8707800591820081,
+        "joint_angle_deg": 49.89202227528111,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574186453595757,
+          0.005474374163895845,
+          0.9563173055648804
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574186453595757,
+          0.005474374163895845,
+          0.9563173055648804
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 108,
+        "time": 3.6333333333333333,
+        "time_s": 3.6333333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.2798307245390099,
+        "theta_rad": 0.8791141484604625,
+        "theta_deg": 50.36953041702178,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.035983070731163025,
+        "expected_translation_m": -0.035983072453901,
+        "constraint_error_m": 1.7227379731088455e-09,
+        "theta": 0.8791141484604625,
+        "omega": 0.2500226783536422,
+        "translation": -0.035983070731163025,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.035983070731163025,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.8791141484604625,
+        "joint_angle_deg": 50.36953041702178,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574477491900325,
+          0.005474374163895845,
+          0.9560520052909851
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574477491900325,
+          0.005474374163895845,
+          0.9560520052909851
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 109,
+        "time": 3.6666666666666665,
+        "time_s": 3.6666666666666665,
+        "motion_type": "screw",
+        "screw_progress": 0.28248354754868027,
+        "theta_rad": 0.887448237738917,
+        "theta_deg": 50.84703855876245,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.036248356103897095,
+        "expected_translation_m": -0.03624835475486804,
+        "constraint_error_m": -1.3490290551310125e-09,
+        "theta": 0.887448237738917,
+        "omega": 0.2500226783536422,
+        "translation": -0.036248356103897095,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.036248356103897095,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.887448237738917,
+        "joint_angle_deg": 50.84703855876245,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574177140370011,
+          0.005474374163895845,
+          0.9557867050170898
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574177140370011,
+          0.005474374163895845,
+          0.9557867050170898
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 110,
+        "time": 3.6999999999999997,
+        "time_s": 3.6999999999999997,
+        "motion_type": "screw",
+        "screw_progress": 0.28513637055835067,
+        "theta_rad": 0.8957823270173715,
+        "theta_deg": 51.32454670050312,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.036513637751340866,
+        "expected_translation_m": -0.036513637055835074,
+        "constraint_error_m": -6.955057918478502e-10,
+        "theta": 0.8957823270173715,
+        "omega": 0.2500226783536422,
+        "translation": -0.036513637751340866,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.036513637751340866,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.8957823270173715,
+        "joint_angle_deg": 51.32454670050312,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574173647910357,
+          0.005474491976201534,
+          0.9555213451385498
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574173647910357,
+          0.005474491976201534,
+          0.9555213451385498
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 111,
+        "time": 3.7333333333333334,
+        "time_s": 3.7333333333333334,
+        "motion_type": "screw",
+        "screw_progress": 0.2877891935680211,
+        "theta_rad": 0.904116416295826,
+        "theta_deg": 51.80205484224379,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.03677891939878464,
+        "expected_translation_m": -0.036778919356802116,
+        "constraint_error_m": -4.198252162579408e-11,
+        "theta": 0.904116416295826,
+        "omega": 0.2500226783536422,
+        "translation": -0.03677891939878464,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03677891939878464,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.904116416295826,
+        "joint_angle_deg": 51.80205484224379,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574465850368142,
+          0.005474491510540247,
+          0.9552560448646545
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574465850368142,
+          0.005474491510540247,
+          0.9552560448646545
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 112,
+        "time": 3.7666666666666666,
+        "time_s": 3.7666666666666666,
+        "motion_type": "screw",
+        "screw_progress": 0.2904420165776915,
+        "theta_rad": 0.9124505055742804,
+        "theta_deg": 52.27956298398446,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.03704420104622841,
+        "expected_translation_m": -0.03704420165776916,
+        "constraint_error_m": 6.115407485962621e-10,
+        "theta": 0.9124505055742804,
+        "omega": 0.2500226783536422,
+        "translation": -0.03704420104622841,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03704420104622841,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.9124505055742804,
+        "joint_angle_deg": 52.27956298398446,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574166662991047,
+          0.0054743727669119835,
+          0.9549908638000488
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574166662991047,
+          0.0054743727669119835,
+          0.9549908638000488
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 113,
+        "time": 3.8,
+        "time_s": 3.8,
+        "motion_type": "screw",
+        "screw_progress": 0.2930948395873619,
+        "theta_rad": 0.9207845948527349,
+        "theta_deg": 52.75707112572513,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.03730948269367218,
+        "expected_translation_m": -0.03730948395873619,
+        "constraint_error_m": 1.2650640118794243e-09,
+        "theta": 0.9207845948527349,
+        "omega": 0.2500226783536422,
+        "translation": -0.03730948269367218,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03730948269367218,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.9207845948527349,
+        "joint_angle_deg": 52.75707112572513,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574162006378174,
+          0.005474490579217672,
+          0.9547255039215088
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574162006378174,
+          0.005474490579217672,
+          0.9547255039215088
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 114,
+        "time": 3.8333333333333335,
+        "time_s": 3.8333333333333335,
+        "motion_type": "screw",
+        "screw_progress": 0.2957476625970323,
+        "theta_rad": 0.9291186841311894,
+        "theta_deg": 53.234579267465804,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.03757476806640625,
+        "expected_translation_m": -0.037574766259703234,
+        "constraint_error_m": -1.8067030163604336e-09,
+        "theta": 0.9291186841311894,
+        "omega": 0.2500226783536422,
+        "translation": -0.03757476806640625,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03757476806640625,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.9291186841311894,
+        "joint_angle_deg": 53.234579267465804,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010573862819001079,
+          0.005474372301250696,
+          0.9544602036476135
+        ],
+        "torque_visual_anchor_world": [
+          0.0010573862819001079,
+          0.005474372301250696,
+          0.9544602036476135
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 115,
+        "time": 3.8666666666666667,
+        "time_s": 3.8666666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.2984004856067026,
+        "theta_rad": 0.9374527734096438,
+        "theta_deg": 53.712087409206475,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.03784004971385002,
+        "expected_translation_m": -0.037840048560670275,
+        "constraint_error_m": -1.1531797461383775e-09,
+        "theta": 0.9374527734096438,
+        "omega": 0.2500226783536422,
+        "translation": -0.03784004971385002,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03784004971385002,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.9374527734096438,
+        "joint_angle_deg": 53.712087409206475,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574153857305646,
+          0.005474490579217672,
+          0.9541949033737183
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574153857305646,
+          0.005474490579217672,
+          0.9541949033737183
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 116,
+        "time": 3.9,
+        "time_s": 3.9,
+        "motion_type": "screw",
+        "screw_progress": 0.301053308616373,
+        "theta_rad": 0.9457868626880983,
+        "theta_deg": 54.189595550947146,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.03810533136129379,
+        "expected_translation_m": -0.03810533086163731,
+        "constraint_error_m": -4.996564828552152e-10,
+        "theta": 0.9457868626880983,
+        "omega": 0.2500226783536422,
+        "translation": -0.03810533136129379,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03810533136129379,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.9457868626880983,
+        "joint_angle_deg": 54.189595550947146,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.001057444722391665,
+          0.005474490113556385,
+          0.9539296627044678
+        ],
+        "torque_visual_anchor_world": [
+          0.001057444722391665,
+          0.005474490113556385,
+          0.9539296627044678
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 117,
+        "time": 3.933333333333333,
+        "time_s": 3.933333333333333,
+        "motion_type": "screw",
+        "screw_progress": 0.30370613162604343,
+        "theta_rad": 0.9541209519665528,
+        "theta_deg": 54.66710369268782,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.038370613008737564,
+        "expected_translation_m": -0.03837061316260435,
+        "constraint_error_m": 1.538667873668409e-10,
+        "theta": 0.9541209519665528,
+        "omega": 0.2500226783536422,
+        "translation": -0.038370613008737564,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.038370613008737564,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.9541209519665528,
+        "joint_angle_deg": 54.66710369268782,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574146872386336,
+          0.005474371369928122,
+          0.9536644816398621
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574146872386336,
+          0.005474371369928122,
+          0.9536644816398621
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 118,
+        "time": 3.966666666666667,
+        "time_s": 3.966666666666667,
+        "motion_type": "screw",
+        "screw_progress": 0.30635895463571383,
+        "theta_rad": 0.9624550412450072,
+        "theta_deg": 55.14461183442849,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.038635894656181335,
+        "expected_translation_m": -0.03863589546357139,
+        "constraint_error_m": 8.07390057588897e-10,
+        "theta": 0.9624550412450072,
+        "omega": 0.2500226783536422,
+        "translation": -0.038635894656181335,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.038635894656181335,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.9624550412450072,
+        "joint_angle_deg": 55.14461183442849,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574143379926682,
+          0.005474370904266834,
+          0.9533991813659668
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574143379926682,
+          0.005474370904266834,
+          0.9533991813659668
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      },
+      {
+        "frame": 119,
+        "time": 4.0,
+        "time_s": 4.0,
+        "motion_type": "screw",
+        "screw_progress": 0.30901177764538423,
+        "theta_rad": 0.9707891305234617,
+        "theta_deg": 55.62211997616916,
+        "omega_rad_s": 0.2500226783536422,
+        "translation_m": -0.03890117630362511,
+        "expected_translation_m": -0.03890117776453843,
+        "constraint_error_m": 1.4609133208720593e-09,
+        "theta": 0.9707891305234617,
+        "omega": 0.2500226783536422,
+        "translation": -0.03890117630362511,
+        "pitch": -0.2,
+        "z0": -0.008000000000000007,
+        "joint_position_m": -0.03890117630362511,
+        "joint_velocity_m_s": -0.007958469029011437,
+        "joint_angle_rad": 0.9707891305234617,
+        "joint_angle_deg": 55.62211997616916,
+        "joint_velocity_rad_s": 0.2500226783536422,
+        "friction_torque_nm": 0.004999546432927143,
+        "application_point_world": [
+          0.0010574139887467027,
+          0.005474370438605547,
+          0.9531338214874268
+        ],
+        "torque_visual_anchor_world": [
+          0.0010574139887467027,
+          0.005474370438605547,
+          0.9531338214874268
+        ],
+        "applied_torque_world": [
+          0.0,
+          -0.009999999776482582,
+          0.0
+        ],
+        "applied_axial_force_world": [
+          0.0,
+          0.0,
+          -0.0
+        ]
+      }
+    ]
+  }
+}
