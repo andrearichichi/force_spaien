@@ -10,6 +10,9 @@ import sapien
 
 
 SCHEMA_VERSION = 3
+DEFAULT_NEAR_LIMIT_THRESHOLD = 1e-3
+DEFAULT_MIN_VISIBLE_DISPLACEMENT = 1e-3
+DEFAULT_COMPLETION_VELOCITY_THRESHOLD = 1e-3
 
 
 def sample_time_from_frame(frame_index: int, steps_per_frame: int, timestep_s: float) -> float:
@@ -232,4 +235,117 @@ def build_metadata(
         "summary": summary,
         "physics": physics_to_dict(model_dir, linear_damping, angular_damping),
         "articulation": articulation_to_dict(articulation, limit_key=limit_key),
+    }
+
+
+def finite_limits(limits: list[list[float]] | None) -> tuple[float | None, float | None]:
+    if not limits:
+        return None, None
+    lower = float(limits[0][0])
+    upper = float(limits[0][1])
+    if not np.isfinite(lower):
+        lower = None
+    if not np.isfinite(upper):
+        upper = None
+    return lower, upper
+
+
+def near_limit(value: float, limit: float | None, threshold: float) -> bool:
+    return limit is not None and abs(value - limit) <= threshold
+
+
+def clamped_at_limit(value: float, lower: float | None, upper: float | None, threshold: float) -> bool:
+    return near_limit(value, lower, threshold) or near_limit(value, upper, threshold)
+
+
+def validation_for_motion(
+    *,
+    initial_position: float,
+    final_position: float,
+    final_velocity: float,
+    limits: list[list[float]] | None,
+    actuation_sign: float = 0.0,
+    direction_auto_flipped: bool = False,
+    warnings: list[str] | None = None,
+    near_limit_threshold: float = DEFAULT_NEAR_LIMIT_THRESHOLD,
+    min_visible_displacement: float = DEFAULT_MIN_VISIBLE_DISPLACEMENT,
+    completion_velocity_threshold: float = DEFAULT_COMPLETION_VELOCITY_THRESHOLD,
+    completion_position_threshold: float | None = None,
+    stale_output: bool = False,
+    regenerable: bool = True,
+) -> dict[str, object]:
+    """Build a shared, motion-type agnostic validation block.
+
+    Positions are joint angle, linear displacement, or screw master theta,
+    depending on the caller. The thresholds are intentionally simple so the
+    renderers can surface obvious bad cases without changing the simulation
+    model.
+    """
+    completion_position_threshold = completion_position_threshold or near_limit_threshold
+    lower, upper = finite_limits(limits)
+    displacement = final_position - initial_position
+    displacement_abs = abs(displacement)
+    final_velocity_abs = abs(final_velocity)
+    initial_near_lower = near_limit(initial_position, lower, near_limit_threshold)
+    initial_near_upper = near_limit(initial_position, upper, near_limit_threshold)
+    final_near_lower = near_limit(final_position, lower, completion_position_threshold)
+    final_near_upper = near_limit(final_position, upper, completion_position_threshold)
+    final_clamped = final_near_lower or final_near_upper
+    motion_visible = displacement_abs >= min_visible_displacement
+    motion_completed = final_velocity_abs < completion_velocity_threshold or final_clamped
+    result_warnings = list(warnings or [])
+
+    if initial_near_lower and actuation_sign < 0.0:
+        result_warnings.append("Actuation pushes joint against lower limit; motion may be clamped.")
+    if initial_near_upper and actuation_sign > 0.0:
+        result_warnings.append("Actuation pushes joint against upper limit; motion may be clamped.")
+    if not motion_visible:
+        result_warnings.append("Motion displacement is below the visible threshold.")
+    if not motion_visible and (initial_near_lower or initial_near_upper) and final_clamped:
+        side = "lower" if initial_near_lower else "upper"
+        result_warnings.append(f"Joint stayed clamped at the {side} limit; actuation direction or application point may be ineffective.")
+    if motion_visible and not motion_completed:
+        result_warnings.append("Motion is still active at final frame; increase duration/damping or reduce force for a settled video.")
+    if stale_output:
+        result_warnings.append("Source URDF is missing; this output may be stale and is excluded from current validation.")
+
+    return {
+        "thresholds": {
+            "near_limit_threshold": float(near_limit_threshold),
+            "min_visible_displacement": float(min_visible_displacement),
+            "completion_velocity_threshold": float(completion_velocity_threshold),
+        },
+        "motion_visible": bool(motion_visible),
+        "motion_completed": bool(motion_completed),
+        "clamped_at_limit": bool(final_clamped),
+        "initial_near_lower_limit": bool(initial_near_lower),
+        "initial_near_upper_limit": bool(initial_near_upper),
+        "final_near_lower_limit": bool(final_near_lower),
+        "final_near_upper_limit": bool(final_near_upper),
+        "displacement_abs": float(displacement_abs),
+        "final_velocity_abs": float(final_velocity_abs),
+        "direction_auto_flipped": bool(direction_auto_flipped),
+        "stale_output": bool(stale_output),
+        "regenerable": bool(regenerable),
+        "warnings": result_warnings,
+    }
+
+
+def motion_document(
+    *,
+    motion_type: str,
+    metadata: dict[str, object],
+    sample_series: dict[str, list[dict[str, object]]],
+    initial_state: dict[str, object],
+    final_state: dict[str, object],
+    validation: dict[str, object],
+) -> dict[str, object]:
+    metadata["validation"] = validation
+    return {
+        "motion_type": motion_type,
+        "metadata": metadata,
+        "initial_state": initial_state,
+        "final_state": final_state,
+        "validation": validation,
+        "samples": sample_series,
     }

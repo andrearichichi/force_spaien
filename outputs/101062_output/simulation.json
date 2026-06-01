@@ -1,4 +1,5 @@
 {
+  "motion_type": "prismatic",
   "metadata": {
     "schema_version": 3,
     "pipeline": {
@@ -28,6 +29,17 @@
       "force": {
         "magnitude_n": 0.5,
         "direction_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
           -1.0,
           -7.450576617884508e-07,
           0.0
@@ -186,12 +198,67 @@
           "force_limit": 0.0
         }
       ]
+    },
+    "validation": {
+      "thresholds": {
+        "near_limit_threshold": 0.001,
+        "min_visible_displacement": 0.001,
+        "completion_velocity_threshold": 0.001
+      },
+      "motion_visible": true,
+      "motion_completed": false,
+      "clamped_at_limit": false,
+      "initial_near_lower_limit": false,
+      "initial_near_upper_limit": false,
+      "final_near_lower_limit": false,
+      "final_near_upper_limit": false,
+      "displacement_abs": 0.4274316728115082,
+      "final_velocity_abs": 0.2134789675474167,
+      "direction_auto_flipped": false,
+      "stale_output": false,
+      "regenerable": true,
+      "warnings": [
+        "Motion is still active at final frame; increase duration/damping or reduce force for a settled video."
+      ]
     }
+  },
+  "initial_state": {
+    "position_m": 0.0
+  },
+  "final_state": {
+    "position_m": 0.4274316728115082,
+    "velocity_m_s": 0.2134789675474167
+  },
+  "validation": {
+    "thresholds": {
+      "near_limit_threshold": 0.001,
+      "min_visible_displacement": 0.001,
+      "completion_velocity_threshold": 0.001
+    },
+    "motion_visible": true,
+    "motion_completed": false,
+    "clamped_at_limit": false,
+    "initial_near_lower_limit": false,
+    "initial_near_upper_limit": false,
+    "final_near_lower_limit": false,
+    "final_near_upper_limit": false,
+    "displacement_abs": 0.4274316728115082,
+    "final_velocity_abs": 0.2134789675474167,
+    "direction_auto_flipped": false,
+    "stale_output": false,
+    "regenerable": true,
+    "warnings": [
+      "Motion is still active at final frame; increase duration/damping or reduce force for a settled video."
+    ]
   },
   "samples": {
     "force": [
       {
+        "frame": 0,
+        "time": 0.03333333333333333,
         "time_s": 0.03333333333333333,
+        "position_m": 3.357281821081415e-05,
+        "velocity_m_s": 0.0017790457932278514,
         "joint_position_m": 3.357281821081415e-05,
         "joint_velocity_m_s": 0.0017790457932278514,
         "application_point_world": [
@@ -203,10 +270,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 1,
+        "time": 0.06666666666666667,
         "time_s": 0.06666666666666667,
+        "position_m": 0.0001264469901798293,
+        "velocity_m_s": 0.003558080643415451,
         "joint_position_m": 0.0001264469901798293,
         "joint_velocity_m_s": 0.003558080643415451,
         "application_point_world": [
@@ -218,10 +305,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 2,
+        "time": 0.1,
         "time_s": 0.1,
+        "position_m": 0.0002786223776638508,
+        "velocity_m_s": 0.005337115377187729,
         "joint_position_m": 0.0002786223776638508,
         "joint_velocity_m_s": 0.005337115377187729,
         "application_point_world": [
@@ -233,10 +340,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 3,
+        "time": 0.13333333333333333,
         "time_s": 0.13333333333333333,
+        "position_m": 0.0004900988424196839,
+        "velocity_m_s": 0.007116150110960007,
         "joint_position_m": 0.0004900988424196839,
         "joint_velocity_m_s": 0.007116150110960007,
         "application_point_world": [
@@ -248,10 +375,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 4,
+        "time": 0.16666666666666666,
         "time_s": 0.16666666666666666,
+        "position_m": 0.0007608768064528704,
+        "velocity_m_s": 0.008895212784409523,
         "joint_position_m": 0.0007608768064528704,
         "joint_velocity_m_s": 0.008895212784409523,
         "application_point_world": [
@@ -263,10 +410,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 5,
+        "time": 0.2,
         "time_s": 0.2,
+        "position_m": 0.0010909573175013065,
+        "velocity_m_s": 0.010674292221665382,
         "joint_position_m": 0.0010909573175013065,
         "joint_velocity_m_s": 0.010674292221665382,
         "application_point_world": [
@@ -278,10 +445,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 6,
+        "time": 0.23333333333333334,
         "time_s": 0.23333333333333334,
+        "position_m": 0.001480340724810958,
+        "velocity_m_s": 0.012453371658921242,
         "joint_position_m": 0.001480340724810958,
         "joint_velocity_m_s": 0.012453371658921242,
         "application_point_world": [
@@ -293,10 +480,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 7,
+        "time": 0.26666666666666666,
         "time_s": 0.26666666666666666,
+        "position_m": 0.0019290265627205372,
+        "velocity_m_s": 0.014232451096177101,
         "joint_position_m": 0.0019290265627205372,
         "joint_velocity_m_s": 0.014232451096177101,
         "application_point_world": [
@@ -308,10 +515,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 8,
+        "time": 0.3,
         "time_s": 0.3,
+        "position_m": 0.002437015064060688,
+        "velocity_m_s": 0.01601150818169117,
         "joint_position_m": 0.002437015064060688,
         "joint_velocity_m_s": 0.01601150818169117,
         "application_point_world": [
@@ -323,10 +550,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 9,
+        "time": 0.3333333333333333,
         "time_s": 0.3333333333333333,
+        "position_m": 0.003004303900524974,
+        "velocity_m_s": 0.017790498211979866,
         "joint_position_m": 0.003004303900524974,
         "joint_velocity_m_s": 0.017790498211979866,
         "application_point_world": [
@@ -338,10 +585,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 10,
+        "time": 0.36666666666666664,
         "time_s": 0.36666666666666664,
+        "position_m": 0.00363089214079082,
+        "velocity_m_s": 0.019569488242268562,
         "joint_position_m": 0.00363089214079082,
         "joint_velocity_m_s": 0.019569488242268562,
         "application_point_world": [
@@ -353,10 +620,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 11,
+        "time": 0.4,
         "time_s": 0.4,
+        "position_m": 0.004316783044487238,
+        "velocity_m_s": 0.02134847827255726,
         "joint_position_m": 0.004316783044487238,
         "joint_velocity_m_s": 0.02134847827255726,
         "application_point_world": [
@@ -368,10 +655,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 12,
+        "time": 0.43333333333333335,
         "time_s": 0.43333333333333335,
+        "position_m": 0.005061970092356205,
+        "velocity_m_s": 0.023127468302845955,
         "joint_position_m": 0.005061970092356205,
         "joint_velocity_m_s": 0.023127468302845955,
         "application_point_world": [
@@ -383,10 +690,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 13,
+        "time": 0.4666666666666667,
         "time_s": 0.4666666666666667,
+        "position_m": 0.005866451188921928,
+        "velocity_m_s": 0.02490645833313465,
         "joint_position_m": 0.005866451188921928,
         "joint_velocity_m_s": 0.02490645833313465,
         "application_point_world": [
@@ -398,10 +725,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 14,
+        "time": 0.5,
         "time_s": 0.5,
+        "position_m": 0.006730234250426292,
+        "velocity_m_s": 0.026685448363423347,
         "joint_position_m": 0.006730234250426292,
         "joint_velocity_m_s": 0.026685448363423347,
         "application_point_world": [
@@ -413,10 +760,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 15,
+        "time": 0.5333333333333333,
         "time_s": 0.5333333333333333,
+        "position_m": 0.00765332393348217,
+        "velocity_m_s": 0.028464438393712044,
         "joint_position_m": 0.00765332393348217,
         "joint_velocity_m_s": 0.028464438393712044,
         "application_point_world": [
@@ -428,10 +795,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 16,
+        "time": 0.5666666666666667,
         "time_s": 0.5666666666666667,
+        "position_m": 0.008635705336928368,
+        "velocity_m_s": 0.03024342842400074,
         "joint_position_m": 0.008635705336928368,
         "joint_velocity_m_s": 0.03024342842400074,
         "application_point_world": [
@@ -443,10 +830,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 17,
+        "time": 0.6,
         "time_s": 0.6,
+        "position_m": 0.00967738963663578,
+        "velocity_m_s": 0.032022420316934586,
         "joint_position_m": 0.00967738963663578,
         "joint_velocity_m_s": 0.032022420316934586,
         "application_point_world": [
@@ -458,10 +865,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 18,
+        "time": 0.6333333333333333,
         "time_s": 0.6333333333333333,
+        "position_m": 0.010778380557894707,
+        "velocity_m_s": 0.03380141034722328,
         "joint_position_m": 0.010778380557894707,
         "joint_velocity_m_s": 0.03380141034722328,
         "application_point_world": [
@@ -473,10 +900,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 19,
+        "time": 0.6666666666666666,
         "time_s": 0.6666666666666666,
+        "position_m": 0.011938672512769699,
+        "velocity_m_s": 0.03558040037751198,
         "joint_position_m": 0.011938672512769699,
         "joint_velocity_m_s": 0.03558040037751198,
         "application_point_world": [
@@ -488,10 +935,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 20,
+        "time": 0.7,
         "time_s": 0.7,
+        "position_m": 0.013158257119357586,
+        "velocity_m_s": 0.037359390407800674,
         "joint_position_m": 0.013158257119357586,
         "joint_velocity_m_s": 0.037359390407800674,
         "application_point_world": [
@@ -503,10 +970,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 21,
+        "time": 0.7333333333333333,
         "time_s": 0.7333333333333333,
+        "position_m": 0.014437135308980942,
+        "velocity_m_s": 0.03913838043808937,
         "joint_position_m": 0.014437135308980942,
         "joint_velocity_m_s": 0.03913838043808937,
         "application_point_world": [
@@ -518,10 +1005,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 22,
+        "time": 0.7666666666666666,
         "time_s": 0.7666666666666666,
+        "position_m": 0.015775315463542938,
+        "velocity_m_s": 0.04091737046837807,
         "joint_position_m": 0.015775315463542938,
         "joint_velocity_m_s": 0.04091737046837807,
         "application_point_world": [
@@ -533,10 +1040,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 23,
+        "time": 0.8,
         "time_s": 0.8,
+        "position_m": 0.01717280223965645,
+        "velocity_m_s": 0.04269636049866676,
         "joint_position_m": 0.01717280223965645,
         "joint_velocity_m_s": 0.04269636049866676,
         "application_point_world": [
@@ -548,10 +1075,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 24,
+        "time": 0.8333333333333334,
         "time_s": 0.8333333333333334,
+        "position_m": 0.018629591912031174,
+        "velocity_m_s": 0.04447535052895546,
         "joint_position_m": 0.018629591912031174,
         "joint_velocity_m_s": 0.04447535052895546,
         "application_point_world": [
@@ -563,10 +1110,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 25,
+        "time": 0.8666666666666667,
         "time_s": 0.8666666666666667,
+        "position_m": 0.020145678892731667,
+        "velocity_m_s": 0.046254340559244156,
         "joint_position_m": 0.020145678892731667,
         "joint_velocity_m_s": 0.046254340559244156,
         "application_point_world": [
@@ -578,10 +1145,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 26,
+        "time": 0.9,
         "time_s": 0.9,
+        "position_m": 0.02172105945646763,
+        "velocity_m_s": 0.04803333058953285,
         "joint_position_m": 0.02172105945646763,
         "joint_velocity_m_s": 0.04803333058953285,
         "application_point_world": [
@@ -593,10 +1180,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 27,
+        "time": 0.9333333333333333,
         "time_s": 0.9333333333333333,
+        "position_m": 0.02335573546588421,
+        "velocity_m_s": 0.04981232061982155,
         "joint_position_m": 0.02335573546588421,
         "joint_velocity_m_s": 0.04981232061982155,
         "application_point_world": [
@@ -608,10 +1215,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 28,
+        "time": 0.9666666666666667,
         "time_s": 0.9666666666666667,
+        "position_m": 0.025049718096852303,
+        "velocity_m_s": 0.051591310650110245,
         "joint_position_m": 0.025049718096852303,
         "joint_velocity_m_s": 0.051591310650110245,
         "application_point_world": [
@@ -623,10 +1250,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 29,
+        "time": 1.0,
         "time_s": 1.0,
+        "position_m": 0.02680300734937191,
+        "velocity_m_s": 0.05337030068039894,
         "joint_position_m": 0.02680300734937191,
         "joint_velocity_m_s": 0.05337030068039894,
         "application_point_world": [
@@ -638,10 +1285,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 30,
+        "time": 1.0333333333333332,
         "time_s": 1.0333333333333332,
+        "position_m": 0.028615593910217285,
+        "velocity_m_s": 0.05514929071068764,
         "joint_position_m": 0.028615593910217285,
         "joint_velocity_m_s": 0.05514929071068764,
         "application_point_world": [
@@ -653,10 +1320,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 31,
+        "time": 1.0666666666666667,
         "time_s": 1.0666666666666667,
+        "position_m": 0.03048747405409813,
+        "velocity_m_s": 0.056928280740976334,
         "joint_position_m": 0.03048747405409813,
         "joint_velocity_m_s": 0.056928280740976334,
         "application_point_world": [
@@ -668,10 +1355,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 32,
+        "time": 1.1,
         "time_s": 1.1,
+        "position_m": 0.03241865336894989,
+        "velocity_m_s": 0.05870727077126503,
         "joint_position_m": 0.03241865336894989,
         "joint_velocity_m_s": 0.05870727077126503,
         "application_point_world": [
@@ -683,10 +1390,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 33,
+        "time": 1.1333333333333333,
         "time_s": 1.1333333333333333,
+        "position_m": 0.03440913185477257,
+        "velocity_m_s": 0.060486260801553726,
         "joint_position_m": 0.03440913185477257,
         "joint_velocity_m_s": 0.060486260801553726,
         "application_point_world": [
@@ -698,10 +1425,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 34,
+        "time": 1.1666666666666667,
         "time_s": 1.1666666666666667,
+        "position_m": 0.03645891696214676,
+        "velocity_m_s": 0.06226525083184242,
         "joint_position_m": 0.03645891696214676,
         "joint_velocity_m_s": 0.06226525083184242,
         "application_point_world": [
@@ -713,10 +1460,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 35,
+        "time": 1.2,
         "time_s": 1.2,
+        "position_m": 0.03856800124049187,
+        "velocity_m_s": 0.06404426693916321,
         "joint_position_m": 0.03856800124049187,
         "joint_velocity_m_s": 0.06404426693916321,
         "application_point_world": [
@@ -728,10 +1495,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 36,
+        "time": 1.2333333333333334,
         "time_s": 1.2333333333333334,
+        "position_m": 0.04073638841509819,
+        "velocity_m_s": 0.06582328677177429,
         "joint_position_m": 0.04073638841509819,
         "joint_velocity_m_s": 0.06582328677177429,
         "application_point_world": [
@@ -743,10 +1530,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 37,
+        "time": 1.2666666666666666,
         "time_s": 1.2666666666666666,
+        "position_m": 0.042964063584804535,
+        "velocity_m_s": 0.06760230660438538,
         "joint_position_m": 0.042964063584804535,
         "joint_velocity_m_s": 0.06760230660438538,
         "application_point_world": [
@@ -758,10 +1565,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 38,
+        "time": 1.3,
         "time_s": 1.3,
+        "position_m": 0.045251037925481796,
+        "velocity_m_s": 0.06938132643699646,
         "joint_position_m": 0.045251037925481796,
         "joint_velocity_m_s": 0.06938132643699646,
         "application_point_world": [
@@ -773,10 +1600,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 39,
+        "time": 1.3333333333333333,
         "time_s": 1.3333333333333333,
+        "position_m": 0.04759731888771057,
+        "velocity_m_s": 0.07116034626960754,
         "joint_position_m": 0.04759731888771057,
         "joint_velocity_m_s": 0.07116034626960754,
         "application_point_world": [
@@ -788,10 +1635,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 40,
+        "time": 1.3666666666666667,
         "time_s": 1.3666666666666667,
+        "position_m": 0.05000290647149086,
+        "velocity_m_s": 0.07293936610221863,
         "joint_position_m": 0.05000290647149086,
         "joint_velocity_m_s": 0.07293936610221863,
         "application_point_world": [
@@ -803,10 +1670,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 41,
+        "time": 1.4,
         "time_s": 1.4,
+        "position_m": 0.052467796951532364,
+        "velocity_m_s": 0.07471838593482971,
         "joint_position_m": 0.052467796951532364,
         "joint_velocity_m_s": 0.07471838593482971,
         "application_point_world": [
@@ -818,10 +1705,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 42,
+        "time": 1.4333333333333333,
         "time_s": 1.4333333333333333,
+        "position_m": 0.054991986602544785,
+        "velocity_m_s": 0.0764974057674408,
         "joint_position_m": 0.054991986602544785,
         "joint_velocity_m_s": 0.0764974057674408,
         "application_point_world": [
@@ -833,10 +1740,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 43,
+        "time": 1.4666666666666666,
         "time_s": 1.4666666666666666,
+        "position_m": 0.057575471699237823,
+        "velocity_m_s": 0.07827642560005188,
         "joint_position_m": 0.057575471699237823,
         "joint_velocity_m_s": 0.07827642560005188,
         "application_point_world": [
@@ -848,10 +1775,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 44,
+        "time": 1.5,
         "time_s": 1.5,
+        "position_m": 0.06021824851632118,
+        "velocity_m_s": 0.08005544543266296,
         "joint_position_m": 0.06021824851632118,
         "joint_velocity_m_s": 0.08005544543266296,
         "application_point_world": [
@@ -863,10 +1810,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 45,
+        "time": 1.5333333333333332,
         "time_s": 1.5333333333333332,
+        "position_m": 0.06292033940553665,
+        "velocity_m_s": 0.08183446526527405,
         "joint_position_m": 0.06292033940553665,
         "joint_velocity_m_s": 0.08183446526527405,
         "application_point_world": [
@@ -878,10 +1845,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 46,
+        "time": 1.5666666666666667,
         "time_s": 1.5666666666666667,
+        "position_m": 0.06568171828985214,
+        "velocity_m_s": 0.08361348509788513,
         "joint_position_m": 0.06568171828985214,
         "joint_velocity_m_s": 0.08361348509788513,
         "application_point_world": [
@@ -893,10 +1880,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 47,
+        "time": 1.6,
         "time_s": 1.6,
+        "position_m": 0.06850242614746094,
+        "velocity_m_s": 0.08539250493049622,
         "joint_position_m": 0.06850242614746094,
         "joint_velocity_m_s": 0.08539250493049622,
         "application_point_world": [
@@ -908,10 +1915,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 48,
+        "time": 1.6333333333333333,
         "time_s": 1.6333333333333333,
+        "position_m": 0.07138241082429886,
+        "velocity_m_s": 0.0871715247631073,
         "joint_position_m": 0.07138241082429886,
         "joint_velocity_m_s": 0.0871715247631073,
         "application_point_world": [
@@ -923,10 +1950,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 49,
+        "time": 1.6666666666666667,
         "time_s": 1.6666666666666667,
+        "position_m": 0.0743217021226883,
+        "velocity_m_s": 0.08895054459571838,
         "joint_position_m": 0.0743217021226883,
         "joint_velocity_m_s": 0.08895054459571838,
         "application_point_world": [
@@ -938,10 +1985,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 50,
+        "time": 1.7,
         "time_s": 1.7,
+        "position_m": 0.07732027769088745,
+        "velocity_m_s": 0.09072956442832947,
         "joint_position_m": 0.07732027769088745,
         "joint_velocity_m_s": 0.09072956442832947,
         "application_point_world": [
@@ -953,10 +2020,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 51,
+        "time": 1.7333333333333334,
         "time_s": 1.7333333333333334,
+        "position_m": 0.08037817478179932,
+        "velocity_m_s": 0.09250858426094055,
         "joint_position_m": 0.08037817478179932,
         "joint_velocity_m_s": 0.09250858426094055,
         "application_point_world": [
@@ -968,10 +2055,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 52,
+        "time": 1.7666666666666666,
         "time_s": 1.7666666666666666,
+        "position_m": 0.0834953561425209,
+        "velocity_m_s": 0.09428760409355164,
         "joint_position_m": 0.0834953561425209,
         "joint_velocity_m_s": 0.09428760409355164,
         "application_point_world": [
@@ -983,10 +2090,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 53,
+        "time": 1.8,
         "time_s": 1.8,
+        "position_m": 0.0866718664765358,
+        "velocity_m_s": 0.09606662392616272,
         "joint_position_m": 0.0866718664765358,
         "joint_velocity_m_s": 0.09606662392616272,
         "application_point_world": [
@@ -998,10 +2125,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 54,
+        "time": 1.8333333333333333,
         "time_s": 1.8333333333333333,
+        "position_m": 0.08990766108036041,
+        "velocity_m_s": 0.0978456437587738,
         "joint_position_m": 0.08990766108036041,
         "joint_velocity_m_s": 0.0978456437587738,
         "application_point_world": [
@@ -1013,10 +2160,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 55,
+        "time": 1.8666666666666667,
         "time_s": 1.8666666666666667,
+        "position_m": 0.09320276230573654,
+        "velocity_m_s": 0.09962466359138489,
         "joint_position_m": 0.09320276230573654,
         "joint_velocity_m_s": 0.09962466359138489,
         "application_point_world": [
@@ -1028,10 +2195,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 56,
+        "time": 1.9,
         "time_s": 1.9,
+        "position_m": 0.0965571403503418,
+        "velocity_m_s": 0.10140368342399597,
         "joint_position_m": 0.0965571403503418,
         "joint_velocity_m_s": 0.10140368342399597,
         "application_point_world": [
@@ -1043,10 +2230,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 57,
+        "time": 1.9333333333333333,
         "time_s": 1.9333333333333333,
+        "position_m": 0.09997083991765976,
+        "velocity_m_s": 0.10318270325660706,
         "joint_position_m": 0.09997083991765976,
         "joint_velocity_m_s": 0.10318270325660706,
         "application_point_world": [
@@ -1058,10 +2265,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 58,
+        "time": 1.9666666666666666,
         "time_s": 1.9666666666666666,
+        "position_m": 0.10344382375478745,
+        "velocity_m_s": 0.10496172308921814,
         "joint_position_m": 0.10344382375478745,
         "joint_velocity_m_s": 0.10496172308921814,
         "application_point_world": [
@@ -1073,10 +2300,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 59,
+        "time": 2.0,
         "time_s": 2.0,
+        "position_m": 0.10697613656520844,
+        "velocity_m_s": 0.10674074292182922,
         "joint_position_m": 0.10697613656520844,
         "joint_velocity_m_s": 0.10674074292182922,
         "application_point_world": [
@@ -1088,10 +2335,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 60,
+        "time": 2.033333333333333,
         "time_s": 2.033333333333333,
+        "position_m": 0.11056772619485855,
+        "velocity_m_s": 0.10851976275444031,
         "joint_position_m": 0.11056772619485855,
         "joint_velocity_m_s": 0.10851976275444031,
         "application_point_world": [
@@ -1103,10 +2370,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 61,
+        "time": 2.0666666666666664,
         "time_s": 2.0666666666666664,
+        "position_m": 0.11421863734722137,
+        "velocity_m_s": 0.11029878258705139,
         "joint_position_m": 0.11421863734722137,
         "joint_velocity_m_s": 0.11029878258705139,
         "application_point_world": [
@@ -1118,10 +2405,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 62,
+        "time": 2.1,
         "time_s": 2.1,
+        "position_m": 0.11792881786823273,
+        "velocity_m_s": 0.11207780241966248,
         "joint_position_m": 0.11792881786823273,
         "joint_velocity_m_s": 0.11207780241966248,
         "application_point_world": [
@@ -1133,10 +2440,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 63,
+        "time": 2.1333333333333333,
         "time_s": 2.1333333333333333,
+        "position_m": 0.12169831991195679,
+        "velocity_m_s": 0.11385682225227356,
         "joint_position_m": 0.12169831991195679,
         "joint_velocity_m_s": 0.11385682225227356,
         "application_point_world": [
@@ -1148,10 +2475,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 64,
+        "time": 2.1666666666666665,
         "time_s": 2.1666666666666665,
+        "position_m": 0.12552715837955475,
+        "velocity_m_s": 0.11563584208488464,
         "joint_position_m": 0.12552715837955475,
         "joint_velocity_m_s": 0.11563584208488464,
         "application_point_world": [
@@ -1163,10 +2510,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 65,
+        "time": 2.2,
         "time_s": 2.2,
+        "position_m": 0.12941522896289825,
+        "velocity_m_s": 0.11741486191749573,
         "joint_position_m": 0.12941522896289825,
         "joint_velocity_m_s": 0.11741486191749573,
         "application_point_world": [
@@ -1178,10 +2545,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 66,
+        "time": 2.2333333333333334,
         "time_s": 2.2333333333333334,
+        "position_m": 0.13336268067359924,
+        "velocity_m_s": 0.11919388175010681,
         "joint_position_m": 0.13336268067359924,
         "joint_velocity_m_s": 0.11919388175010681,
         "application_point_world": [
@@ -1193,10 +2580,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 67,
+        "time": 2.2666666666666666,
         "time_s": 2.2666666666666666,
+        "position_m": 0.13736939430236816,
+        "velocity_m_s": 0.1209729015827179,
         "joint_position_m": 0.13736939430236816,
         "joint_velocity_m_s": 0.1209729015827179,
         "application_point_world": [
@@ -1208,10 +2615,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 68,
+        "time": 2.3,
         "time_s": 2.3,
+        "position_m": 0.14143535494804382,
+        "velocity_m_s": 0.12275192141532898,
         "joint_position_m": 0.14143535494804382,
         "joint_velocity_m_s": 0.12275192141532898,
         "application_point_world": [
@@ -1223,10 +2650,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 69,
+        "time": 2.3333333333333335,
         "time_s": 2.3333333333333335,
+        "position_m": 0.1455606371164322,
+        "velocity_m_s": 0.12453094124794006,
         "joint_position_m": 0.1455606371164322,
         "joint_velocity_m_s": 0.12453094124794006,
         "application_point_world": [
@@ -1238,10 +2685,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 70,
+        "time": 2.3666666666666667,
         "time_s": 2.3666666666666667,
+        "position_m": 0.14974528551101685,
+        "velocity_m_s": 0.12630991637706757,
         "joint_position_m": 0.14974528551101685,
         "joint_velocity_m_s": 0.12630991637706757,
         "application_point_world": [
@@ -1253,10 +2720,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 71,
+        "time": 2.4,
         "time_s": 2.4,
+        "position_m": 0.15398919582366943,
+        "velocity_m_s": 0.12808887660503387,
         "joint_position_m": 0.15398919582366943,
         "joint_velocity_m_s": 0.12808887660503387,
         "application_point_world": [
@@ -1268,10 +2755,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 72,
+        "time": 2.433333333333333,
         "time_s": 2.433333333333333,
+        "position_m": 0.15829235315322876,
+        "velocity_m_s": 0.12986783683300018,
         "joint_position_m": 0.15829235315322876,
         "joint_velocity_m_s": 0.12986783683300018,
         "application_point_world": [
@@ -1283,10 +2790,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 73,
+        "time": 2.466666666666667,
         "time_s": 2.466666666666667,
+        "position_m": 0.162654846906662,
+        "velocity_m_s": 0.1316467970609665,
         "joint_position_m": 0.162654846906662,
         "joint_velocity_m_s": 0.1316467970609665,
         "application_point_world": [
@@ -1298,10 +2825,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 74,
+        "time": 2.5,
         "time_s": 2.5,
+        "position_m": 0.16707667708396912,
+        "velocity_m_s": 0.1334257572889328,
         "joint_position_m": 0.16707667708396912,
         "joint_velocity_m_s": 0.1334257572889328,
         "application_point_world": [
@@ -1313,10 +2860,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 75,
+        "time": 2.533333333333333,
         "time_s": 2.533333333333333,
+        "position_m": 0.17155776917934418,
+        "velocity_m_s": 0.1352047175168991,
         "joint_position_m": 0.17155776917934418,
         "joint_velocity_m_s": 0.1352047175168991,
         "application_point_world": [
@@ -1328,10 +2895,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 76,
+        "time": 2.5666666666666664,
         "time_s": 2.5666666666666664,
+        "position_m": 0.17609813809394836,
+        "velocity_m_s": 0.13698367774486542,
         "joint_position_m": 0.17609813809394836,
         "joint_velocity_m_s": 0.13698367774486542,
         "application_point_world": [
@@ -1343,10 +2930,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 77,
+        "time": 2.6,
         "time_s": 2.6,
+        "position_m": 0.18069782853126526,
+        "velocity_m_s": 0.13876263797283173,
         "joint_position_m": 0.18069782853126526,
         "joint_velocity_m_s": 0.13876263797283173,
         "application_point_world": [
@@ -1358,10 +2965,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 78,
+        "time": 2.6333333333333333,
         "time_s": 2.6333333333333333,
+        "position_m": 0.18535685539245605,
+        "velocity_m_s": 0.14054159820079803,
         "joint_position_m": 0.18535685539245605,
         "joint_velocity_m_s": 0.14054159820079803,
         "application_point_world": [
@@ -1373,10 +3000,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 79,
+        "time": 2.6666666666666665,
         "time_s": 2.6666666666666665,
+        "position_m": 0.19007514417171478,
+        "velocity_m_s": 0.14232055842876434,
         "joint_position_m": 0.19007514417171478,
         "joint_velocity_m_s": 0.14232055842876434,
         "application_point_world": [
@@ -1388,10 +3035,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 80,
+        "time": 2.7,
         "time_s": 2.7,
+        "position_m": 0.19485269486904144,
+        "velocity_m_s": 0.14409951865673065,
         "joint_position_m": 0.19485269486904144,
         "joint_velocity_m_s": 0.14409951865673065,
         "application_point_world": [
@@ -1403,10 +3070,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 81,
+        "time": 2.7333333333333334,
         "time_s": 2.7333333333333334,
+        "position_m": 0.1996895968914032,
+        "velocity_m_s": 0.14587847888469696,
         "joint_position_m": 0.1996895968914032,
         "joint_velocity_m_s": 0.14587847888469696,
         "application_point_world": [
@@ -1418,10 +3105,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 82,
+        "time": 2.7666666666666666,
         "time_s": 2.7666666666666666,
+        "position_m": 0.20458582043647766,
+        "velocity_m_s": 0.14765743911266327,
         "joint_position_m": 0.20458582043647766,
         "joint_velocity_m_s": 0.14765743911266327,
         "application_point_world": [
@@ -1433,10 +3140,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 83,
+        "time": 2.8,
         "time_s": 2.8,
+        "position_m": 0.20954130589962006,
+        "velocity_m_s": 0.14943639934062958,
         "joint_position_m": 0.20954130589962006,
         "joint_velocity_m_s": 0.14943639934062958,
         "application_point_world": [
@@ -1448,10 +3175,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 84,
+        "time": 2.8333333333333335,
         "time_s": 2.8333333333333335,
+        "position_m": 0.2145560383796692,
+        "velocity_m_s": 0.1512153595685959,
         "joint_position_m": 0.2145560383796692,
         "joint_velocity_m_s": 0.1512153595685959,
         "application_point_world": [
@@ -1463,10 +3210,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 85,
+        "time": 2.8666666666666667,
         "time_s": 2.8666666666666667,
+        "position_m": 0.2196301370859146,
+        "velocity_m_s": 0.1529943197965622,
         "joint_position_m": 0.2196301370859146,
         "joint_velocity_m_s": 0.1529943197965622,
         "application_point_world": [
@@ -1478,10 +3245,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 86,
+        "time": 2.9,
         "time_s": 2.9,
+        "position_m": 0.22476357221603394,
+        "velocity_m_s": 0.1547732800245285,
         "joint_position_m": 0.22476357221603394,
         "joint_velocity_m_s": 0.1547732800245285,
         "application_point_world": [
@@ -1493,10 +3280,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 87,
+        "time": 2.933333333333333,
         "time_s": 2.933333333333333,
+        "position_m": 0.2299562394618988,
+        "velocity_m_s": 0.1565522402524948,
         "joint_position_m": 0.2299562394618988,
         "joint_velocity_m_s": 0.1565522402524948,
         "application_point_world": [
@@ -1508,10 +3315,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 88,
+        "time": 2.966666666666667,
         "time_s": 2.966666666666667,
+        "position_m": 0.2352081686258316,
+        "velocity_m_s": 0.15833120048046112,
         "joint_position_m": 0.2352081686258316,
         "joint_velocity_m_s": 0.15833120048046112,
         "application_point_world": [
@@ -1523,10 +3350,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 89,
+        "time": 3.0,
         "time_s": 3.0,
+        "position_m": 0.2405194789171219,
+        "velocity_m_s": 0.16011016070842743,
         "joint_position_m": 0.2405194789171219,
         "joint_velocity_m_s": 0.16011016070842743,
         "application_point_world": [
@@ -1538,10 +3385,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 90,
+        "time": 3.033333333333333,
         "time_s": 3.033333333333333,
+        "position_m": 0.24589009582996368,
+        "velocity_m_s": 0.16188912093639374,
         "joint_position_m": 0.24589009582996368,
         "joint_velocity_m_s": 0.16188912093639374,
         "application_point_world": [
@@ -1553,10 +3420,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 91,
+        "time": 3.0666666666666664,
         "time_s": 3.0666666666666664,
+        "position_m": 0.2513197660446167,
+        "velocity_m_s": 0.16366808116436005,
         "joint_position_m": 0.2513197660446167,
         "joint_velocity_m_s": 0.16366808116436005,
         "application_point_world": [
@@ -1568,10 +3455,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 92,
+        "time": 3.1,
         "time_s": 3.1,
+        "position_m": 0.2568090558052063,
+        "velocity_m_s": 0.16544704139232635,
         "joint_position_m": 0.2568090558052063,
         "joint_velocity_m_s": 0.16544704139232635,
         "application_point_world": [
@@ -1583,10 +3490,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 93,
+        "time": 3.1333333333333333,
         "time_s": 3.1333333333333333,
+        "position_m": 0.26235756278038025,
+        "velocity_m_s": 0.16722600162029266,
         "joint_position_m": 0.26235756278038025,
         "joint_velocity_m_s": 0.16722600162029266,
         "application_point_world": [
@@ -1598,10 +3525,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 94,
+        "time": 3.1666666666666665,
         "time_s": 3.1666666666666665,
+        "position_m": 0.2679653465747833,
+        "velocity_m_s": 0.16900496184825897,
         "joint_position_m": 0.2679653465747833,
         "joint_velocity_m_s": 0.16900496184825897,
         "application_point_world": [
@@ -1613,10 +3560,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 95,
+        "time": 3.2,
         "time_s": 3.2,
+        "position_m": 0.2736324071884155,
+        "velocity_m_s": 0.17078392207622528,
         "joint_position_m": 0.2736324071884155,
         "joint_velocity_m_s": 0.17078392207622528,
         "application_point_world": [
@@ -1628,10 +3595,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 96,
+        "time": 3.2333333333333334,
         "time_s": 3.2333333333333334,
+        "position_m": 0.27935874462127686,
+        "velocity_m_s": 0.1725628823041916,
         "joint_position_m": 0.27935874462127686,
         "joint_velocity_m_s": 0.1725628823041916,
         "application_point_world": [
@@ -1643,10 +3630,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 97,
+        "time": 3.2666666666666666,
         "time_s": 3.2666666666666666,
+        "position_m": 0.28514429926872253,
+        "velocity_m_s": 0.1743418425321579,
         "joint_position_m": 0.28514429926872253,
         "joint_velocity_m_s": 0.1743418425321579,
         "application_point_world": [
@@ -1658,10 +3665,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 98,
+        "time": 3.3,
         "time_s": 3.3,
+        "position_m": 0.2909891605377197,
+        "velocity_m_s": 0.1761208027601242,
         "joint_position_m": 0.2909891605377197,
         "joint_velocity_m_s": 0.1761208027601242,
         "application_point_world": [
@@ -1673,10 +3700,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 99,
+        "time": 3.3333333333333335,
         "time_s": 3.3333333333333335,
+        "position_m": 0.29689353704452515,
+        "velocity_m_s": 0.17789976298809052,
         "joint_position_m": 0.29689353704452515,
         "joint_velocity_m_s": 0.17789976298809052,
         "application_point_world": [
@@ -1688,10 +3735,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 100,
+        "time": 3.3666666666666667,
         "time_s": 3.3666666666666667,
+        "position_m": 0.3028571903705597,
+        "velocity_m_s": 0.17967872321605682,
         "joint_position_m": 0.3028571903705597,
         "joint_velocity_m_s": 0.17967872321605682,
         "application_point_world": [
@@ -1703,10 +3770,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 101,
+        "time": 3.4,
         "time_s": 3.4,
+        "position_m": 0.308880090713501,
+        "velocity_m_s": 0.18145768344402313,
         "joint_position_m": 0.308880090713501,
         "joint_velocity_m_s": 0.18145768344402313,
         "application_point_world": [
@@ -1718,10 +3805,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 102,
+        "time": 3.433333333333333,
         "time_s": 3.433333333333333,
+        "position_m": 0.3149622678756714,
+        "velocity_m_s": 0.18323664367198944,
         "joint_position_m": 0.3149622678756714,
         "joint_velocity_m_s": 0.18323664367198944,
         "application_point_world": [
@@ -1733,10 +3840,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 103,
+        "time": 3.466666666666667,
         "time_s": 3.466666666666667,
+        "position_m": 0.3211037218570709,
+        "velocity_m_s": 0.18501560389995575,
         "joint_position_m": 0.3211037218570709,
         "joint_velocity_m_s": 0.18501560389995575,
         "application_point_world": [
@@ -1748,10 +3875,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 104,
+        "time": 3.5,
         "time_s": 3.5,
+        "position_m": 0.3273044228553772,
+        "velocity_m_s": 0.18679456412792206,
         "joint_position_m": 0.3273044228553772,
         "joint_velocity_m_s": 0.18679456412792206,
         "application_point_world": [
@@ -1763,10 +3910,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 105,
+        "time": 3.533333333333333,
         "time_s": 3.533333333333333,
+        "position_m": 0.3335643410682678,
+        "velocity_m_s": 0.18857352435588837,
         "joint_position_m": 0.3335643410682678,
         "joint_velocity_m_s": 0.18857352435588837,
         "application_point_world": [
@@ -1778,10 +3945,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 106,
+        "time": 3.5666666666666664,
         "time_s": 3.5666666666666664,
+        "position_m": 0.33988362550735474,
+        "velocity_m_s": 0.19035248458385468,
         "joint_position_m": 0.33988362550735474,
         "joint_velocity_m_s": 0.19035248458385468,
         "application_point_world": [
@@ -1793,10 +3980,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 107,
+        "time": 3.6,
         "time_s": 3.6,
+        "position_m": 0.3462623953819275,
+        "velocity_m_s": 0.19213144481182098,
         "joint_position_m": 0.3462623953819275,
         "joint_velocity_m_s": 0.19213144481182098,
         "application_point_world": [
@@ -1808,10 +4015,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 108,
+        "time": 3.6333333333333333,
         "time_s": 3.6333333333333333,
+        "position_m": 0.35270044207572937,
+        "velocity_m_s": 0.1939104050397873,
         "joint_position_m": 0.35270044207572937,
         "joint_velocity_m_s": 0.1939104050397873,
         "application_point_world": [
@@ -1823,10 +4050,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 109,
+        "time": 3.6666666666666665,
         "time_s": 3.6666666666666665,
+        "position_m": 0.3591977655887604,
+        "velocity_m_s": 0.1956893652677536,
         "joint_position_m": 0.3591977655887604,
         "joint_velocity_m_s": 0.1956893652677536,
         "application_point_world": [
@@ -1838,10 +4085,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 110,
+        "time": 3.6999999999999997,
         "time_s": 3.6999999999999997,
+        "position_m": 0.3657543361186981,
+        "velocity_m_s": 0.1974683254957199,
         "joint_position_m": 0.3657543361186981,
         "joint_velocity_m_s": 0.1974683254957199,
         "application_point_world": [
@@ -1853,10 +4120,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 111,
+        "time": 3.7333333333333334,
         "time_s": 3.7333333333333334,
+        "position_m": 0.3723701536655426,
+        "velocity_m_s": 0.19924728572368622,
         "joint_position_m": 0.3723701536655426,
         "joint_velocity_m_s": 0.19924728572368622,
         "application_point_world": [
@@ -1868,10 +4155,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 112,
+        "time": 3.7666666666666666,
         "time_s": 3.7666666666666666,
+        "position_m": 0.37904518842697144,
+        "velocity_m_s": 0.20102624595165253,
         "joint_position_m": 0.37904518842697144,
         "joint_velocity_m_s": 0.20102624595165253,
         "application_point_world": [
@@ -1883,10 +4190,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 113,
+        "time": 3.8,
         "time_s": 3.8,
+        "position_m": 0.3857795000076294,
+        "velocity_m_s": 0.20280520617961884,
         "joint_position_m": 0.3857795000076294,
         "joint_velocity_m_s": 0.20280520617961884,
         "application_point_world": [
@@ -1898,10 +4225,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 114,
+        "time": 3.8333333333333335,
         "time_s": 3.8333333333333335,
+        "position_m": 0.3925732374191284,
+        "velocity_m_s": 0.20458416640758514,
         "joint_position_m": 0.3925732374191284,
         "joint_velocity_m_s": 0.20458416640758514,
         "application_point_world": [
@@ -1913,10 +4260,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 115,
+        "time": 3.8666666666666667,
         "time_s": 3.8666666666666667,
+        "position_m": 0.3994264304637909,
+        "velocity_m_s": 0.20636312663555145,
         "joint_position_m": 0.3994264304637909,
         "joint_velocity_m_s": 0.20636312663555145,
         "application_point_world": [
@@ -1928,10 +4295,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 116,
+        "time": 3.9,
         "time_s": 3.9,
+        "position_m": 0.4063388705253601,
+        "velocity_m_s": 0.20814208686351776,
         "joint_position_m": 0.4063388705253601,
         "joint_velocity_m_s": 0.20814208686351776,
         "application_point_world": [
@@ -1943,10 +4330,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 117,
+        "time": 3.933333333333333,
         "time_s": 3.933333333333333,
+        "position_m": 0.41331055760383606,
+        "velocity_m_s": 0.20992104709148407,
         "joint_position_m": 0.41331055760383606,
         "joint_velocity_m_s": 0.20992104709148407,
         "application_point_world": [
@@ -1958,10 +4365,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 118,
+        "time": 3.966666666666667,
         "time_s": 3.966666666666667,
+        "position_m": 0.42034149169921875,
+        "velocity_m_s": 0.21170000731945038,
         "joint_position_m": 0.42034149169921875,
         "joint_velocity_m_s": 0.21170000731945038,
         "application_point_world": [
@@ -1973,10 +4400,30 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       },
       {
+        "frame": 119,
+        "time": 4.0,
         "time_s": 4.0,
+        "position_m": 0.4274316728115082,
+        "velocity_m_s": 0.2134789675474167,
         "joint_position_m": 0.4274316728115082,
         "joint_velocity_m_s": 0.2134789675474167,
         "application_point_world": [
@@ -1988,7 +4435,23 @@
           -0.5,
           -3.725288308942254e-07,
           0.0
-        ]
+        ],
+        "force_model": "linear_force",
+        "applied_linear_force_n": 0.5,
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": 0.5,
+        "generalized_joint_force_n": 0.5,
+        "generalized_force_n": 0.5,
+        "damping_n_s_m": 0.0,
+        "mass_or_effective_mass": null,
+        "joint_axis_world": [
+          -1.0,
+          -7.450576617884508e-07,
+          0.0
+        ],
+        "joint_lower_limit_m": -0.4519999921321869,
+        "joint_upper_limit_m": 0.515999972820282,
+        "clamped_at_limit": false
       }
     ]
   }

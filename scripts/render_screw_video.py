@@ -17,9 +17,23 @@ from PIL import Image, ImageDraw, ImageFont
 import sapien
 
 try:
-    from simulation_json import build_metadata, build_summary, sample_time_from_frame, sample_time_from_step
+    from simulation_json import (
+        build_metadata,
+        build_summary,
+        motion_document,
+        sample_time_from_frame,
+        sample_time_from_step,
+        validation_for_motion,
+    )
 except ModuleNotFoundError:
-    from scripts.simulation_json import build_metadata, build_summary, sample_time_from_frame, sample_time_from_step
+    from scripts.simulation_json import (
+        build_metadata,
+        build_summary,
+        motion_document,
+        sample_time_from_frame,
+        sample_time_from_step,
+        validation_for_motion,
+    )
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -52,6 +66,7 @@ class ScrewSim:
     camera: sapien.render.RenderCameraComponent
     local_application_point: np.ndarray
     application_point_strategy: str
+    local_link_center: np.ndarray
     local_marker_start: np.ndarray
     local_marker_end: np.ndarray
     linear_start: float
@@ -64,7 +79,6 @@ class ScrewSim:
 class ScrewState:
     theta: float = 0.0
     omega: float = 0.0
-    friction_torque: float = 0.0
     translation: float = 0.0
 
 
@@ -87,9 +101,25 @@ class ScrewMotionController:
         self.z0 = sim.linear_start if args.z0 is None else float(args.z0)
         self.inertia = max(float(args.rotational_inertia), 1e-9)
         self.damping = max(0.0, float(args.rotary_damping))
-        self.friction = max(0.0, float(args.friction_torque))
-        self.friction_velocity_scale = max(float(args.friction_velocity_scale), 1e-6)
-        self.torque = float(args.torque)
+        self.force_radius = max(float(args.force_radius), 0.0)
+        legacy_friction_force = float(args.friction_torque) / self.force_radius if self.force_radius > 1e-9 else 0.0
+        self.applied_force_tangential = (
+            float(args.applied_force_tangential)
+            if args.applied_force_tangential is not None
+            else float(args.torque) / self.force_radius
+            if self.force_radius > 1e-9
+            else 0.0
+        )
+        self.opposing_tangential_friction = (
+            max(0.0, float(args.opposing_tangential_friction))
+            if args.opposing_tangential_friction is not None
+            else max(0.0, legacy_friction_force)
+        )
+        self.torque_applied = self.applied_force_tangential * self.force_radius
+        self.torque_resisting = self.opposing_tangential_friction * self.force_radius
+        force_after_resistance = max(abs(self.applied_force_tangential) - self.opposing_tangential_friction, 0.0)
+        force_sign = math.copysign(1.0, self.applied_force_tangential) if self.applied_force_tangential else 0.0
+        self.net_torque = force_sign * force_after_resistance * self.force_radius
 
     def translation_from_theta(self, theta: float) -> float:
         return self.z0 + self.pitch * theta / (2.0 * math.pi)
@@ -114,9 +144,7 @@ class ScrewMotionController:
         return self.progress(theta)
 
     def step(self, state: ScrewState, dt: float) -> ScrewState:
-        smooth_sign = math.tanh(state.omega / self.friction_velocity_scale)
-        friction_torque = self.friction * smooth_sign
-        omega_dot = (self.torque - self.damping * state.omega - friction_torque) / self.inertia
+        omega_dot = (self.net_torque - self.damping * state.omega) / self.inertia
         omega = state.omega + omega_dot * dt
         theta = state.theta + omega * dt
 
@@ -130,7 +158,6 @@ class ScrewMotionController:
         return ScrewState(
             theta=theta,
             omega=omega,
-            friction_torque=friction_torque,
             translation=self.translation_from_theta(theta),
         )
 
@@ -142,10 +169,19 @@ class ScrewMotionController:
             "master_joint": self.sim.rotary_joint.name,
             "coupled_joint": self.sim.linear_joint.name,
             "pitch": float(self.pitch),
+            "pitch_m_per_revolution": float(self.pitch),
             "z0": float(self.z0),
-            "torque": float(self.torque),
+            "force_model": "tangential_force_on_cap",
+            "applied_tangential_force_n": float(self.applied_force_tangential),
+            "applied_force_tangential_n": float(self.applied_force_tangential),
+            "opposing_tangential_friction_n": float(self.opposing_tangential_friction),
+            "tangential_force_radius_m": float(self.force_radius),
+            "force_radius_m": float(self.force_radius),
+            "torque_applied_nm": float(self.torque_applied),
+            "torque_resisting_nm": float(self.torque_resisting),
+            "net_torque_nm": float(self.net_torque),
+            "damping_nm_s_rad": float(self.damping),
             "damping": float(self.damping),
-            "friction": float(self.friction),
             "inertia": float(self.inertia),
             "constraint_equation": "translation = z0 + pitch * theta / (2*pi)",
         }
@@ -204,6 +240,13 @@ def zoomed_eye(eye: np.ndarray, target: np.ndarray) -> np.ndarray:
     return target + (eye - target) * CAMERA_ZOOM_OUT
 
 
+def camera_eye_target(view: str) -> tuple[np.ndarray, np.ndarray]:
+    target = np.array([0.0, -0.06, 0.0], dtype=np.float32)
+    if view == "top_side":
+        return np.array([1.15, -2.15, 1.75], dtype=np.float32), target
+    return np.array([-0.72, -1.85, 0.72], dtype=np.float32), target
+
+
 def mesh_vertices(mesh_path: Path) -> np.ndarray:
     vertices = []
     with mesh_path.open("r", encoding="utf-8", errors="ignore") as mesh_file:
@@ -244,9 +287,16 @@ def link_visual_aabb(model_dir: Path, link_name: str) -> tuple[np.ndarray, np.nd
 def default_application_point(model_dir: Path, link_name: str, direction: np.ndarray) -> np.ndarray:
     mins, maxs = link_visual_aabb(model_dir, link_name)
     point = 0.5 * (mins + maxs)
-    axis = int(np.argmax(np.abs(direction)))
-    point[axis] = maxs[axis] if direction[axis] < 0 else mins[axis]
+    screw_axis = int(np.argmax(np.abs(direction)))
+    plane_axes = [axis for axis in range(3) if axis != screw_axis]
+    radial_axis = plane_axes[int((maxs[plane_axes[0]] - mins[plane_axes[0]]) < (maxs[plane_axes[1]] - mins[plane_axes[1]]))]
+    point[radial_axis] = maxs[radial_axis]
     return np.append(point.astype(np.float32), np.float32(1.0))
+
+
+def default_link_center(model_dir: Path, link_name: str) -> np.ndarray:
+    mins, maxs = link_visual_aabb(model_dir, link_name)
+    return np.append((0.5 * (mins + maxs)).astype(np.float32), np.float32(1.0))
 
 
 def default_rotation_marker(model_dir: Path, link_name: str, direction: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -292,6 +342,11 @@ def application_point_world(sim: ScrewSim) -> np.ndarray:
 def local_point_world(sim: ScrewSim, local_point: np.ndarray) -> np.ndarray:
     point = sim.link.get_entity_pose().to_transformation_matrix() @ local_point
     return point[:3].astype(np.float32)
+
+
+def append_if_moved(history: list[np.ndarray], point: np.ndarray, threshold: float = 1e-5) -> None:
+    if not history or float(np.linalg.norm(point - history[-1])) > threshold:
+        history.append(point)
 
 
 def project(camera: sapien.render.RenderCameraComponent, point: np.ndarray) -> tuple[int, int] | None:
@@ -381,6 +436,47 @@ def draw_torque_annotation(
     draw_label(img, f"{torque:g} Nm", (px + radius + 16, py), COLOR_ACCENT)
 
 
+def draw_tangential_force_annotation(
+    img: np.ndarray,
+    sim: ScrewSim,
+    screw_axis_world: np.ndarray,
+    controller: ScrewMotionController,
+    point_history: list[np.ndarray],
+) -> None:
+    projected_history = [uv for p in point_history if (uv := project(sim.camera, p)) is not None]
+    if len(projected_history) > 1:
+        cv2.polylines(img, [np.array(projected_history[-80:], dtype=np.int32)], False, (170, 210, 255), 5, cv2.LINE_AA)
+        cv2.polylines(img, [np.array(projected_history[-80:], dtype=np.int32)], False, COLOR_ACCENT, 2, cv2.LINE_AA)
+
+    point = application_point_world(sim)
+    start_uv = project(sim.camera, point)
+    center_uv = project(sim.camera, local_point_world(sim, sim.local_link_center))
+    if start_uv is None:
+        return
+    if center_uv is None:
+        return
+
+    radius_px = np.asarray(start_uv, dtype=np.float32) - np.asarray(center_uv, dtype=np.float32)
+    if np.linalg.norm(radius_px) < 2.0:
+        return
+    radius_px = radius_px / np.linalg.norm(radius_px)
+    direction_px = np.asarray([-radius_px[1], radius_px[0]], dtype=np.float32)
+    force_sign = math.copysign(1.0, controller.applied_force_tangential) if controller.applied_force_tangential else 1.0
+    direction_px *= -force_sign
+
+    arrow_len = 150
+    end_uv = (
+        int(round(start_uv[0] + direction_px[0] * arrow_len)),
+        int(round(start_uv[1] + direction_px[1] * arrow_len)),
+    )
+
+    cv2.circle(img, start_uv, 15, (235, 246, 255), -1, cv2.LINE_AA)
+    cv2.circle(img, start_uv, 15, COLOR_ACCENT, 4, cv2.LINE_AA)
+    cv2.arrowedLine(img, start_uv, end_uv, (235, 246, 255), 13, cv2.LINE_AA, tipLength=0.22)
+    cv2.arrowedLine(img, start_uv, end_uv, COLOR_ACCENT, 7, cv2.LINE_AA, tipLength=0.22)
+    draw_label(img, f"{controller.applied_force_tangential:g} N", (end_uv[0] + 14, end_uv[1]), COLOR_ACCENT)
+
+
 def draw_rotation_marker(img: np.ndarray, sim: ScrewSim) -> None:
     start = project(sim.camera, local_point_world(sim, sim.local_marker_start))
     end = project(sim.camera, local_point_world(sim, sim.local_marker_end))
@@ -446,12 +542,12 @@ def setup_sim(args: argparse.Namespace, model_dir: Path) -> ScrewSim:
         strategy = explicit_strategy or "manual application point override"
     else:
         local_point = default_application_point(model_dir, args.link, direction)
-        strategy = "outer link face along screw direction from visual AABB"
+        strategy = "side/rim point for tangential cap force from visual AABB"
+    local_center = default_link_center(model_dir, args.link)
     marker_start, marker_end = default_rotation_marker(model_dir, args.link, direction)
 
     camera = scene.add_camera("camera", args.panel_width, args.panel_height, math.radians(44), 0.01, 20.0)
-    camera_eye = np.array([-0.72, -1.85, 0.72], dtype=np.float32)
-    camera_target = np.array([0.0, -0.06, 0.0], dtype=np.float32)
+    camera_eye, camera_target = camera_eye_target(args.camera_view)
     camera.set_entity_pose(look_at_pose(zoomed_eye(camera_eye, camera_target), camera_target))
 
     return ScrewSim(
@@ -465,6 +561,7 @@ def setup_sim(args: argparse.Namespace, model_dir: Path) -> ScrewSim:
         camera,
         local_point,
         strategy,
+        local_center,
         marker_start,
         marker_end,
         linear_start,
@@ -478,7 +575,7 @@ def sample_to_dict(
     frame: int,
     time_s: float,
     sim: ScrewSim,
-    applied_torque: np.ndarray,
+    torque_axis: np.ndarray,
     applied_axial_force: np.ndarray,
     controller: ScrewMotionController,
     state: ScrewState,
@@ -491,11 +588,17 @@ def sample_to_dict(
     translation = float(qpos[sim.linear_index])
     expected_translation = float(controller.translation_from_theta(theta))
     constraint_error = translation - expected_translation
+    master_limits = sim.rotary_joint.get_limit().tolist()
+    coupled_limits = sim.linear_joint.get_limit().tolist()
+    master_lower, master_upper = float(master_limits[0][0]), float(master_limits[0][1])
+    coupled_lower, coupled_upper = float(coupled_limits[0][0]), float(coupled_limits[0][1])
+    clamped = abs(theta - controller.theta_min) <= 1e-3 or abs(theta - controller.theta_max) <= 1e-3
     return {
         "frame": int(frame),
         "time": float(time_s),
         "time_s": float(time_s),
         "motion_type": "screw",
+        "force_model": "tangential_force_on_cap",
         "screw_progress": float(progress),
         "theta_rad": theta,
         "theta_deg": math.degrees(theta),
@@ -513,10 +616,23 @@ def sample_to_dict(
         "joint_angle_rad": angle,
         "joint_angle_deg": math.degrees(angle),
         "joint_velocity_rad_s": omega,
-        "friction_torque_nm": float(state.friction_torque),
+        "applied_force_tangential_n": float(controller.applied_force_tangential),
+        "applied_tangential_force_n": float(controller.applied_force_tangential),
+        "opposing_tangential_friction_n": float(controller.opposing_tangential_friction),
+        "force_radius_m": float(controller.force_radius),
+        "tangential_force_radius_m": float(controller.force_radius),
+        "torque_applied_nm": float(controller.torque_applied),
+        "torque_resisting_nm": float(controller.torque_resisting),
+        "net_torque_nm": float(controller.net_torque),
+        "pitch_m_per_revolution": float(controller.pitch),
+        "master_joint_lower_limit_rad": master_lower,
+        "master_joint_upper_limit_rad": master_upper,
+        "coupled_joint_lower_limit_m": coupled_lower,
+        "coupled_joint_upper_limit_m": coupled_upper,
+        "clamped_at_limit": bool(clamped),
         "application_point_world": application_point_world(sim).astype(float).tolist(),
         "torque_visual_anchor_world": application_point_world(sim).astype(float).tolist(),
-        "applied_torque_world": applied_torque.astype(float).tolist(),
+        "applied_torque_world": (controller.net_torque * torque_axis).astype(float).tolist(),
         "applied_axial_force_world": applied_axial_force.astype(float).tolist(),
     }
 
@@ -530,7 +646,6 @@ def run(args: argparse.Namespace) -> int:
     sim = setup_sim(args, model_dir)
     torque_axis = np.asarray(args.direction, dtype=np.float32)
     torque_axis /= np.linalg.norm(torque_axis) or 1.0
-    torque = torque_axis * args.torque
     axial_force_dir = np.asarray(args.axial_force_direction, dtype=np.float32)
     axial_force_dir /= np.linalg.norm(axial_force_dir) or 1.0
     axial_force = axial_force_dir * args.axial_force
@@ -555,19 +670,19 @@ def run(args: argparse.Namespace) -> int:
                         frame_index,
                         time_s,
                         sim,
-                        torque,
+                        torque_axis,
                         axial_force,
                         controller,
                         state,
                         progress,
                     )
                 )
-                point_history.append(application_point_world(sim))
+                append_if_moved(point_history, application_point_world(sim))
 
                 panel = fit_panel(render_panel(sim), args.panel_width, args.panel_height)
                 canvas = np.full((args.panel_height + args.info_height + args.plot_height, args.panel_width, 3), COLOR_BG, dtype=np.uint8)
                 draw_rotation_marker(panel, sim)
-                draw_torque_annotation(panel, sim, torque_axis, args.torque, point_history)
+                draw_tangential_force_annotation(panel, sim, torque_axis, controller, point_history)
                 canvas[: args.panel_height, : args.panel_width] = panel
                 draw_panel_frame(canvas, args.panel_width, args.panel_height)
                 writer.append_data(canvas)
@@ -591,7 +706,7 @@ def run(args: argparse.Namespace) -> int:
                         len(samples),
                         sample_time_from_step(step, TIMESTEP),
                         sim,
-                        torque,
+                        torque_axis,
                         axial_force,
                         controller,
                         state,
@@ -645,20 +760,23 @@ def run(args: argparse.Namespace) -> int:
         sample_interval_s=steps_per_frame * TIMESTEP if args.mode == "render" else max(1, round(1.0 / (TIMESTEP * args.fps))) * TIMESTEP,
         end_hold_seconds=args.end_hold_seconds if args.mode == "render" else None,
         actuation={
-            "motion_type": "screw",
-            "control_mode": "virtual_screw_constraint_dynamics",
-            "virtual_physics": True,
-            "real_thread_contact": False,
-            "constraint_equation": "translation = z0 + pitch * theta / (2*pi)",
-            "constraint_error_max": constraint_error_max,
-            "constraint_error_mean": constraint_error_mean,
-            "master_joint": args.rotary_joint,
-            "coupled_joint": args.linear_joint,
+            "force_model": "tangential_force_on_cap",
+            "applied_tangential_force_n": float(controller.applied_force_tangential),
+            "applied_force_tangential_n": float(controller.applied_force_tangential),
+            "opposing_tangential_friction_n": float(controller.opposing_tangential_friction),
+            "tangential_force_radius_m": float(controller.force_radius),
+            "force_radius_m": float(controller.force_radius),
+            "torque_applied_nm": float(controller.torque_applied),
+            "torque_resisting_nm": float(controller.torque_resisting),
+            "net_torque_nm": float(controller.net_torque),
+            "damping_nm_s_rad": float(controller.damping),
+            "inertia": float(controller.inertia),
             "torque": {
-                "magnitude_nm": args.torque,
+                "magnitude_nm": float(controller.net_torque),
                 "axis_world": torque_axis.astype(float).tolist(),
-                "application": "free_moment_about_screw_axis",
+                "application": "derived_from_tangential_force_on_cap",
                 "visual_anchor": "application_point",
+                "deprecated_input_torque_nm": args.torque,
             },
             "axial_force": {
                 "magnitude_n": args.axial_force,
@@ -668,55 +786,25 @@ def run(args: argparse.Namespace) -> int:
             "rotary_joint": args.rotary_joint,
             "linear_limits_m": sim.linear_joint.get_limit().tolist(),
             "rotary_limits_rad": sim.rotary_joint.get_limit().tolist(),
+            "legacy_aliases": {
+                "note": "Kept for backward compatibility; canonical screw coupling lives in metadata.kinematic_constraint.",
+                "screw_dynamics": screw_metadata,
+                "screw": screw_metadata,
+            },
             "screw_dynamics": {
-                "motion_type": "screw",
-                "virtual_physics": True,
-                "real_thread_contact": False,
-                "master_joint": args.rotary_joint,
-                "coupled_joint": args.linear_joint,
-                "theta": final_sample["theta_rad"],
-                "omega": final_sample["omega_rad_s"],
-                "translation": final_sample["translation_m"],
-                "pitch": float(controller.pitch),
-                "z0": float(controller.z0),
-                "torque": float(args.torque),
-                "damping": float(controller.damping),
-                "friction": float(controller.friction),
-                "inertia": float(controller.inertia),
-                "rotational_inertia_kg_m2": float(args.rotational_inertia),
-                "friction_torque_nm": float(args.friction_torque),
-                "friction_velocity_scale_rad_s": float(args.friction_velocity_scale),
-                "rotary_damping_nm_s_rad": float(args.rotary_damping),
-                "constraint_equation": "translation = z0 + pitch * theta / (2*pi)",
-                "constraint_error_max": constraint_error_max,
-                "constraint_error_mean": constraint_error_mean,
+                "legacy_alias": True,
+                **screw_metadata,
             },
-            "screw": screw_metadata,
-            "motion_bounds": {
-                "translation_start_m": float(sim.linear_start),
-                "translation_end_m": float(sim.linear_end),
-                "theta_start_rad": 0.0,
-                "theta_end_rad": float(controller.theta_max),
-                "rotation_start_rad": float(sim.rotation_start),
-                "rotation_end_rad": float(sim.rotation_start + controller.theta_max),
-                "rotation_start_deg": math.degrees(sim.rotation_start),
-                "rotation_end_deg": math.degrees(sim.rotation_start + controller.theta_max),
-            },
-            "screw_coupling": {
-                "linear_delta_m": float(linear_delta),
-                "rotation_delta_rad": float(rotation_delta),
-                "pitch": float(controller.pitch),
-                "pitch_m_per_revolution": float(controller.pitch),
-                "pitch_m_per_rad": float(controller.pitch / (2.0 * math.pi)),
-                "z0": float(controller.z0),
-                "constraint": "translation = z0 + pitch * theta / (2*pi)",
+            "screw": {
+                "legacy_alias": True,
+                **screw_metadata,
             },
         },
         application_point={
             "strategy": sim.application_point_strategy,
             "local_on_link": sim.local_application_point[:3].astype(float).tolist(),
-            "role": "visual_anchor_for_torque_cue",
-            "note": "A pure torque/free moment is not applied at a point; this point anchors the cue on the moving link.",
+            "role": "visual_anchor_for_tangential_force_cue",
+            "note": "The screw model uses a simplified tangential force on the cap; this side/rim point anchors the visual cue on the moving link.",
         },
         summary=summary,
         articulation=sim.articulation,
@@ -724,23 +812,91 @@ def run(args: argparse.Namespace) -> int:
         linear_damping=LINEAR_DAMPING,
         angular_damping=ANGULAR_DAMPING,
     )
-    metadata.update(
-        {
-            "motion_type": "screw",
-            "virtual_physics": True,
-            "real_thread_contact": False,
-            "constraint_equation": "translation = z0 + pitch * theta / (2*pi)",
-            "constraint_error_max": constraint_error_max,
-            "constraint_error_mean": constraint_error_mean,
-        }
+    metadata["joint_limits"] = {
+        "master_joint_limits_rad": sim.rotary_joint.get_limit().tolist(),
+        "coupled_joint_limits_m": sim.linear_joint.get_limit().tolist(),
+    }
+    metadata["kinematic_constraint"] = {
+        "type": "virtual_helical",
+        "virtual_physics": True,
+        "real_thread_contact": False,
+        "master_joint": args.rotary_joint,
+        "coupled_joint": args.linear_joint,
+        "pitch_m_per_revolution": float(controller.pitch),
+        "z0": float(controller.z0),
+        "theta_limit_rad": float(controller.theta_max),
+        "translation_start_m": float(sim.linear_start),
+        "translation_end_m": float(sim.linear_end),
+        "constraint_equation": "translation = z0 + pitch * theta / (2*pi)",
+        "constraint_error_max": constraint_error_max,
+        "constraint_error_mean": constraint_error_mean,
+        "positive_theta_translation_axis": pitch_axis,
+    }
+    metadata["simulation_config"] = {
+        "timestep_s": TIMESTEP,
+        "fps": args.fps,
+        "requested_seconds": args.seconds,
+        "end_hold_seconds": args.end_hold_seconds if args.mode == "render" else None,
+    }
+    metadata["motion_bounds"] = {
+        "translation_start_m": float(sim.linear_start),
+        "translation_end_m": float(sim.linear_end),
+        "theta_start_rad": 0.0,
+        "theta_end_rad": float(controller.theta_max),
+        "rotation_start_rad": float(sim.rotation_start),
+        "rotation_end_rad": float(sim.rotation_start + controller.theta_max),
+        "rotation_start_deg": math.degrees(sim.rotation_start),
+        "rotation_end_deg": math.degrees(sim.rotation_start + controller.theta_max),
+    }
+    metadata["screw_coupling"] = {
+        "legacy_alias": True,
+        "linear_delta_m": float(linear_delta),
+        "rotation_delta_rad": float(rotation_delta),
+        "pitch_m_per_revolution": float(controller.pitch),
+        "pitch_m_per_rad": float(controller.pitch / (2.0 * math.pi)),
+        "z0": float(controller.z0),
+        "constraint": "translation = z0 + pitch * theta / (2*pi)",
+    }
+
+    validation = validation_for_motion(
+        initial_position=0.0,
+        final_position=float(final_sample["theta_rad"]),
+        final_velocity=float(final_sample["omega_rad_s"]),
+        limits=[[0.0, float(controller.theta_max)]],
+        actuation_sign=float(controller.net_torque),
+    )
+    if constraint_error_max > args.constraint_tolerance:
+        validation["warnings"].append(
+            f"Screw constraint error exceeds tolerance: {constraint_error_max:.6g} m > {args.constraint_tolerance:.6g} m."
+        )
+    validation["constraint_error_max"] = float(constraint_error_max)
+    validation["constraint_error_mean"] = float(constraint_error_mean)
+    document = motion_document(
+        motion_type="screw",
+        metadata=metadata,
+        sample_series=sample_series,
+        initial_state={
+            "theta_rad": 0.0,
+            "theta_deg": 0.0,
+            "translation_m": float(sim.linear_start),
+        },
+        final_state={
+            "theta_rad": float(final_sample["theta_rad"]),
+            "theta_deg": float(final_sample["theta_deg"]),
+            "omega_rad_s": float(final_sample["omega_rad_s"]),
+            "translation_m": float(final_sample["translation_m"]),
+        },
+        validation=validation,
     )
 
-    with json_output.open("w", encoding="utf-8") as f:
-        json.dump({"metadata": metadata, "samples": sample_series}, f, indent=2)
+    if not args.no_json_output:
+        with json_output.open("w", encoding="utf-8") as f:
+            json.dump(document, f, indent=2)
 
     if args.mode == "render":
         print(f"Wrote {output}")
-    print(f"Wrote {json_output}")
+    if not args.no_json_output:
+        print(f"Wrote {json_output}")
     if constraint_error_max > args.constraint_tolerance:
         print(
             "WARNING: Screw constraint check failed: "
@@ -751,6 +907,10 @@ def run(args: argparse.Namespace) -> int:
     print(f"Final screw theta: {final_sample['theta_deg']:.2f} deg")
     print(f"Final screw translation: {final_sample['translation_m']:.6f} m")
     print(f"Pitch used: {controller.pitch:.6f} m/revolution")
+    print(f"Applied tangential force: {controller.applied_force_tangential:.6f} N")
+    print(f"Opposing tangential friction: {controller.opposing_tangential_friction:.6f} N")
+    print(f"Force radius: {controller.force_radius:.6f} m")
+    print(f"Net torque: {controller.net_torque:.6f} Nm")
     print(f"Number of revolutions: {float(final_sample['theta_rad']) / (2.0 * math.pi):.6f}")
     print(f"Constraint max error: {constraint_error_max:.6g} m")
     print(f"Positive theta with this pitch produces translation along {pitch_axis} prismatic axis")
@@ -764,13 +924,16 @@ def main() -> int:
     parser.add_argument("--model-dir", default="3763")
     parser.add_argument("--output", default=None)
     parser.add_argument("--json-output", default=None)
+    parser.add_argument("--no-json-output", action="store_true")
     parser.add_argument("--linear-joint", default="joint_2")
     parser.add_argument("--rotary-joint", default="joint_0")
     parser.add_argument("--link", default="link_0")
-    parser.add_argument("--torque", type=float, default=0.05)
+    parser.add_argument("--torque", type=float, default=0.05, help="Deprecated screw input; used only if tangential force is omitted.")
+    parser.add_argument("--applied-force-tangential", type=float, default=None)
+    parser.add_argument("--opposing-tangential-friction", type=float, default=None)
+    parser.add_argument("--force-radius", type=float, default=0.05)
     parser.add_argument("--rotational-inertia", type=float, default=0.002)
-    parser.add_argument("--friction-torque", type=float, default=0.005)
-    parser.add_argument("--friction-velocity-scale", type=float, default=0.05)
+    parser.add_argument("--friction-torque", type=float, default=0.0, help="Deprecated; converted to opposing tangential friction if needed.")
     parser.add_argument("--rotary-damping", type=float, default=0.02)
     parser.add_argument("--pitch", type=float, default=None, help="Screw pitch in meters per full revolution.")
     parser.add_argument("--z0", type=float, default=None, help="Prismatic displacement at theta=0.")
@@ -784,6 +947,7 @@ def main() -> int:
     parser.add_argument("--panel-height", type=int, default=DEFAULT_PANEL_HEIGHT)
     parser.add_argument("--info-height", type=int, default=DEFAULT_INFO_HEIGHT)
     parser.add_argument("--plot-height", type=int, default=0)
+    parser.add_argument("--camera-view", choices=["main", "top_side"], default="main")
     parser.add_argument("--direction", nargs=3, type=float, default=[0.0, -1.0, 0.0], help="Torque axis in world coordinates")
     parser.add_argument("--translation-start", type=float, default=None)
     parser.add_argument("--translation-end", type=float, default=None)

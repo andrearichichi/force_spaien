@@ -17,9 +17,23 @@ from PIL import Image, ImageDraw, ImageFont
 import sapien
 
 try:
-    from simulation_json import build_metadata, build_summary, sample_time_from_frame, sample_time_from_step
+    from simulation_json import (
+        build_metadata,
+        build_summary,
+        motion_document,
+        sample_time_from_frame,
+        sample_time_from_step,
+        validation_for_motion,
+    )
 except ModuleNotFoundError:
-    from scripts.simulation_json import build_metadata, build_summary, sample_time_from_frame, sample_time_from_step
+    from scripts.simulation_json import (
+        build_metadata,
+        build_summary,
+        motion_document,
+        sample_time_from_frame,
+        sample_time_from_step,
+        validation_for_motion,
+    )
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -459,13 +473,41 @@ def draw_displacement_plot(
         draw_label(canvas, "movimento", (x + w - 168, y + 30), COLOR_ACCENT, 0.48)
 
 
-def sample_to_dict(time_s: float, sim: DrawerSim, applied_force: np.ndarray) -> dict[str, object]:
+def sample_to_dict(
+    time_s: float,
+    sim: DrawerSim,
+    applied_force: np.ndarray,
+    generalized_force: float,
+    *,
+    frame: int | None = None,
+) -> dict[str, object]:
+    position = float(sim.cabinet.get_qpos()[sim.joint_index])
+    velocity = float(sim.cabinet.get_qvel()[sim.joint_index])
+    limits = sim.cabinet.get_active_joints()[sim.joint_index].get_limit().tolist()
+    lower, upper = float(limits[0][0]), float(limits[0][1])
+    clamped = (math.isfinite(lower) and abs(position - lower) <= 1e-3) or (math.isfinite(upper) and abs(position - upper) <= 1e-3)
     return {
+        "frame": int(frame) if frame is not None else None,
+        "time": float(time_s),
         "time_s": float(time_s),
-        "joint_position_m": float(sim.cabinet.get_qpos()[sim.joint_index]),
-        "joint_velocity_m_s": float(sim.cabinet.get_qvel()[sim.joint_index]),
+        "position_m": position,
+        "velocity_m_s": velocity,
+        "joint_position_m": position,
+        "joint_velocity_m_s": velocity,
         "application_point_world": application_point_world(sim).astype(float).tolist(),
         "applied_force_world": applied_force.astype(float).tolist(),
+        "force_model": "linear_force",
+        "applied_linear_force_n": float(abs(generalized_force)),
+        "opposing_linear_friction_n": 0.0,
+        "net_force_n": float(generalized_force),
+        "generalized_joint_force_n": float(generalized_force),
+        "generalized_force_n": float(generalized_force),
+        "damping_n_s_m": LINEAR_DAMPING,
+        "mass_or_effective_mass": None,
+        "joint_axis_world": sim.positive_pull_dir_world.astype(float).tolist(),
+        "joint_lower_limit_m": lower,
+        "joint_upper_limit_m": upper,
+        "clamped_at_limit": bool(clamped),
     }
 
 
@@ -514,6 +556,16 @@ def run_apply(args: argparse.Namespace) -> int:
             local_application_point = np.linalg.inv(target_link.get_entity_pose().to_transformation_matrix()) @ pick_link_face_point(target_link, direction)
             application_point_strategy = "center of selected link face along force direction"
     force_world = direction * args.force
+    temp_sim = DrawerSim(
+        scene,
+        articulation,
+        target_link,
+        joint_index,
+        None,
+        local_application_point,
+        direction,
+        application_point_strategy,
+    )
 
     samples = []
     steps = max(1, int(args.seconds / TIMESTEP))
@@ -525,16 +577,7 @@ def run_apply(args: argparse.Namespace) -> int:
         scene.step()
 
         if step % sample_interval == 0 or step == steps - 1:
-            samples.append(
-                {
-                    "time_s": sample_time_from_step(step, TIMESTEP),
-                    "joint_position_m": float(articulation.get_qpos()[joint_index]),
-                    "joint_velocity_m_s": float(articulation.get_qvel()[joint_index]),
-                    "application_point_world": application_point_world_on_link(target_link, local_application_point).astype(float).tolist(),
-                    "applied_force_world": force_world.astype(float).tolist(),
-                    "generalized_force_n": float(generalized_force),
-                }
-            )
+            samples.append(sample_to_dict(sample_time_from_step(step, TIMESTEP), temp_sim, force_world, generalized_force, frame=len(samples)))
 
     summary = build_summary(
         sample_series={"force": samples},
@@ -559,6 +602,13 @@ def run_apply(args: argparse.Namespace) -> int:
             "force": {
                 "magnitude_n": args.force,
                 "direction_world": direction.astype(float).tolist(),
+                "force_model": "linear_force",
+                "applied_linear_force_n": float(abs(generalized_force)),
+                "opposing_linear_friction_n": 0.0,
+                "net_force_n": float(generalized_force),
+                "damping_n_s_m": LINEAR_DAMPING,
+                "mass_or_effective_mass": None,
+                "joint_axis_world": direction.astype(float).tolist(),
                 "generalized_joint_force_n": float(generalized_force),
             },
             "joint_limits_m": target_joint.get_limit().tolist(),
@@ -573,9 +623,27 @@ def run_apply(args: argparse.Namespace) -> int:
         linear_damping=LINEAR_DAMPING,
         angular_damping=ANGULAR_DAMPING,
     )
+    validation = validation_for_motion(
+        initial_position=0.0,
+        final_position=float(samples[-1]["position_m"]),
+        final_velocity=float(samples[-1]["velocity_m_s"]),
+        limits=target_joint.get_limit().tolist(),
+        actuation_sign=float(generalized_force),
+    )
+    document = motion_document(
+        motion_type="prismatic",
+        metadata=metadata,
+        sample_series={"force": samples},
+        initial_state={"position_m": 0.0},
+        final_state={
+            "position_m": float(samples[-1]["position_m"]),
+            "velocity_m_s": float(samples[-1]["velocity_m_s"]),
+        },
+        validation=validation,
+    )
 
     with json_output.open("w", encoding="utf-8") as f:
-        json.dump({"metadata": metadata, "samples": {"force": samples}}, f, indent=2)
+        json.dump(document, f, indent=2)
 
     print(f"Wrote {json_output}")
     print(f"Final displacement: {samples[-1]['joint_position_m']:.4f} m")
@@ -654,12 +722,12 @@ def main() -> int:
 
             time_s = sample_time_from_frame(len(pulling_displacements), steps_per_frame, TIMESTEP)
             if args.movement == "comparison":
-                samples["no_force"].append(sample_to_dict(time_s, still_sim, np.zeros(3, dtype=np.float32)))
-                samples["pulling_force"].append(sample_to_dict(time_s, pulling_sim, force))
+                samples["no_force"].append(sample_to_dict(time_s, still_sim, np.zeros(3, dtype=np.float32), 0.0, frame=len(pulling_displacements)))
+                samples["pulling_force"].append(sample_to_dict(time_s, pulling_sim, force, generalized_force, frame=len(pulling_displacements)))
                 point_histories["no_force"].append(application_point_world(still_sim))
                 point_histories["pulling_force"].append(application_point_world(pulling_sim))
             else:
-                samples["force"].append(sample_to_dict(time_s, pulling_sim, force))
+                samples["force"].append(sample_to_dict(time_s, pulling_sim, force, generalized_force, frame=len(pulling_displacements)))
                 point_histories["force"].append(application_point_world(pulling_sim))
 
             right = fit_panel(render_panel(pulling_sim), args.panel_width, args.panel_height)
@@ -739,6 +807,13 @@ def main() -> int:
             "force": {
                 "magnitude_n": args.force,
                 "direction_world": pull_dir_world.astype(float).tolist(),
+                "force_model": "linear_force",
+                "applied_linear_force_n": float(abs(generalized_force)),
+                "opposing_linear_friction_n": 0.0,
+                "net_force_n": float(generalized_force),
+                "damping_n_s_m": LINEAR_DAMPING,
+                "mass_or_effective_mass": None,
+                "joint_axis_world": pull_dir_world.astype(float).tolist(),
                 "generalized_joint_force_n": float(generalized_force),
             },
             "joint_limits_m": pulling_sim.cabinet.get_active_joints()[pulling_sim.joint_index].get_limit().tolist(),
@@ -754,8 +829,28 @@ def main() -> int:
         angular_damping=ANGULAR_DAMPING,
         drawer_index=args.drawer,
     )
+    primary_samples = samples["force" if args.movement != "comparison" else "pulling_force"]
+    validation = validation_for_motion(
+        initial_position=0.0,
+        final_position=float(primary_samples[-1]["position_m"]),
+        final_velocity=float(primary_samples[-1]["velocity_m_s"]),
+        limits=pulling_sim.cabinet.get_active_joints()[pulling_sim.joint_index].get_limit().tolist(),
+        actuation_sign=float(generalized_force),
+        completion_velocity_threshold=1e-3,
+    )
+    document = motion_document(
+        motion_type="prismatic",
+        metadata=metadata,
+        sample_series=samples,
+        initial_state={"position_m": 0.0},
+        final_state={
+            "position_m": float(primary_samples[-1]["position_m"]),
+            "velocity_m_s": float(primary_samples[-1]["velocity_m_s"]),
+        },
+        validation=validation,
+    )
     with json_output.open("w", encoding="utf-8") as f:
-        json.dump({"metadata": metadata, "samples": samples}, f, indent=2)
+        json.dump(document, f, indent=2)
 
     print(f"Wrote {output}")
     print(f"Wrote {json_output}")

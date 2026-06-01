@@ -57,8 +57,6 @@ def first_moving_joint(model_dir: Path) -> tuple[str, str, str, tuple[float, flo
 
 
 def default_initial_angle(model_dir: Path, limits: tuple[float, float] | None) -> float:
-    if model_dir.name == "11691":
-        return -1.5
     if limits is None:
         return 0.0
     lower, upper = limits
@@ -74,8 +72,6 @@ def drawer_index_from_link(link_name: str) -> str:
 
 
 def default_direction(model_dir: Path, joint_type: str) -> list[float]:
-    if model_dir.name == "45384" and joint_type == "revolute":
-        return [-1.0, 0.0, 0.0]
     return [0.0, 0.0, 1.0]
 
 
@@ -169,6 +165,44 @@ def load_contact_points_config(path: Path) -> dict[str, object]:
     if not isinstance(objects, dict):
         raise RuntimeError(f"{path} field 'objects' must be a JSON object.")
     return objects
+
+
+def mark_stale_outputs(output_root: Path) -> None:
+    for simulation_json in output_root.glob("*_output/simulation.json"):
+        try:
+            data = json.loads(simulation_json.read_text())
+        except (OSError, json.JSONDecodeError):
+            continue
+        metadata = data.get("metadata", {})
+        model_dir = metadata.get("object", {}).get("model_dir")
+        if not model_dir or (Path(model_dir) / "mobility.urdf").exists():
+            continue
+        validation = data.get("validation", {})
+        warnings = list(validation.get("warnings", []))
+        warning = "Source URDF is missing; this output may be stale and is excluded from current validation."
+        if warning not in warnings:
+            warnings.append(warning)
+        validation.update(
+            {
+                "stale_output": True,
+                "regenerable": False,
+                "motion_visible": validation.get("motion_visible", False),
+                "motion_completed": validation.get("motion_completed", False),
+                "clamped_at_limit": validation.get("clamped_at_limit", False),
+                "initial_near_lower_limit": validation.get("initial_near_lower_limit", False),
+                "initial_near_upper_limit": validation.get("initial_near_upper_limit", False),
+                "final_near_lower_limit": validation.get("final_near_lower_limit", False),
+                "final_near_upper_limit": validation.get("final_near_upper_limit", False),
+                "displacement_abs": validation.get("displacement_abs", 0.0),
+                "final_velocity_abs": validation.get("final_velocity_abs", 0.0),
+                "direction_auto_flipped": validation.get("direction_auto_flipped", False),
+                "warnings": warnings,
+            }
+        )
+        data["validation"] = validation
+        metadata["validation"] = validation
+        simulation_json.write_text(json.dumps(data, indent=2), encoding="utf-8")
+        print(f"WARNING: marked stale/non-regenerable output: {simulation_json}")
 
 
 def contact_config_for(model_dir_arg: str, model_dir: Path, configs: dict[str, object]) -> dict[str, object]:
@@ -576,9 +610,12 @@ def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path, 
         if isinstance(screw_dynamics, dict):
             dynamic_args = {
                 "rotational_inertia_kg_m2": "--rotational-inertia",
-                "friction_torque_nm": "--friction-torque",
-                "friction_velocity_scale_rad_s": "--friction-velocity-scale",
+                "inertia": "--rotational-inertia",
                 "damping_nm_s_rad": "--rotary-damping",
+                "applied_force_tangential_n": "--applied-force-tangential",
+                "opposing_tangential_friction_n": "--opposing-tangential-friction",
+                "force_radius_m": "--force-radius",
+                "friction_torque_nm": "--friction-torque",
             }
             for config_name, cli_name in dynamic_args.items():
                 if screw_dynamics.get(config_name) is not None:
@@ -688,6 +725,7 @@ def main() -> int:
 
     scripts_dir = Path(__file__).resolve().parent
     contact_configs = load_contact_points_config(Path(args.contact_points_config).expanduser())
+    mark_stale_outputs(Path(args.output_root).expanduser())
     exit_code = 0
     for index, model_dir in enumerate(objects, start=1):
         if len(objects) > 1:

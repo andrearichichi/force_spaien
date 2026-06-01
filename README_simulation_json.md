@@ -115,8 +115,13 @@ Caso `screw`, `render` o `apply`:
 - `real_thread_contact`: `false`
 - `master_joint`: joint revolute/continuous che controlla `theta`
 - `coupled_joint`: joint prismatico aggiornato da `theta`
-- `torque.magnitude_nm`
-- `torque.axis_world`
+- `force_model`: `tangential_force_on_cap`
+- `applied_force_tangential_n`
+- `opposing_tangential_friction_n`
+- `force_radius_m`
+- `torque_applied_nm`
+- `torque_resisting_nm`
+- `net_torque_nm`
 - `linear_joint`
 - `rotary_joint`
 - `linear_limits_m`
@@ -126,9 +131,7 @@ Caso `screw`, `render` o `apply`:
 - `screw_dynamics.translation`
 - `screw_dynamics.pitch`
 - `screw_dynamics.z0`
-- `screw_dynamics.torque`
 - `screw_dynamics.damping`
-- `screw_dynamics.friction`
 - `screw_dynamics.inertia`
 - `constraint_equation`: `translation = z0 + pitch * theta / (2*pi)`
 - `constraint_error_max`
@@ -386,7 +389,13 @@ La struttura usa una singola serie:
         "joint_angle_rad": 0.0,
         "joint_angle_deg": 0.0,
         "joint_velocity_rad_s": 0.0,
-        "friction_torque_nm": 0.0,
+        "force_model": "tangential_force_on_cap",
+        "applied_force_tangential_n": 0.3,
+        "opposing_tangential_friction_n": 0.1,
+        "force_radius_m": 0.05,
+        "torque_applied_nm": 0.015,
+        "torque_resisting_nm": 0.005,
+        "net_torque_nm": 0.01,
         "application_point_world": [0.0, 0.0, 0.0],
         "torque_visual_anchor_world": [0.0, 0.0, 0.0],
         "applied_torque_world": [0.0, -0.01, 0.0],
@@ -412,7 +421,13 @@ Campi principali:
 - `joint_position_m`: alias compatibile con i sample prismatici
 - `joint_angle_rad` e `joint_angle_deg`: angolo assoluto del joint revolute
 - `joint_velocity_rad_s`: alias compatibile con i sample revolute
-- `applied_torque_world`: coppia applicata, espressa in coordinate mondo
+- `applied_force_tangential_n`: forza tangenziale applicata lateralmente al tappo
+- `opposing_tangential_friction_n`: forza tangenziale resistente opposta, semplificata
+- `force_radius_m`: distanza dal centro/asse usata per convertire la forza in coppia
+- `torque_applied_nm`: `applied_force_tangential_n * force_radius_m`
+- `torque_resisting_nm`: `opposing_tangential_friction_n * force_radius_m`
+- `net_torque_nm`: coppia netta usata nella dinamica 1D
+- `applied_torque_world`: coppia netta derivata dalla forza tangenziale, espressa in coordinate mondo
 - `applied_axial_force_world`: forza assiale opzionale, se configurata
 
 Per lo screw, la relazione verificata in ogni sample e':
@@ -427,6 +442,16 @@ Il JSON include anche `constraint_error_max` e `constraint_error_mean` in `metad
 
 The **screw** motion is implemented as a **virtual helical constraint**: SAPIEN does not simulate real threaded contact, so rotation and translation are coupled directly by the controller.
 
+The screw dynamics are driven by a simplified tangential force model. A lateral tangential force on the cap is converted into torque through a radius; a simplified opposing tangential force is converted into resisting torque. This opposing force is not a model of internal thread friction.
+
+```text
+torque_applied = applied_force_tangential_n * force_radius_m
+torque_resisting = opposing_tangential_friction_n * force_radius_m
+net_torque = sign(applied_force_tangential_n)
+             * max(abs(applied_force_tangential_n) - opposing_tangential_friction_n, 0)
+             * force_radius_m
+```
+
 ### Common parameters
 
 | Parameter | Meaning |
@@ -435,11 +460,11 @@ The **screw** motion is implemented as a **virtual helical constraint**: SAPIEN 
 | `rotary_joint` | Revolute joint controlling angle `theta` |
 | `linear_joint` | Prismatic joint updated from `theta` |
 | `link` | Moving part, for example a cap |
-| `torque.magnitude_nm` | Applied torque |
-| `torque.axis_world` | Torque axis in world coordinates |
+| `applied_force_tangential_n` | Tangential force applied laterally to the cap |
+| `opposing_tangential_friction_n` | Simplified tangential resisting force |
+| `force_radius_m` | Radius used to convert tangential force into torque |
+| `net_torque_nm` | Torque used by the 1D theta dynamics |
 | `rotational_inertia_kg_m2` | Virtual rotational inertia |
-| `friction_torque_nm` | Constant rotational friction |
-| `friction_velocity_scale_rad_s` | Smooths friction around zero velocity |
 | `damping_nm_s_rad` | Viscous damping |
 | `translation.start / end` | Prismatic motion range |
 | `rotation.start / end` | Angular range used for the video/simulation |
@@ -452,7 +477,10 @@ The **screw** motion is implemented as a **virtual helical constraint**: SAPIEN 
 #### `3763`
 
 ```yaml
-torque.magnitude_nm: 0.01
+applied_force_tangential_n: 0.3
+opposing_tangential_friction_n: 0.1
+force_radius_m: 0.05
+net_torque_nm: 0.01
 pitch_m_per_revolution: -0.2
 z0: -0.008
 
@@ -463,7 +491,10 @@ rotation: 0 -> 180 deg
 #### `3990`
 
 ```yaml
-torque.magnitude_nm: 0.01
+applied_force_tangential_n: 0.3
+opposing_tangential_friction_n: 0.1
+force_radius_m: 0.05
+net_torque_nm: 0.01
 pitch_m_per_revolution: -0.32
 z0: 0.084
 

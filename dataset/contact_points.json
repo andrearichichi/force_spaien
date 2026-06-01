@@ -38,20 +38,24 @@
       }
     },
     "3763": {
+      "motion_type": "screw",
       "joint_type": "screw",
       "joint": "joint_2",
       "linear_joint": "joint_2",
       "rotary_joint": "joint_0",
+      "master_joint": "joint_0",
+      "coupled_joint": "joint_2",
       "link": "link_0",
       "torque": {
         "magnitude_nm": 0.01,
         "axis_world": [0.0, -1.0, 0.0],
-        "description": "twist torque around the screw axis"
+        "description": "deprecated; screw torque is derived from tangential cap force"
       },
       "screw_dynamics": {
         "rotational_inertia_kg_m2": 0.002,
-        "friction_torque_nm": 0.005,
-        "friction_velocity_scale_rad_s": 0.05,
+        "applied_force_tangential_n": 0.6,
+        "opposing_tangential_friction_n": 0.1,
+        "force_radius_m": 0.05,
         "damping_nm_s_rad": 0.02
       },
       "screw_coupling": {
@@ -68,27 +72,31 @@
       },
       "application_point": {
         "type": "aabb_local",
-        "x": "center",
-        "y": "max",
+        "x": "max",
+        "y": "center",
         "z": "center",
-        "description": "cap contact point for screw torque cue"
+        "description": "side/rim point for tangential cap force cue"
       }
     },
     "3990": {
+      "motion_type": "screw",
       "joint_type": "screw",
       "joint": "joint_2",
       "linear_joint": "joint_2",
       "rotary_joint": "joint_0",
+      "master_joint": "joint_0",
+      "coupled_joint": "joint_2",
       "link": "link_0",
       "torque": {
         "magnitude_nm": 0.01,
         "axis_world": [0.0, -1.0, 0.0],
-        "description": "twist torque around the bottle cap screw axis"
+        "description": "deprecated; screw torque is derived from tangential cap force"
       },
       "screw_dynamics": {
         "rotational_inertia_kg_m2": 0.002,
-        "friction_torque_nm": 0.005,
-        "friction_velocity_scale_rad_s": 0.05,
+        "applied_force_tangential_n": 0.6,
+        "opposing_tangential_friction_n": 0.1,
+        "force_radius_m": 0.05,
         "damping_nm_s_rad": 0.02
       },
       "screw_coupling": {
@@ -105,10 +113,10 @@
       },
       "application_point": {
         "type": "aabb_local",
-        "x": "center",
-        "y": "max",
+        "x": "max",
+        "y": "center",
         "z": "center",
-        "description": "cap contact point for screw torque cue"
+        "description": "side/rim point for tangential cap force cue"
       }
     }
   }
