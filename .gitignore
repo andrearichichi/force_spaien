@@ -1,40 +1,80 @@
-# Local environment and editor state
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local tooling and user state
 .cache/
 .codex/
 .config/
-.cursor-server
-.docker
-.idea/
+.cursor-server/
 .ipython/
-.jupyter
-.lightning_studio/
-.local
+.jupyter/
+.local/
 .npm/
 .nv/
-.nvm
-.oh-my-zsh
-.ssh
-.vscode/
-.vscode-server
-.windsurf-server
+.nvm/
+.vscode-server/
+.windsurf-server/
 
-# Shell/user files from the workspace image
-.bashrc
-.condarc
-.gitconfig
-.hushlogin
-.profile
-.sudo_as_admin_successful
-.vimrc
-.zcompdump
-.zsh_history
-.zshrc
+# Environment variables and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
 
-# Python/runtime artifacts
-__pycache__/
-*.py[cod]
-.pytest_cache/
+# External datasets and local per-object configuration
+dataset/*
+!dataset/.gitkeep
+!dataset/contact_points.example.json
 
-# OS noise
-.DS_Store
+# Generated simulations and media
+outputs/
+logs/
+*.log
+*.mp4
+*.avi
+*.mov
 
+# Generated model and numerical artifacts
+checkpoints/
+models/
+*.ckpt
+*.onnx
+*.pt
+*.pth
+*.pkl
+*.npy
+*.npz
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*~
