@@ -655,6 +655,25 @@ def run_object(model_dir_arg: str, args: argparse.Namespace, scripts_dir: Path, 
 
     if args.mode == "render":
         command += ["--end-hold-seconds", str(args.end_hold_seconds)]
+        command += ["--end-hold-mode", args.end_hold_mode]
+        if joint_type in {"revolute", "prismatic"}:
+            command += ["--motion-source", args.motion_source]
+            command += ["--force-application-mode", args.force_application_mode]
+            command += ["--joint-static-friction", str(args.joint_static_friction)]
+            command += ["--joint-dynamic-friction", str(args.joint_dynamic_friction)]
+            command += ["--joint-viscous-damping", str(args.joint_viscous_damping)]
+            command += ["--link-linear-damping", str(args.link_linear_damping)]
+            command += ["--link-angular-damping", str(args.link_angular_damping)]
+            command += ["--force-profile", args.force_profile]
+            command += ["--force-start-time", str(args.force_start_time)]
+            command += ["--force-duration", str(args.force_duration)]
+            command += ["--force-ramp-time", str(args.force_ramp_time)]
+            command += ["--settle-velocity-threshold", str(args.settle_velocity_threshold)]
+            command += ["--max-seconds", str(args.max_seconds)]
+            if args.enable_gravity:
+                command.append("--enable-gravity")
+            if args.simulate_until_settled:
+                command.append("--simulate-until-settled")
     if args.keep_old:
         command.append("--keep-old")
 
@@ -692,6 +711,27 @@ def main() -> int:
     parser.add_argument("--video-width", type=int, default=DEFAULT_VIDEO_WIDTH)
     parser.add_argument("--video-height", type=int, default=DEFAULT_VIDEO_HEIGHT)
     parser.add_argument("--end-hold-seconds", type=float, default=2.0)
+    parser.add_argument(
+        "--end-hold-mode",
+        choices=["always", "never", "if-stopped"],
+        default="always",
+        help="Control final-frame hold behavior in render mode.",
+    )
+    parser.add_argument("--motion-source", choices=["physical_force"], default="physical_force")
+    parser.add_argument("--force-application-mode", choices=["generalized", "external_link_force"], default="generalized")
+    parser.add_argument("--joint-static-friction", type=float, default=0.0)
+    parser.add_argument("--joint-dynamic-friction", type=float, default=0.0)
+    parser.add_argument("--joint-viscous-damping", type=float, default=0.02)
+    parser.add_argument("--link-linear-damping", type=float, default=0.0)
+    parser.add_argument("--link-angular-damping", type=float, default=0.02)
+    parser.add_argument("--enable-gravity", action="store_true")
+    parser.add_argument("--force-profile", choices=["constant", "pulse", "ramp_hold_release"], default="constant")
+    parser.add_argument("--force-start-time", type=float, default=0.0)
+    parser.add_argument("--force-duration", type=float, default=4.0)
+    parser.add_argument("--force-ramp-time", type=float, default=0.25)
+    parser.add_argument("--simulate-until-settled", action="store_true")
+    parser.add_argument("--settle-velocity-threshold", type=float, default=1e-3)
+    parser.add_argument("--max-seconds", type=float, default=10.0)
     parser.add_argument("--initial-angle", type=float, default=None)
     parser.add_argument(
         "--movement",
@@ -710,6 +750,14 @@ def main() -> int:
         choices=["confirm", "manual", "auto"],
         default="confirm",
         help="confirm (default): ask before using a detected handle; manual: always open the picker; auto: use the handle if present, otherwise open the picker",
+    )
+    parser.add_argument(
+        "--contact-point-strategy",
+        default=None,
+        help=(
+            "Optional contact strategy/label. Known generic strategies include "
+            "user_given, farthest_from_joint_axis, moving_link_bbox_extreme, and mesh_surface_farthest_point."
+        ),
     )
     parser.add_argument("--preview-points", action="store_true")
     parser.add_argument("--pick-point", action="store_true")

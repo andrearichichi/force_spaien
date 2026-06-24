@@ -17,6 +17,14 @@ from PIL import Image, ImageDraw, ImageFont
 import sapien
 
 try:
+    from physics_force_model import (
+        ForceStep,
+        Resistance,
+        compute_force_profile_scale,
+        compute_prismatic_generalized_force,
+        compute_resistance,
+        scaled_force_step as model_scaled_force_step,
+    )
     from simulation_json import (
         build_metadata,
         build_summary,
@@ -26,6 +34,14 @@ try:
         validation_for_motion,
     )
 except ModuleNotFoundError:
+    from scripts.physics_force_model import (
+        ForceStep,
+        Resistance,
+        compute_force_profile_scale,
+        compute_prismatic_generalized_force,
+        compute_resistance,
+        scaled_force_step as model_scaled_force_step,
+    )
     from scripts.simulation_json import (
         build_metadata,
         build_summary,
@@ -62,6 +78,7 @@ FONT_SMALL = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
 TIMESTEP = 1.0 / 240.0
 LINEAR_DAMPING = 0.0
 ANGULAR_DAMPING = 0.02
+END_HOLD_MOTION_THRESHOLD = 1e-3
 CAMERA_ZOOM_OUT = 1.35
 DEFAULT_VIDEO_WIDTH = 1920
 DEFAULT_PANEL_HEIGHT = 1080
@@ -75,6 +92,201 @@ COLOR_TEXT = (24, 28, 34)
 COLOR_MUTED = (101, 112, 126)
 COLOR_ACCENT = (0, 122, 255)
 COLOR_ALT = (255, 59, 48)
+
+
+def should_append_end_hold(mode: str, hold_frames: int, final_motion: float) -> bool:
+    """Use a small velocity threshold to avoid freezing active diagnostic motion."""
+    if hold_frames <= 0 or mode == "never":
+        return False
+    if mode == "if-stopped":
+        return final_motion <= END_HOLD_MOTION_THRESHOLD
+    return True
+
+
+def warn_if_holding_active_motion(final_motion: float) -> None:
+    if final_motion <= END_HOLD_MOTION_THRESHOLD:
+        return
+    print(
+        "WARNING: appending end-hold frames while final motion is still active.\n"
+        "This may look like an abrupt stop in the video.\n"
+        "Use --end-hold-seconds 0 or --end-hold-mode never for diagnostic videos."
+    )
+
+
+def force_profile_scale(args: argparse.Namespace, time_s: float) -> float:
+    return compute_force_profile_scale(
+        args.force_profile,
+        time_s,
+        start_time_s=args.force_start_time,
+        duration_s=args.force_duration,
+        ramp_time_s=args.force_ramp_time,
+    )
+
+
+def scaled_force_step(args: argparse.Namespace, time_s: float) -> ForceStep:
+    return model_scaled_force_step(
+        args.force,
+        args.force_profile,
+        time_s,
+        start_time_s=args.force_start_time,
+        duration_s=args.force_duration,
+        ramp_time_s=args.force_ramp_time,
+    )
+
+
+def resistance_for_motion(applied: float, velocity: float, args: argparse.Namespace) -> Resistance:
+    return compute_resistance(
+        applied,
+        velocity,
+        static_friction=args.joint_static_friction,
+        dynamic_friction=args.joint_dynamic_friction,
+        viscous_damping=args.joint_viscous_damping,
+        static_velocity_threshold=args.static_friction_velocity_threshold,
+    )
+
+
+def finite_range(values: list[float]) -> tuple[float, float]:
+    finite = [value for value in values if math.isfinite(value)]
+    if not finite:
+        return 0.0, 1.0
+    lo, hi = min(finite), max(finite)
+    if abs(hi - lo) < 1e-12:
+        pad = max(1.0, abs(hi)) * 0.05
+        return lo - pad, hi + pad
+    pad = (hi - lo) * 0.05
+    return lo - pad, hi + pad
+
+
+def draw_plot(path: Path, title: str, series: list[tuple[str, list[float], tuple[int, int, int]]]) -> None:
+    width, height = 1000, 640
+    margin_l, margin_r, margin_t, margin_b = 80, 30, 55, 70
+    image = np.full((height, width, 3), 255, dtype=np.uint8)
+    cv2.putText(image, title, (margin_l, 32), cv2.FONT_HERSHEY_SIMPLEX, 0.8, COLOR_TEXT, 2, cv2.LINE_AA)
+    max_len = max((len(values) for _, values, _ in series), default=0)
+    if max_len <= 1:
+        cv2.imwrite(str(path), image)
+        return
+    all_values = [value for _, values, _ in series for value in values]
+    y_min, y_max = finite_range(all_values)
+    x0, x1 = margin_l, width - margin_r
+    y0, y1 = height - margin_b, margin_t
+    cv2.rectangle(image, (x0, y1), (x1, y0), (220, 220, 220), 1)
+    for tick in range(6):
+        y = int(y0 + (y1 - y0) * tick / 5)
+        cv2.line(image, (x0, y), (x1, y), (235, 235, 235), 1)
+        value = y_min + (y_max - y_min) * tick / 5
+        cv2.putText(image, f"{value:.3g}", (8, y + 5), cv2.FONT_HERSHEY_SIMPLEX, 0.45, COLOR_MUTED, 1, cv2.LINE_AA)
+    for label, values, color in series:
+        points = []
+        for idx, value in enumerate(values):
+            if not math.isfinite(value):
+                continue
+            x = int(x0 + (x1 - x0) * idx / (max_len - 1))
+            y = int(y0 - (y0 - y1) * (value - y_min) / (y_max - y_min))
+            points.append((x, y))
+        if len(points) >= 2:
+            cv2.polylines(image, [np.asarray(points, dtype=np.int32)], False, color, 2, cv2.LINE_AA)
+    legend_y = height - 25
+    legend_x = margin_l
+    for label, _, color in series:
+        cv2.line(image, (legend_x, legend_y), (legend_x + 30, legend_y), color, 3)
+        cv2.putText(image, label, (legend_x + 38, legend_y + 5), cv2.FONT_HERSHEY_SIMPLEX, 0.45, COLOR_TEXT, 1, cv2.LINE_AA)
+        legend_x += 190
+    cv2.imwrite(str(path), image)
+
+
+def write_physics_diagnostics(output_dir: Path, samples: list[dict[str, object]], metadata: dict[str, object], validation: dict[str, object]) -> None:
+    diagnostics_dir = output_dir / "diagnostics"
+    diagnostics_dir.mkdir(parents=True, exist_ok=True)
+    columns = [
+        "frame",
+        "time_s",
+        "joint_position_m",
+        "joint_velocity_m_s",
+        "joint_acceleration_m_s2",
+        "applied_linear_force_n",
+        "static_friction_force_n",
+        "dynamic_friction_force_n",
+        "damping_force_n",
+        "net_force_n",
+        "mechanical_work_j",
+        "joint_limit_distance_m",
+    ]
+    with (diagnostics_dir / "physics_timeseries.tsv").open("w", encoding="utf-8") as f:
+        f.write("\t".join(columns) + "\n")
+        for sample in samples:
+            f.write("\t".join(str(sample.get(column, "")) for column in columns) + "\n")
+
+    def values(key: str) -> list[float]:
+        return [float(sample.get(key, 0.0)) for sample in samples]
+
+    draw_plot(
+        diagnostics_dir / "force_torque_by_frame.png",
+        "Applied and net generalized force",
+        [
+            ("applied N", values("applied_linear_force_n"), (0, 122, 255)),
+            ("net N", values("net_force_n"), (255, 59, 48)),
+        ],
+    )
+    draw_plot(
+        diagnostics_dir / "q_qdot_qddot_by_frame.png",
+        "q, qdot, qddot",
+        [
+            ("q m", values("joint_position_m"), (0, 122, 255)),
+            ("qdot", values("joint_velocity_m_s"), (255, 59, 48)),
+            ("qddot", values("joint_acceleration_m_s2"), (88, 86, 214)),
+        ],
+    )
+    draw_plot(
+        diagnostics_dir / "resistance_by_frame.png",
+        "Resistance terms",
+        [
+            ("static", values("static_friction_force_n"), (255, 149, 0)),
+            ("dynamic", values("dynamic_friction_force_n"), (255, 59, 48)),
+            ("damping", values("damping_force_n"), (88, 86, 214)),
+        ],
+    )
+
+    final = samples[-1] if samples else {}
+    lines = [
+        "# Physics Diagnostics",
+        "",
+        "## Model",
+        "",
+        "- Motion source: physical force through SAPIEN integration",
+        f"- Force application mode: `{metadata.get('simulation_config', {}).get('force_application_mode', 'unknown')}`",
+        "- Prismatic generalized force is applied along the selected joint axis.",
+        "- No prescribed q(t) is used in force-driven mode.",
+        "- End hold is presentation-only and is not part of settling physics.",
+        "",
+        "## Current Code Behavior",
+        "",
+        "- Main render loop uses SAPIEN `scene.step()` for state evolution.",
+        "- In `generalized` mode, the net joint force is applied with `set_qf`.",
+        "- In `external_link_force` mode, SAPIEN `add_force_at_point` is used and only resistance is applied through joint generalized force.",
+        "- Joint drives are set to zero stiffness/damping/force limit.",
+        f"- Gravity enabled: `{metadata.get('actuation', {}).get('force', {}).get('gravity_enabled', False)}`",
+        "- URDF joint dynamics are logged under `metadata.physics.urdf_joint_dynamics`; the render path exposes explicit friction/damping overrides.",
+        "",
+        "## Result",
+        "",
+        f"- Sample count: {len(samples)}",
+        f"- Final q: {final.get('joint_position_m')}",
+        f"- Final qdot: {final.get('joint_velocity_m_s')}",
+        f"- Final qddot: {final.get('joint_acceleration_m_s2')}",
+        f"- Final net force: {final.get('net_force_n')}",
+        f"- Final work proxy: {final.get('mechanical_work_j')}",
+        f"- Motion completed: {validation.get('motion_completed')}",
+        f"- Warnings: {validation.get('warnings', [])}",
+        "",
+        "## Artifacts",
+        "",
+        "- `physics_timeseries.tsv`",
+        "- `force_torque_by_frame.png`",
+        "- `q_qdot_qddot_by_frame.png`",
+        "- `resistance_by_frame.png`",
+    ]
+    (diagnostics_dir / "physics_diagnostics.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def look_at_pose(eye: np.ndarray, target: np.ndarray) -> sapien.Pose:
@@ -212,6 +424,15 @@ def pick_drawer_pull_point(drawer: sapien.physx.PhysxArticulationLinkComponent, 
     return np.append(point.astype(np.float32), np.float32(1.0))
 
 
+def pick_drawer_center_point(drawer: sapien.physx.PhysxArticulationLinkComponent) -> np.ndarray:
+    aabb = drawer.compute_global_aabb_tight()
+    return np.append((0.5 * (aabb[0] + aabb[1])).astype(np.float32), np.float32(1.0))
+
+
+def pick_drawer_bbox_extreme_point(drawer: sapien.physx.PhysxArticulationLinkComponent, direction: np.ndarray) -> np.ndarray:
+    return pick_drawer_pull_point(drawer, direction)
+
+
 def pick_handle_point_local(model_dir: Path, link_name: str) -> np.ndarray | None:
     tree = ET.parse(model_dir / "mobility.urdf")
     link = tree.find(f".//link[@name='{link_name}']")
@@ -249,12 +470,24 @@ def pick_link_face_point(link: sapien.physx.PhysxArticulationLinkComponent, dire
 
 def explicit_contact_point(args: argparse.Namespace) -> tuple[np.ndarray | None, str | None]:
     if args.contact_point_local is None:
-        return None, None
+        return None, args.contact_point_strategy
     point = np.append(np.asarray(args.contact_point_local, dtype=np.float32), np.float32(1.0))
     return point, args.contact_point_strategy
 
 
-def setup_sim(model_dir: Path, drawer_index: int, width: int, height: int, force_dir: np.ndarray, override_point: np.ndarray | None = None, override_strategy: str | None = None) -> DrawerSim:
+def setup_sim(
+    model_dir: Path,
+    joint_name: str,
+    link_name: str,
+    width: int,
+    height: int,
+    force_dir: np.ndarray,
+    override_point: np.ndarray | None = None,
+    override_strategy: str | None = None,
+    link_linear_damping: float = LINEAR_DAMPING,
+    link_angular_damping: float = ANGULAR_DAMPING,
+    disable_gravity: bool = True,
+) -> DrawerSim:
     scene = sapien.Scene()
     scene.set_timestep(TIMESTEP)
     scene.set_ambient_light([0.78, 0.80, 0.84])
@@ -269,26 +502,38 @@ def setup_sim(model_dir: Path, drawer_index: int, width: int, height: int, force
     for joint in cabinet.get_joints():
         joint.set_drive_property(0.0, 0.0, 0.0)
     for link in cabinet.get_links():
-        link.disable_gravity = True
-        link.linear_damping = LINEAR_DAMPING
-        link.angular_damping = ANGULAR_DAMPING
+        link.disable_gravity = disable_gravity
+        link.linear_damping = link_linear_damping
+        link.angular_damping = link_angular_damping
 
-    joint = cabinet.find_joint_by_name(f"joint_{drawer_index}")
-    drawer = cabinet.find_link_by_name(f"link_{drawer_index}")
+    joint = cabinet.find_joint_by_name(joint_name)
+    drawer = cabinet.find_link_by_name(link_name)
     if joint is None or drawer is None:
-        raise RuntimeError(f"Could not find joint_{drawer_index}/link_{drawer_index}. Try --drawer 0, 1, 2, or 3.")
+        raise RuntimeError(f"Could not find {joint_name}/{link_name}.")
 
+    strategy = override_strategy
     if override_point is not None:
         local_application_point = override_point
-        application_point_strategy = override_strategy or "manual application point override"
+        application_point_strategy = strategy or "user_given"
     else:
-        try:
-            handle_point_local = pick_handle_pull_point_local(model_dir, drawer_index)
-            local_application_point = np.append(handle_point_local, np.float32(1.0))
-            application_point_strategy = "center of handle mesh on selected link"
-        except RuntimeError:
-            local_application_point = np.linalg.inv(drawer.get_entity_pose().to_transformation_matrix()) @ pick_drawer_pull_point(drawer, force_dir)
-            application_point_strategy = "center of selected link face along force direction"
+        if strategy in {"moving_link_bbox_extreme", "mesh_surface_farthest_point"}:
+            world_point = pick_drawer_bbox_extreme_point(drawer, force_dir)
+            local_application_point = np.linalg.inv(drawer.get_entity_pose().to_transformation_matrix()) @ world_point
+            application_point_strategy = strategy
+        elif strategy == "farthest_from_joint_axis":
+            world_point = pick_drawer_center_point(drawer)
+            local_application_point = np.linalg.inv(drawer.get_entity_pose().to_transformation_matrix()) @ world_point
+            application_point_strategy = "moving_link_center_for_prismatic_axis_force"
+        else:
+            handle_point_local = pick_handle_point_local(model_dir, link_name)
+            if handle_point_local is not None:
+                local_application_point = handle_point_local
+                application_point_strategy = "center of handle mesh on selected link"
+            else:
+                local_application_point = np.linalg.inv(drawer.get_entity_pose().to_transformation_matrix()) @ pick_drawer_pull_point(drawer, force_dir)
+                application_point_strategy = "center of selected link face along force direction"
+            if strategy:
+                application_point_strategy = strategy
     joint_index = list(cabinet.get_active_joints()).index(joint)
 
     base_qpos = cabinet.get_qpos()
@@ -480,33 +725,59 @@ def sample_to_dict(
     generalized_force: float,
     *,
     frame: int | None = None,
+    force_step: ForceStep | None = None,
+    resistance: Resistance | None = None,
+    previous_velocity: float | None = None,
+    previous_position: float | None = None,
+    cumulative_work: float | None = None,
 ) -> dict[str, object]:
     position = float(sim.cabinet.get_qpos()[sim.joint_index])
     velocity = float(sim.cabinet.get_qvel()[sim.joint_index])
+    acceleration = 0.0 if previous_velocity is None else (velocity - previous_velocity) / TIMESTEP
+    delta_q = 0.0 if previous_position is None else position - previous_position
+    resistance = resistance or Resistance(0.0, 0.0, 0.0, 0.0, generalized_force, False)
     limits = sim.cabinet.get_active_joints()[sim.joint_index].get_limit().tolist()
     lower, upper = float(limits[0][0]), float(limits[0][1])
     clamped = (math.isfinite(lower) and abs(position - lower) <= 1e-3) or (math.isfinite(upper) and abs(position - upper) <= 1e-3)
+    if math.isfinite(lower) and math.isfinite(upper):
+        joint_limit_distance = min(position - lower, upper - position)
+    elif math.isfinite(lower):
+        joint_limit_distance = position - lower
+    elif math.isfinite(upper):
+        joint_limit_distance = upper - position
+    else:
+        joint_limit_distance = math.inf
     return {
         "frame": int(frame) if frame is not None else None,
         "time": float(time_s),
         "time_s": float(time_s),
         "position_m": position,
         "velocity_m_s": velocity,
+        "acceleration_m_s2": acceleration,
         "joint_position_m": position,
         "joint_velocity_m_s": velocity,
+        "joint_acceleration_m_s2": acceleration,
+        "delta_q_m": delta_q,
         "application_point_world": application_point_world(sim).astype(float).tolist(),
         "applied_force_world": applied_force.astype(float).tolist(),
         "force_model": "linear_force",
+        "force_profile_scale": float(force_step.scale) if force_step is not None else 1.0,
         "applied_linear_force_n": float(abs(generalized_force)),
-        "opposing_linear_friction_n": 0.0,
-        "net_force_n": float(generalized_force),
-        "generalized_joint_force_n": float(generalized_force),
-        "generalized_force_n": float(generalized_force),
-        "damping_n_s_m": LINEAR_DAMPING,
+        "static_friction_force_n": float(resistance.static),
+        "dynamic_friction_force_n": float(resistance.dynamic),
+        "damping_force_n": float(resistance.viscous),
+        "opposing_linear_friction_n": float(abs(resistance.dynamic)),
+        "net_force_n": float(resistance.net),
+        "generalized_joint_force_n": float(resistance.net),
+        "generalized_force_n": float(resistance.net),
+        "static_friction_engaged": bool(resistance.static_engaged),
+        "mechanical_work_j": float(cumulative_work) if cumulative_work is not None else 0.0,
+        "damping_n_s_m": 0.0,
         "mass_or_effective_mass": None,
         "joint_axis_world": sim.positive_pull_dir_world.astype(float).tolist(),
         "joint_lower_limit_m": lower,
         "joint_upper_limit_m": upper,
+        "joint_limit_distance_m": float(joint_limit_distance),
         "clamped_at_limit": bool(clamped),
     }
 
@@ -661,7 +932,29 @@ def main() -> int:
     parser.add_argument("--link", default="link_1")
     parser.add_argument("--force", type=float, default=0.5)
     parser.add_argument("--seconds", type=float, default=4.0)
+    parser.add_argument("--motion-source", choices=["physical_force"], default="physical_force")
+    parser.add_argument("--force-application-mode", choices=["generalized", "external_link_force"], default="generalized")
+    parser.add_argument("--joint-static-friction", type=float, default=0.0, help="Static friction threshold in N for prismatic joints.")
+    parser.add_argument("--joint-dynamic-friction", type=float, default=0.0, help="Coulomb friction magnitude in N for prismatic joints.")
+    parser.add_argument("--joint-viscous-damping", type=float, default=0.02, help="Viscous joint damping in N*s/m.")
+    parser.add_argument("--static-friction-velocity-threshold", type=float, default=1e-4)
+    parser.add_argument("--link-linear-damping", type=float, default=LINEAR_DAMPING)
+    parser.add_argument("--link-angular-damping", type=float, default=ANGULAR_DAMPING)
+    parser.add_argument("--enable-gravity", action="store_true", help="Leave gravity enabled on articulation links.")
+    parser.add_argument("--force-profile", choices=["constant", "pulse", "ramp_hold_release"], default="constant")
+    parser.add_argument("--force-start-time", type=float, default=0.0)
+    parser.add_argument("--force-duration", type=float, default=4.0)
+    parser.add_argument("--force-ramp-time", type=float, default=0.25)
+    parser.add_argument("--simulate-until-settled", action="store_true")
+    parser.add_argument("--settle-velocity-threshold", type=float, default=1e-3)
+    parser.add_argument("--max-seconds", type=float, default=10.0)
     parser.add_argument("--end-hold-seconds", type=float, default=2.0, help="Freeze the last frame for this many seconds")
+    parser.add_argument(
+        "--end-hold-mode",
+        choices=["always", "never", "if-stopped"],
+        default="always",
+        help=f"Control final-frame hold behavior; if-stopped uses |velocity| <= {END_HOLD_MOTION_THRESHOLD:g}.",
+    )
     parser.add_argument("--fps", type=int, default=30)
     parser.add_argument("--panel-width", type=int, default=DEFAULT_VIDEO_WIDTH)
     parser.add_argument("--panel-height", type=int, default=DEFAULT_PANEL_HEIGHT)
@@ -679,6 +972,15 @@ def main() -> int:
         return run_apply(args)
 
     model_dir = resolve_model_dir(args.model_dir)
+    selected_joint = args.joint
+    selected_link = args.link
+    if (
+        args.drawer != parser.get_default("drawer")
+        and args.joint == parser.get_default("joint")
+        and args.link == parser.get_default("link")
+    ):
+        selected_joint = f"joint_{args.drawer}"
+        selected_link = f"link_{args.drawer}"
     output, json_output = output_paths(model_dir, Path(args.output_root).resolve(), args.output, args.json_output)
     output.parent.mkdir(parents=True, exist_ok=True)
     if not args.keep_old:
@@ -687,15 +989,39 @@ def main() -> int:
     force_dir = np.array(args.direction, dtype=np.float32)
     force_dir /= np.linalg.norm(force_dir) or 1.0
     slider_axis = int(np.argmax(np.abs(force_dir)))
-    generalized_force = args.force if force_dir[slider_axis] >= 0 else -args.force
+    generalized_force = compute_prismatic_generalized_force(force_dir, force_dir * args.force)
 
     explicit_point, explicit_strategy = explicit_contact_point(args)
     still_sim = (
-        setup_sim(model_dir, args.drawer, args.panel_width, args.panel_height, force_dir, explicit_point, explicit_strategy)
+        setup_sim(
+            model_dir,
+            selected_joint,
+            selected_link,
+            args.panel_width,
+            args.panel_height,
+            force_dir,
+            explicit_point,
+            explicit_strategy,
+            args.link_linear_damping,
+            args.link_angular_damping,
+            not args.enable_gravity,
+        )
         if args.movement == "comparison"
         else None
     )
-    pulling_sim = setup_sim(model_dir, args.drawer, args.panel_width, args.panel_height, force_dir, explicit_point, explicit_strategy)
+    pulling_sim = setup_sim(
+        model_dir,
+        selected_joint,
+        selected_link,
+        args.panel_width,
+        args.panel_height,
+        force_dir,
+        explicit_point,
+        explicit_strategy,
+        args.link_linear_damping,
+        args.link_angular_damping,
+        not args.enable_gravity,
+    )
     pull_dir_world = pulling_sim.positive_pull_dir_world if generalized_force >= 0 else -pulling_sim.positive_pull_dir_world
     force = pull_dir_world * args.force
 
@@ -710,25 +1036,87 @@ def main() -> int:
     out_h = args.panel_height + args.info_height + args.plot_height
 
     final_frame = None
+    actual_end_hold_seconds = 0.0
+    frame_index = 0
+    physics_step_count = 0
+    previous_sample_velocity: float | None = None
+    previous_sample_position: float | None = None
+    cumulative_work = 0.0
+    last_force_step = ForceStep(0.0, 0.0)
+    last_resistance = Resistance(0.0, 0.0, 0.0, 0.0, 0.0, False)
+    still_moving_at_max_seconds = False
     with imageio.get_writer(output, fps=args.fps, codec="libx264", quality=8, macro_block_size=1) as writer:
-        for _ in range(frame_count):
+        while True:
+            if frame_index >= frame_count:
+                if not args.simulate_until_settled:
+                    break
+                if abs(float(pulling_sim.cabinet.get_qvel()[pulling_sim.joint_index])) <= args.settle_velocity_threshold:
+                    break
+                if physics_step_count * TIMESTEP >= args.max_seconds:
+                    still_moving_at_max_seconds = True
+                    break
             for _ in range(steps_per_frame):
+                step_time_s = physics_step_count * TIMESTEP
+                force_step = scaled_force_step(args, step_time_s)
+                signed_generalized_force = compute_prismatic_generalized_force(
+                    pulling_sim.positive_pull_dir_world,
+                    force * force_step.scale,
+                )
+                resistance = resistance_for_motion(signed_generalized_force, float(pulling_sim.cabinet.get_qvel()[pulling_sim.joint_index]), args)
+                q_before = float(pulling_sim.cabinet.get_qpos()[pulling_sim.joint_index])
                 qf = np.zeros_like(pulling_sim.cabinet.get_qf(), dtype=np.float32)
-                qf[pulling_sim.joint_index] = generalized_force
+                if args.force_application_mode == "external_link_force":
+                    pulling_sim.drawer.add_force_at_point(force * force_step.scale, application_point_world(pulling_sim), "force")
+                    qf[pulling_sim.joint_index] = resistance.total
+                else:
+                    qf[pulling_sim.joint_index] = resistance.net
                 pulling_sim.cabinet.set_qf(qf)
                 if still_sim is not None:
                     still_sim.scene.step()
                 pulling_sim.scene.step()
+                q_after = float(pulling_sim.cabinet.get_qpos()[pulling_sim.joint_index])
+                cumulative_work += resistance.net * (q_after - q_before)
+                last_force_step = force_step
+                last_resistance = resistance
+                physics_step_count += 1
 
-            time_s = sample_time_from_frame(len(pulling_displacements), steps_per_frame, TIMESTEP)
+            time_s = physics_step_count * TIMESTEP
             if args.movement == "comparison":
                 samples["no_force"].append(sample_to_dict(time_s, still_sim, np.zeros(3, dtype=np.float32), 0.0, frame=len(pulling_displacements)))
-                samples["pulling_force"].append(sample_to_dict(time_s, pulling_sim, force, generalized_force, frame=len(pulling_displacements)))
+                samples["pulling_force"].append(
+                    sample_to_dict(
+                        time_s,
+                        pulling_sim,
+                        force * last_force_step.scale,
+                        generalized_force * last_force_step.scale,
+                        frame=frame_index,
+                        force_step=last_force_step,
+                        resistance=last_resistance,
+                        previous_velocity=previous_sample_velocity,
+                        previous_position=previous_sample_position,
+                        cumulative_work=cumulative_work,
+                    )
+                )
                 point_histories["no_force"].append(application_point_world(still_sim))
                 point_histories["pulling_force"].append(application_point_world(pulling_sim))
             else:
-                samples["force"].append(sample_to_dict(time_s, pulling_sim, force, generalized_force, frame=len(pulling_displacements)))
+                samples["force"].append(
+                    sample_to_dict(
+                        time_s,
+                        pulling_sim,
+                        force * last_force_step.scale,
+                        generalized_force * last_force_step.scale,
+                        frame=frame_index,
+                        force_step=last_force_step,
+                        resistance=last_resistance,
+                        previous_velocity=previous_sample_velocity,
+                        previous_position=previous_sample_position,
+                        cumulative_work=cumulative_work,
+                    )
+                )
                 point_histories["force"].append(application_point_world(pulling_sim))
+            previous_sample_velocity = float(pulling_sim.cabinet.get_qvel()[pulling_sim.joint_index])
+            previous_sample_position = float(pulling_sim.cabinet.get_qpos()[pulling_sim.joint_index])
 
             right = fit_panel(render_panel(pulling_sim), args.panel_width, args.panel_height)
             canvas = np.full((out_h, out_w, 3), COLOR_BG, dtype=np.uint8)
@@ -775,26 +1163,33 @@ def main() -> int:
                 )
             writer.append_data(canvas)
             final_frame = canvas.copy()
+            frame_index += 1
 
         hold_frames = int(round(args.end_hold_seconds * args.fps))
-        if final_frame is not None:
+        final_motion = abs(float(pulling_sim.cabinet.get_qvel()[pulling_sim.joint_index]))
+        append_hold = should_append_end_hold(args.end_hold_mode, hold_frames, final_motion)
+        if args.end_hold_mode == "always" and append_hold:
+            warn_if_holding_active_motion(final_motion)
+        if final_frame is not None and append_hold:
+            actual_end_hold_seconds = hold_frames / args.fps
             for _ in range(hold_frames):
                 writer.append_data(final_frame)
 
-    simulated_seconds = frame_count * steps_per_frame * TIMESTEP
+    simulated_seconds = physics_step_count * TIMESTEP
     summary = build_summary(
         sample_series=samples,
-        physics_step_count=frame_count * steps_per_frame,
+        physics_step_count=physics_step_count,
         position_key="joint_position_m",
         velocity_key="joint_velocity_m_s",
         initial_position_value=0.0,
     )
+    primary_samples = samples["force" if args.movement != "comparison" else "pulling_force"]
     metadata = build_metadata(
         model_dir=model_dir,
         mode="render",
         joint_type="prismatic",
-        joint_name=f"joint_{args.drawer}",
-        link_name=f"link_{args.drawer}",
+        joint_name=selected_joint,
+        link_name=selected_link,
         json_output=json_output,
         video_output=output,
         fps=args.fps,
@@ -802,16 +1197,28 @@ def main() -> int:
         simulated_seconds=simulated_seconds,
         timestep_s=TIMESTEP,
         sample_interval_s=steps_per_frame * TIMESTEP,
-        end_hold_seconds=args.end_hold_seconds,
+        end_hold_seconds=actual_end_hold_seconds,
         actuation={
             "force": {
                 "magnitude_n": args.force,
                 "direction_world": pull_dir_world.astype(float).tolist(),
                 "force_model": "linear_force",
+                "motion_source": args.motion_source,
+                "force_application_mode": args.force_application_mode,
+                "force_profile": args.force_profile,
+                "force_start_time_s": args.force_start_time,
+                "force_duration_s": args.force_duration,
+                "force_ramp_time_s": args.force_ramp_time,
                 "applied_linear_force_n": float(abs(generalized_force)),
-                "opposing_linear_friction_n": 0.0,
-                "net_force_n": float(generalized_force),
-                "damping_n_s_m": LINEAR_DAMPING,
+                "joint_static_friction_n": args.joint_static_friction,
+                "joint_dynamic_friction_n": args.joint_dynamic_friction,
+                "joint_viscous_damping_n_s_m": args.joint_viscous_damping,
+                "link_linear_damping": args.link_linear_damping,
+                "link_angular_damping": args.link_angular_damping,
+                "gravity_enabled": bool(args.enable_gravity),
+                "opposing_linear_friction_n": float(abs(primary_samples[-1]["dynamic_friction_force_n"])),
+                "net_force_n": float(primary_samples[-1]["net_force_n"]),
+                "damping_n_s_m": args.joint_viscous_damping,
                 "mass_or_effective_mass": None,
                 "joint_axis_world": pull_dir_world.astype(float).tolist(),
                 "generalized_joint_force_n": float(generalized_force),
@@ -825,11 +1232,26 @@ def main() -> int:
         summary=summary,
         articulation=pulling_sim.cabinet,
         limit_key="limits_m",
-        linear_damping=LINEAR_DAMPING,
-        angular_damping=ANGULAR_DAMPING,
+        linear_damping=args.link_linear_damping,
+        angular_damping=args.link_angular_damping,
         drawer_index=args.drawer,
     )
-    primary_samples = samples["force" if args.movement != "comparison" else "pulling_force"]
+    metadata["simulation_config"] = {
+        "motion_source": args.motion_source,
+        "force_application_mode": args.force_application_mode,
+        "force_profile": args.force_profile,
+        "simulate_until_settled": bool(args.simulate_until_settled),
+        "settle_velocity_threshold": args.settle_velocity_threshold,
+        "max_seconds": args.max_seconds,
+        "stopped_by_settle_threshold": bool(args.simulate_until_settled and not still_moving_at_max_seconds),
+        "still_moving_at_max_seconds": bool(still_moving_at_max_seconds),
+    }
+    metadata["physics"]["uses_separate_static_dynamic_friction"] = True
+    metadata["physics"]["overrides"]["joint_resistance"] = {
+        "static_friction": args.joint_static_friction,
+        "dynamic_friction": args.joint_dynamic_friction,
+        "viscous_damping": args.joint_viscous_damping,
+    }
     validation = validation_for_motion(
         initial_position=0.0,
         final_position=float(primary_samples[-1]["position_m"]),
@@ -838,6 +1260,8 @@ def main() -> int:
         actuation_sign=float(generalized_force),
         completion_velocity_threshold=1e-3,
     )
+    if still_moving_at_max_seconds:
+        validation["warnings"].append("Simulate-until-settled reached max seconds while motion was still active.")
     document = motion_document(
         motion_type="prismatic",
         metadata=metadata,
@@ -851,6 +1275,7 @@ def main() -> int:
     )
     with json_output.open("w", encoding="utf-8") as f:
         json.dump(document, f, indent=2)
+    write_physics_diagnostics(output.parent, primary_samples, metadata, validation)
 
     print(f"Wrote {output}")
     print(f"Wrote {json_output}")

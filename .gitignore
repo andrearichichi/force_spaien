@@ -58,8 +58,11 @@ outputs/
 logs/
 *.log
 *.mp4
+*.webm
 *.avi
 *.mov
+*.png
+*.tsv
 
 # Generated model and numerical artifacts
 checkpoints/

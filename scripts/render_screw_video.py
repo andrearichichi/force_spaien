@@ -44,6 +44,7 @@ FONT_SMALL = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf
 TIMESTEP = 1.0 / 240.0
 LINEAR_DAMPING = 0.0
 ANGULAR_DAMPING = 0.02
+END_HOLD_MOTION_THRESHOLD = 1e-3
 CAMERA_ZOOM_OUT = 1.55
 DEFAULT_VIDEO_WIDTH = 1920
 DEFAULT_PANEL_HEIGHT = 1080
@@ -52,6 +53,25 @@ COLOR_BG = (242, 244, 246)
 COLOR_BORDER = (210, 216, 224)
 COLOR_ACCENT = (0, 122, 255)
 COLOR_ROTATION_MARKER = (255, 45, 85)
+
+
+def should_append_end_hold(mode: str, hold_frames: int, final_motion: float) -> bool:
+    """Use a small velocity threshold to avoid freezing active diagnostic motion."""
+    if hold_frames <= 0 or mode == "never":
+        return False
+    if mode == "if-stopped":
+        return final_motion <= END_HOLD_MOTION_THRESHOLD
+    return True
+
+
+def warn_if_holding_active_motion(final_motion: float) -> None:
+    if final_motion <= END_HOLD_MOTION_THRESHOLD:
+        return
+    print(
+        "WARNING: appending end-hold frames while final motion is still active.\n"
+        "This may look like an abrupt stop in the video.\n"
+        "Use --end-hold-seconds 0 or --end-hold-mode never for diagnostic videos."
+    )
 
 
 @dataclass
@@ -656,6 +676,7 @@ def run(args: argparse.Namespace) -> int:
     samples: list[dict[str, object]] = []
     point_history: list[np.ndarray] = []
     final_frame = None
+    actual_end_hold_seconds = 0.0
     controller = ScrewMotionController(sim, args)
     state = ScrewState(translation=controller.z0)
     controller.apply(state)
@@ -689,8 +710,14 @@ def run(args: argparse.Namespace) -> int:
                 final_frame = canvas.copy()
                 for _ in range(steps_per_frame):
                     state = controller.step(state, TIMESTEP)
-            if final_frame is not None:
-                for _ in range(int(round(args.end_hold_seconds * args.fps))):
+            hold_frames = int(round(args.end_hold_seconds * args.fps))
+            final_motion = abs(float(state.omega))
+            append_hold = should_append_end_hold(args.end_hold_mode, hold_frames, final_motion)
+            if args.end_hold_mode == "always" and append_hold:
+                warn_if_holding_active_motion(final_motion)
+            if final_frame is not None and append_hold:
+                actual_end_hold_seconds = hold_frames / args.fps
+                for _ in range(hold_frames):
                     writer.append_data(final_frame)
         simulated_seconds = render_simulated_seconds
         video_output = output
@@ -758,7 +785,7 @@ def run(args: argparse.Namespace) -> int:
         simulated_seconds=simulated_seconds,
         timestep_s=TIMESTEP,
         sample_interval_s=steps_per_frame * TIMESTEP if args.mode == "render" else max(1, round(1.0 / (TIMESTEP * args.fps))) * TIMESTEP,
-        end_hold_seconds=args.end_hold_seconds if args.mode == "render" else None,
+        end_hold_seconds=actual_end_hold_seconds if args.mode == "render" else None,
         actuation={
             "force_model": "tangential_force_on_cap",
             "applied_tangential_force_n": float(controller.applied_force_tangential),
@@ -836,7 +863,7 @@ def run(args: argparse.Namespace) -> int:
         "timestep_s": TIMESTEP,
         "fps": args.fps,
         "requested_seconds": args.seconds,
-        "end_hold_seconds": args.end_hold_seconds if args.mode == "render" else None,
+        "end_hold_seconds": actual_end_hold_seconds if args.mode == "render" else None,
     }
     metadata["motion_bounds"] = {
         "translation_start_m": float(sim.linear_start),
@@ -942,6 +969,12 @@ def main() -> int:
     parser.add_argument("--axial-force-direction", nargs=3, type=float, default=[0.0, 0.0, -1.0])
     parser.add_argument("--seconds", type=float, default=4.0)
     parser.add_argument("--end-hold-seconds", type=float, default=2.0)
+    parser.add_argument(
+        "--end-hold-mode",
+        choices=["always", "never", "if-stopped"],
+        default="always",
+        help=f"Control final-frame hold behavior; if-stopped uses |velocity| <= {END_HOLD_MOTION_THRESHOLD:g}.",
+    )
     parser.add_argument("--fps", type=int, default=30)
     parser.add_argument("--panel-width", type=int, default=DEFAULT_VIDEO_WIDTH)
     parser.add_argument("--panel-height", type=int, default=DEFAULT_PANEL_HEIGHT)
