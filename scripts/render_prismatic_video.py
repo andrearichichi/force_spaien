@@ -201,16 +201,27 @@ def write_physics_diagnostics(output_dir: Path, samples: list[dict[str, object]]
     columns = [
         "frame",
         "time_s",
+        "phase",
+        "q",
+        "qdot",
+        "qddot",
         "joint_position_m",
         "joint_velocity_m_s",
         "joint_acceleration_m_s2",
         "applied_linear_force_n",
+        "applied_force_norm",
+        "applied_generalized_force",
+        "damping_torque_or_force",
+        "friction_torque_or_force",
         "static_friction_force_n",
         "dynamic_friction_force_n",
         "damping_force_n",
         "net_force_n",
+        "net_generalized_force",
         "mechanical_work_j",
         "joint_limit_distance_m",
+        "joint_limit_distance",
+        "settled_flag",
     ]
     with (diagnostics_dir / "physics_timeseries.tsv").open("w", encoding="utf-8") as f:
         f.write("\t".join(columns) + "\n")
@@ -354,6 +365,18 @@ def clear_object_output(path: Path) -> None:
     for old_output in path.parent.iterdir():
         if old_output.is_file() and old_output.name in {"simulation.json", "final_video.mp4"}:
             old_output.unlink()
+
+
+def load_physics_only_articulation(scene: sapien.Scene, model_dir: Path) -> sapien.physx.PhysxArticulation:
+    loader = scene.create_urdf_loader()
+    loader.fix_root_link = True
+    articulation_builders, actor_builders, _cameras = loader.parse(str(model_dir / "mobility.urdf"))
+    if len(articulation_builders) != 1 or actor_builders:
+        raise RuntimeError("Expected one articulation and no standalone actors in URDF.")
+    builder = articulation_builders[0]
+    for link_builder in builder.link_builders:
+        link_builder.visual_records = []
+    return builder.build()
 
 
 @dataclass
@@ -728,15 +751,21 @@ def sample_to_dict(
     force_step: ForceStep | None = None,
     resistance: Resistance | None = None,
     previous_velocity: float | None = None,
+    previous_time_s: float | None = None,
     previous_position: float | None = None,
     cumulative_work: float | None = None,
+    force_application_mode: str = "generalized",
+    phase: str | None = None,
+    settled_flag: bool = False,
 ) -> dict[str, object]:
     position = float(sim.cabinet.get_qpos()[sim.joint_index])
     velocity = float(sim.cabinet.get_qvel()[sim.joint_index])
-    acceleration = 0.0 if previous_velocity is None else (velocity - previous_velocity) / TIMESTEP
+    sample_dt = time_s - previous_time_s if previous_time_s is not None else 0.0
+    acceleration = 0.0 if previous_velocity is None or sample_dt <= 0.0 else (velocity - previous_velocity) / sample_dt
     delta_q = 0.0 if previous_position is None else position - previous_position
     resistance = resistance or Resistance(0.0, 0.0, 0.0, 0.0, generalized_force, False)
     limits = sim.cabinet.get_active_joints()[sim.joint_index].get_limit().tolist()
+    joint_origin_world = sim.cabinet.get_active_joints()[sim.joint_index].get_global_pose().p.astype(float)
     lower, upper = float(limits[0][0]), float(limits[0][1])
     clamped = (math.isfinite(lower) and abs(position - lower) <= 1e-3) or (math.isfinite(upper) and abs(position - upper) <= 1e-3)
     if math.isfinite(lower) and math.isfinite(upper):
@@ -751,6 +780,10 @@ def sample_to_dict(
         "frame": int(frame) if frame is not None else None,
         "time": float(time_s),
         "time_s": float(time_s),
+        "phase": phase or "force_applied",
+        "q": position,
+        "qdot": velocity,
+        "qddot": acceleration,
         "position_m": position,
         "velocity_m_s": velocity,
         "acceleration_m_s2": acceleration,
@@ -761,13 +794,19 @@ def sample_to_dict(
         "application_point_world": application_point_world(sim).astype(float).tolist(),
         "applied_force_world": applied_force.astype(float).tolist(),
         "force_model": "linear_force",
+        "force_application_mode": force_application_mode,
         "force_profile_scale": float(force_step.scale) if force_step is not None else 1.0,
         "applied_linear_force_n": float(abs(generalized_force)),
+        "applied_force_norm": float(np.linalg.norm(applied_force)),
+        "applied_generalized_force": float(generalized_force),
         "static_friction_force_n": float(resistance.static),
         "dynamic_friction_force_n": float(resistance.dynamic),
         "damping_force_n": float(resistance.viscous),
+        "damping_torque_or_force": float(resistance.viscous),
+        "friction_torque_or_force": float(resistance.static + resistance.dynamic),
         "opposing_linear_friction_n": float(abs(resistance.dynamic)),
         "net_force_n": float(resistance.net),
+        "net_generalized_force": float(resistance.net),
         "generalized_joint_force_n": float(resistance.net),
         "generalized_force_n": float(resistance.net),
         "static_friction_engaged": bool(resistance.static_engaged),
@@ -775,11 +814,63 @@ def sample_to_dict(
         "damping_n_s_m": 0.0,
         "mass_or_effective_mass": None,
         "joint_axis_world": sim.positive_pull_dir_world.astype(float).tolist(),
+        "joint_origin_world": joint_origin_world.tolist(),
+        "raw_projected_force_along_axis": float(generalized_force),
         "joint_lower_limit_m": lower,
         "joint_upper_limit_m": upper,
         "joint_limit_distance_m": float(joint_limit_distance),
+        "joint_limit_distance": float(joint_limit_distance),
         "clamped_at_limit": bool(clamped),
+        "settled_flag": bool(settled_flag),
     }
+
+
+def physics_mode_results(samples: list[dict[str, object]], args: argparse.Namespace) -> tuple[dict[str, object], list[str]]:
+    q = [float(sample["q"]) for sample in samples]
+    qdot = [float(sample["qdot"]) for sample in samples]
+    force = [float(sample["applied_force_norm"]) for sample in samples]
+    times = [float(sample["time_s"]) for sample in samples]
+    force_end = float(args.force_start_time + args.force_duration)
+    during = [i for i, time in enumerate(times) if args.force_start_time <= time <= force_end + 1e-9]
+    after = [i for i, time in enumerate(times) if time > force_end + 1e-9]
+    peak = max((abs(value) for value in qdot), default=0.0)
+    final = abs(qdot[-1]) if qdot else 0.0
+    ratio = final / peak if peak > 1e-12 else math.inf
+    checks = {
+        "force_nonzero_during_force_window": any(force[i] > 1e-8 for i in during),
+        "force_zero_after_force_window": bool(after) and all(force[i] <= 1e-8 for i in after),
+        "qdot_changes_during_force": any(abs(qdot[i]) > 1e-5 for i in during),
+        "q_continues_after_force_removed": bool(after) and abs(q[-1] - q[after[0]]) > 1e-5,
+        "qdot_decays_after_force_removed": ratio <= 0.5 or final <= args.settle_velocity_threshold,
+        "no_nan_or_inf": all(math.isfinite(value) for value in q + qdot),
+        "q_inside_joint_limits": all(float(sample["joint_limit_distance"]) >= -1e-6 for sample in samples),
+    }
+    messages = {
+        "force_nonzero_during_force_window": "force was never non-zero during the force window",
+        "force_zero_after_force_window": "force did not become zero after force_duration_s",
+        "qdot_changes_during_force": "qdot did not change during force application",
+        "q_continues_after_force_removed": "q did not continue changing after force removal",
+        "no_nan_or_inf": "q/qdot contains NaN or infinity",
+        "q_inside_joint_limits": "q left the joint limits",
+    }
+    warnings = [messages[key] for key in messages if not checks[key]]
+    verdict = "FAIL" if warnings else "PASS"
+    if not checks["qdot_decays_after_force_removed"]:
+        warnings.append("qdot did not decay enough after force removal")
+        if verdict == "PASS":
+            verdict = "WARN"
+    settled = final <= args.settle_velocity_threshold
+    if not settled and verdict == "PASS":
+        verdict = "WARN"
+        warnings.append("motion did not fully settle by the final frame")
+    checks["warnings"] = warnings
+    return {
+        "q_start": q[0], "q_end": q[-1], "delta_q": q[-1] - q[0],
+        "peak_abs_qdot": peak, "final_abs_qdot": final, "qdot_decay_ratio": ratio,
+        "settled": settled,
+        "settle_time_s": next((float(sample["time_s"]) for sample in samples if sample.get("settled_flag")), None),
+        "dynamics_verdict": verdict, "physics_mode_validation": checks,
+    }, warnings
 
 
 def run_apply(args: argparse.Namespace) -> int:
@@ -791,11 +882,9 @@ def run_apply(args: argparse.Namespace) -> int:
     if not args.keep_old:
         clear_object_output(json_output)
 
-    scene = sapien.Scene()
+    scene = sapien.Scene([sapien.physx.PhysxCpuSystem()])
     scene.set_timestep(TIMESTEP)
-    loader = scene.create_urdf_loader()
-    loader.fix_root_link = True
-    articulation = loader.load(str(model_dir / "mobility.urdf"))
+    articulation = load_physics_only_articulation(scene, model_dir)
     articulation.set_qpos(np.zeros_like(articulation.get_qpos(), dtype=np.float32))
 
     for joint in articulation.get_joints():
@@ -912,7 +1001,6 @@ def run_apply(args: argparse.Namespace) -> int:
         },
         validation=validation,
     )
-
     with json_output.open("w", encoding="utf-8") as f:
         json.dump(document, f, indent=2)
 
@@ -930,20 +1018,24 @@ def main() -> int:
     parser.add_argument("--drawer", type=int, default=1)
     parser.add_argument("--joint", default="joint_1")
     parser.add_argument("--link", default="link_1")
-    parser.add_argument("--force", type=float, default=0.5)
-    parser.add_argument("--seconds", type=float, default=4.0)
+    parser.add_argument("--force", "--force-magnitude", dest="force", type=float, default=0.5)
+    parser.add_argument("--seconds", "--sim-duration-s", dest="seconds", type=float, default=4.0)
     parser.add_argument("--motion-source", choices=["physical_force"], default="physical_force")
-    parser.add_argument("--force-application-mode", choices=["generalized", "external_link_force"], default="generalized")
+    parser.add_argument(
+        "--force-application-mode",
+        choices=["generalized", "generalized_set_qf", "external_link_force", "impulse_then_passive_joint_dynamics"],
+        default="generalized",
+    )
     parser.add_argument("--joint-static-friction", type=float, default=0.0, help="Static friction threshold in N for prismatic joints.")
-    parser.add_argument("--joint-dynamic-friction", type=float, default=0.0, help="Coulomb friction magnitude in N for prismatic joints.")
-    parser.add_argument("--joint-viscous-damping", type=float, default=0.02, help="Viscous joint damping in N*s/m.")
+    parser.add_argument("--joint-dynamic-friction", "--joint-friction", dest="joint_dynamic_friction", type=float, default=0.0, help="Coulomb friction magnitude in N for prismatic joints.")
+    parser.add_argument("--joint-viscous-damping", "--joint-damping", dest="joint_viscous_damping", type=float, default=0.02, help="Viscous joint damping in N*s/m.")
     parser.add_argument("--static-friction-velocity-threshold", type=float, default=1e-4)
     parser.add_argument("--link-linear-damping", type=float, default=LINEAR_DAMPING)
     parser.add_argument("--link-angular-damping", type=float, default=ANGULAR_DAMPING)
     parser.add_argument("--enable-gravity", action="store_true", help="Leave gravity enabled on articulation links.")
     parser.add_argument("--force-profile", choices=["constant", "pulse", "ramp_hold_release"], default="constant")
     parser.add_argument("--force-start-time", type=float, default=0.0)
-    parser.add_argument("--force-duration", type=float, default=4.0)
+    parser.add_argument("--force-duration", "--force-duration-s", dest="force_duration", type=float, default=4.0)
     parser.add_argument("--force-ramp-time", type=float, default=0.25)
     parser.add_argument("--simulate-until-settled", action="store_true")
     parser.add_argument("--settle-velocity-threshold", type=float, default=1e-3)
@@ -965,8 +1057,13 @@ def main() -> int:
     parser.add_argument("--output-root", default="outputs")
     parser.add_argument("--contact-point-local", nargs=3, type=float, default=None)
     parser.add_argument("--contact-point-strategy", default=None)
+    parser.add_argument("--max-q-fraction-of-limit", type=float, default=0.98)
     parser.add_argument("--keep-old", action="store_true", help="Do not delete old files in the output directory")
     args = parser.parse_args()
+    if args.force_application_mode in {"external_link_force", "impulse_then_passive_joint_dynamics"} and args.force_profile == "constant":
+        args.force_profile = "pulse"
+    if args.force_application_mode == "generalized_set_qf":
+        args.force_application_mode = "generalized"
 
     if args.mode == "apply":
         return run_apply(args)
@@ -1040,6 +1137,7 @@ def main() -> int:
     frame_index = 0
     physics_step_count = 0
     previous_sample_velocity: float | None = None
+    previous_sample_time: float | None = None
     previous_sample_position: float | None = None
     cumulative_work = 0.0
     last_force_step = ForceStep(0.0, 0.0)
@@ -1081,6 +1179,14 @@ def main() -> int:
                 physics_step_count += 1
 
             time_s = physics_step_count * TIMESTEP
+            current_abs_qdot = abs(float(pulling_sim.cabinet.get_qvel()[pulling_sim.joint_index]))
+            sample_phase = (
+                "force_applied"
+                if last_force_step.applied_magnitude > 1e-9
+                else "settled"
+                if current_abs_qdot <= args.settle_velocity_threshold
+                else "passive_motion"
+            )
             if args.movement == "comparison":
                 samples["no_force"].append(sample_to_dict(time_s, still_sim, np.zeros(3, dtype=np.float32), 0.0, frame=len(pulling_displacements)))
                 samples["pulling_force"].append(
@@ -1093,8 +1199,12 @@ def main() -> int:
                         force_step=last_force_step,
                         resistance=last_resistance,
                         previous_velocity=previous_sample_velocity,
+                        previous_time_s=previous_sample_time,
                         previous_position=previous_sample_position,
                         cumulative_work=cumulative_work,
+                        force_application_mode=args.force_application_mode,
+                        phase=sample_phase,
+                        settled_flag=sample_phase == "settled",
                     )
                 )
                 point_histories["no_force"].append(application_point_world(still_sim))
@@ -1110,12 +1220,17 @@ def main() -> int:
                         force_step=last_force_step,
                         resistance=last_resistance,
                         previous_velocity=previous_sample_velocity,
+                        previous_time_s=previous_sample_time,
                         previous_position=previous_sample_position,
                         cumulative_work=cumulative_work,
+                        force_application_mode=args.force_application_mode,
+                        phase=sample_phase,
+                        settled_flag=sample_phase == "settled",
                     )
                 )
                 point_histories["force"].append(application_point_world(pulling_sim))
             previous_sample_velocity = float(pulling_sim.cabinet.get_qvel()[pulling_sim.joint_index])
+            previous_sample_time = time_s
             previous_sample_position = float(pulling_sim.cabinet.get_qpos()[pulling_sim.joint_index])
 
             right = fit_panel(render_panel(pulling_sim), args.panel_width, args.panel_height)
@@ -1272,6 +1387,24 @@ def main() -> int:
             "velocity_m_s": float(primary_samples[-1]["velocity_m_s"]),
         },
         validation=validation,
+    )
+    physics_results, dynamics_warnings = physics_mode_results(primary_samples, args)
+    validation.setdefault("warnings", []).extend(dynamics_warnings)
+    document.update(physics_results)
+    document.update(
+        {
+            "force_application_mode": args.force_application_mode,
+            "true_external_force_used": args.force_application_mode == "external_link_force",
+            "fallback_used": args.force_application_mode == "impulse_then_passive_joint_dynamics",
+            "force_units_physical": args.force_application_mode == "external_link_force",
+            "force_duration_s": float(args.force_duration),
+            "sim_duration_s": float(args.seconds),
+            "timestep_s": float(TIMESTEP),
+            "fps": int(args.fps),
+            "joint_damping": float(args.joint_viscous_damping),
+            "joint_friction": float(args.joint_dynamic_friction),
+            "warning_messages": dynamics_warnings,
+        }
     )
     with json_output.open("w", encoding="utf-8") as f:
         json.dump(document, f, indent=2)

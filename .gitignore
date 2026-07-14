@@ -49,6 +49,8 @@ Thumbs.db
 *.key
 
 # External datasets and local per-object configuration
+final_dataset/
+.vulkan_runtime/
 dataset/*
 !dataset/.gitkeep
 !dataset/contact_points.example.json
@@ -61,8 +63,11 @@ logs/
 *.webm
 *.avi
 *.mov
-*.png
-*.tsv
+*.mkv
+
+# Notebook and scheduler artifacts
+.ipynb_checkpoints/
+slurm-*.out
 
 # Generated model and numerical artifacts
 checkpoints/

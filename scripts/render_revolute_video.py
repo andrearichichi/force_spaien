@@ -201,21 +201,37 @@ def write_physics_diagnostics(output_dir: Path, samples: list[dict[str, object]]
     diagnostics_dir = output_dir / "diagnostics"
     diagnostics_dir.mkdir(parents=True, exist_ok=True)
     tsv_path = diagnostics_dir / "physics_timeseries.tsv"
+    physics_mode = any("phase" in sample for sample in samples)
     columns = [
         "frame",
         "time_s",
+        "phase",
+        "q",
+        "qdot",
+        "qddot",
         "joint_angle_rad",
         "joint_velocity_rad_s",
         "joint_acceleration_rad_s2",
+        "applied_force_x",
+        "applied_force_y",
+        "applied_force_z",
+        "applied_force_norm",
+        "applied_generalized_force",
         "applied_tangential_force_n",
+        "torque_about_axis",
         "torque_applied_nm",
+        "damping_torque_or_force",
+        "friction_torque_or_force",
         "static_friction_torque_nm",
         "dynamic_friction_torque_nm",
         "damping_torque_nm",
         "torque_resisting_nm",
+        "net_generalized_force",
         "net_torque_nm",
+        "kinetic_like_energy",
         "mechanical_work_j",
         "joint_limit_distance_rad",
+        "settled_flag",
     ]
     with tsv_path.open("w", encoding="utf-8") as f:
         f.write("\t".join(columns) + "\n")
@@ -253,6 +269,35 @@ def write_physics_diagnostics(output_dir: Path, samples: list[dict[str, object]]
             ("total", values("torque_resisting_nm"), (0, 122, 255)),
         ],
     )
+    if physics_mode:
+        draw_plot(
+            diagnostics_dir / "applied_force_by_frame.png",
+            "Applied external force pulse",
+            [
+                ("|F| N", values("applied_force_norm"), (0, 122, 255)),
+                ("Fx", values("applied_force_x"), (255, 59, 48)),
+                ("Fy", values("applied_force_y"), (52, 199, 89)),
+                ("Fz", values("applied_force_z"), (88, 86, 214)),
+            ],
+        )
+        draw_plot(
+            diagnostics_dir / "torque_and_resistance_by_frame.png",
+            "Torque, resistance, and net generalized force",
+            [
+                ("tau applied", values("torque_about_axis"), (0, 122, 255)),
+                ("resistance", values("torque_resisting_nm"), (255, 59, 48)),
+                ("net", values("net_generalized_force"), (52, 199, 89)),
+            ],
+        )
+        phase_values = [
+            2.0 if sample.get("phase") == "force_applied" else 1.0 if sample.get("phase") == "passive_motion" else 0.0
+            for sample in samples
+        ]
+        draw_plot(
+            diagnostics_dir / "phase_by_frame.png",
+            "Phase by frame: 2 force, 1 passive, 0 settled",
+            [("phase", phase_values, (0, 122, 255))],
+        )
 
     final = samples[-1] if samples else {}
     lines = [
@@ -294,6 +339,12 @@ def write_physics_diagnostics(output_dir: Path, samples: list[dict[str, object]]
         "- `q_qdot_qddot_by_frame.png`",
         "- `resistance_by_frame.png`",
     ]
+    if physics_mode:
+        lines += [
+            "- `applied_force_by_frame.png`",
+            "- `torque_and_resistance_by_frame.png`",
+            "- `phase_by_frame.png`",
+        ]
     (diagnostics_dir / "physics_diagnostics.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -362,6 +413,18 @@ def clear_object_output(path: Path) -> None:
     for old_output in path.parent.iterdir():
         if old_output.is_file() and old_output.name in {"simulation.json", "final_video.mp4"}:
             old_output.unlink()
+
+
+def load_physics_only_articulation(scene: sapien.Scene, model_dir: Path) -> sapien.physx.PhysxArticulation:
+    loader = scene.create_urdf_loader()
+    loader.fix_root_link = True
+    articulation_builders, actor_builders, _cameras = loader.parse(str(model_dir / "mobility.urdf"))
+    if len(articulation_builders) != 1 or actor_builders:
+        raise RuntimeError("Expected one articulation and no standalone actors in URDF.")
+    builder = articulation_builders[0]
+    for link_builder in builder.link_builders:
+        link_builder.visual_records = []
+    return builder.build()
 
 
 @dataclass
@@ -572,6 +635,83 @@ def pick_mesh_surface_farthest_point(
     return world[int(np.argmax(distances))].astype(np.float32)
 
 
+def pick_semantic_surface_point(
+    model_dir: Path,
+    link_name: str,
+    link: sapien.physx.PhysxArticulationLinkComponent,
+    axis_world: np.ndarray,
+    origin_world: np.ndarray,
+    strategy: str,
+) -> np.ndarray | None:
+    local_vertices = link_visual_vertices_local(model_dir, link_name)
+    if local_vertices is None or len(local_vertices) == 0:
+        return None
+    local_h = np.concatenate([local_vertices, np.ones((len(local_vertices), 1), dtype=np.float32)], axis=1)
+    world = (link.get_entity_pose().to_transformation_matrix() @ local_h.T).T[:, :3]
+    axis = unit(axis_world)
+    radii = world - origin_world[None, :]
+    perpendicular = radii - np.outer(radii @ axis, axis)
+    distances = np.linalg.norm(perpendicular, axis=1)
+    z = world[:, 2]
+
+    if strategy == "door_handle_or_free_vertical_edge":
+        # Door handles are not always semantically named. Prefer the free edge
+        # farthest from the hinge, but reject bottom/top extremes so we press a
+        # plausible middle-height point.
+        low, high = np.quantile(z, [0.35, 0.75])
+        candidates = np.where((z >= low) & (z <= high))[0]
+        if len(candidates) == 0:
+            candidates = np.arange(len(world))
+        idx = candidates[int(np.argmax(distances[candidates]))]
+        return np.append(world[idx], np.float32(1.0)).astype(np.float32)
+
+    if strategy == "stapler_lid_front_top":
+        # Use a top/front point away from the hinge. This avoids the previous
+        # body-hinge actuation and makes the debug force visibly act on the lid.
+        z_norm = (z - float(z.min())) / (float(z.max() - z.min()) or 1.0)
+        d_norm = distances / (float(distances.max()) or 1.0)
+        score = d_norm + 0.65 * z_norm
+        idx = int(np.argmax(score))
+        return np.append(world[idx], np.float32(1.0)).astype(np.float32)
+
+    if strategy == "robust_moving_surface_point":
+        # Pick a high-radius surface vertex comfortably away from bbox corners.
+        # Vertices are still on the mesh, but quantile filtering avoids tiny
+        # floating-point excursions outside the moving-link bbox.
+        threshold = np.quantile(distances, 0.80)
+        candidates = np.where(distances >= threshold)[0]
+        if len(candidates) == 0:
+            candidates = np.arange(len(world))
+        center = world.mean(axis=0)
+        idx = candidates[int(np.argmin(np.linalg.norm(world[candidates] - center[None, :], axis=1)))]
+        return np.append(world[idx], np.float32(1.0)).astype(np.float32)
+
+    if strategy in {
+        "laptop_screen_free_edge",
+        "scissors_far_handle_or_blade_candidate",
+        "oven_door_handle_or_free_edge",
+        "washingmachine_door_rim_or_handle",
+    }:
+        # These categories do not provide semantic mesh labels. Prefer a true
+        # moving-link surface point in the outer high-radius band, far from the
+        # hinge. The scissors label remains explicitly a candidate because
+        # geometry alone cannot distinguish a handle loop from a blade tip.
+        threshold = float(np.quantile(distances, 0.90))
+        candidates = np.where(distances >= threshold)[0]
+        if len(candidates) == 0:
+            candidates = np.arange(len(world))
+        if strategy == "laptop_screen_free_edge":
+            # Prefer the upper half of the screen among equally distant points.
+            z_mid = float(np.median(z[candidates]))
+            upper = candidates[z[candidates] >= z_mid]
+            if len(upper):
+                candidates = upper
+        idx = candidates[int(np.argmax(distances[candidates]))]
+        return np.append(world[idx], np.float32(1.0)).astype(np.float32)
+
+    return None
+
+
 def create_marker(scene: sapien.Scene) -> sapien.Entity:
     return scene.create_actor_builder().build_kinematic(name="force_application_point")
 
@@ -628,8 +768,26 @@ def setup_sim(
             "farthest_from_joint_axis",
             "moving_link_bbox_extreme",
             "mesh_surface_farthest_point",
+            "door_handle_or_free_vertical_edge",
+            "stapler_lid_front_top",
+            "robust_moving_surface_point",
+            "laptop_screen_free_edge",
+            "scissors_far_handle_or_blade_candidate",
+            "oven_door_handle_or_free_edge",
+            "washingmachine_door_rim_or_handle",
         }
-        if strategy == "mesh_surface_farthest_point":
+        if known_strategy and strategy not in {"mesh_surface_farthest_point", "farthest_from_joint_axis", "moving_link_bbox_extreme"}:
+            initial_world_point = pick_semantic_surface_point(model_dir, link_name, screen, axis_world_reference, origin_world, strategy)
+            if initial_world_point is None:
+                initial_world_point = pick_mesh_surface_farthest_point(model_dir, link_name, screen, axis_world_reference, origin_world)
+                application_point_strategy = f"{strategy} fallback to mesh_surface_farthest_point"
+            else:
+                application_point_strategy = strategy
+            if initial_world_point is None:
+                initial_world_point = pick_farthest_from_axis_point(screen, axis_world_reference, origin_world)
+                application_point_strategy = f"{strategy} fallback to farthest_from_joint_axis"
+            local_application_point = np.linalg.inv(screen.get_entity_pose().to_transformation_matrix()) @ initial_world_point
+        elif strategy == "mesh_surface_farthest_point":
             initial_world_point = pick_mesh_surface_farthest_point(model_dir, link_name, screen, axis_world_reference, origin_world)
             if initial_world_point is None:
                 initial_world_point = pick_farthest_from_axis_point(screen, axis_world_reference, origin_world)
@@ -1067,14 +1225,18 @@ def sample_to_dict(
     force_step: ForceStep | None = None,
     resistance: Resistance | None = None,
     previous_velocity: float | None = None,
+    previous_time_s: float | None = None,
     previous_angle: float | None = None,
     cumulative_work: float | None = None,
     force_application_mode: str = "generalized",
+    phase: str | None = None,
+    settled_flag: bool = False,
 ) -> dict[str, object]:
     angle = float(sim.laptop.get_qpos()[sim.joint_index])
     omega = float(sim.laptop.get_qvel()[sim.joint_index])
     force_magnitude = float(np.linalg.norm(force.force_vector_world))
-    qddot = 0.0 if previous_velocity is None else (omega - previous_velocity) / TIMESTEP
+    sample_dt = time_s - previous_time_s if previous_time_s is not None else 0.0
+    qddot = 0.0 if previous_velocity is None or sample_dt <= 0.0 else (omega - previous_velocity) / sample_dt
     delta_q = 0.0 if previous_angle is None else angle - previous_angle
     limits = sim.joint.get_limit().tolist()
     lower, upper = float(limits[0][0]), float(limits[0][1])
@@ -1089,10 +1251,16 @@ def sample_to_dict(
         joint_limit_distance = math.inf
     applied_generalized = force.generalized_torque_nm if force_step is None else force.generalized_torque_nm
     resistance = resistance or Resistance(0.0, 0.0, 0.0, 0.0, applied_generalized, False)
+    force_vector = force.force_vector_world.astype(float)
+    kinetic_like_energy = 0.5 * omega * omega
     return {
         "frame": int(frame) if frame is not None else None,
         "time": float(time_s),
         "time_s": float(time_s),
+        "phase": phase or "force_applied",
+        "q": angle,
+        "qdot": omega,
+        "qddot": qddot,
         "theta_rad": angle,
         "theta_deg": math.degrees(angle),
         "omega_rad_s": omega,
@@ -1105,6 +1273,8 @@ def sample_to_dict(
         "application_point_world": force.force_application_point_world.astype(float).tolist(),
         "applied_force_world": force.force_vector_world.astype(float).tolist(),
         "force_vector_world": force.force_vector_world.astype(float).tolist(),
+        "force_world_per_frame": force.force_vector_world.astype(float).tolist(),
+        "contact_point_world_per_frame": force.force_application_point_world.astype(float).tolist(),
         "force_model": "geometric_tangential_force",
         "force_application_mode": force_application_mode,
         "force_profile_scale": float(force_step.scale) if force_step is not None else 1.0,
@@ -1119,20 +1289,32 @@ def sample_to_dict(
         "tangential_force_radius_m": float(force.tangential_force_radius_m),
         "force_perpendicular_to_axis_error": float(force.force_perpendicular_to_axis_error),
         "torque_about_axis_nm": float(force.torque_about_axis_nm),
+        "torque_about_axis": float(force.torque_about_axis_nm),
+        "torque_about_axis_per_frame": float(force.torque_about_axis_nm),
         "generalized_torque_nm": float(force.generalized_torque_nm),
         "torque_direction": force.torque_direction,
         "torque_applied_nm": float(force.torque_about_axis_nm),
+        "applied_force_x": float(force_vector[0]),
+        "applied_force_y": float(force_vector[1]),
+        "applied_force_z": float(force_vector[2]),
+        "applied_force_norm": force_magnitude,
+        "applied_generalized_force": float(force.generalized_torque_nm),
         "static_friction_torque_nm": float(resistance.static),
         "dynamic_friction_torque_nm": float(resistance.dynamic),
         "damping_torque_nm": float(resistance.viscous),
+        "damping_torque_or_force": float(resistance.viscous),
+        "friction_torque_or_force": float(resistance.static + resistance.dynamic),
         "torque_resisting_nm": float(resistance.total),
+        "net_generalized_force": float(resistance.net),
         "net_torque_nm": float(resistance.net),
         "static_friction_engaged": bool(resistance.static_engaged),
+        "kinetic_like_energy": kinetic_like_energy,
         "mechanical_work_j": float(cumulative_work) if cumulative_work is not None else 0.0,
         "joint_lower_limit_rad": lower,
         "joint_upper_limit_rad": upper,
         "joint_limit_distance_rad": float(joint_limit_distance),
         "clamped_at_limit": bool(clamped),
+        "settled_flag": bool(settled_flag),
     }
 
 
@@ -1260,11 +1442,9 @@ def run_apply(args: argparse.Namespace) -> int:
     if not args.keep_old:
         clear_object_output(json_output)
 
-    scene = sapien.Scene()
+    scene = sapien.Scene([sapien.physx.PhysxCpuSystem()])
     scene.set_timestep(TIMESTEP)
-    loader = scene.create_urdf_loader()
-    loader.fix_root_link = True
-    articulation = loader.load(str(model_dir / "mobility.urdf"))
+    articulation = load_physics_only_articulation(scene, model_dir)
     target_joint = articulation.find_joint_by_name(args.joint)
     target_link = articulation.find_link_by_name(args.link)
     if target_joint is None or target_link is None:
@@ -1289,11 +1469,42 @@ def run_apply(args: argparse.Namespace) -> int:
         local_application_point = explicit_point
         application_point_strategy = explicit_strategy or "manual application point from picker"
     else:
-        local_application_point = pick_handle_point_local(model_dir, args.link)
-        application_point_strategy = "center of handle mesh on selected link"
-        if local_application_point is None:
-            local_application_point = np.linalg.inv(target_link.get_entity_pose().to_transformation_matrix()) @ pick_link_edge_point(target_link)
-            application_point_strategy = "free edge of selected link from tight AABB at initial pose"
+        axis_world_reference = estimate_revolute_axis_from_motion(articulation, target_link, joint_index)
+        origin_world = target_joint.get_global_pose().p.astype(np.float32)
+        if explicit_strategy in {
+            "door_handle_or_free_vertical_edge", "stapler_lid_front_top", "robust_moving_surface_point",
+            "laptop_screen_free_edge", "scissors_far_handle_or_blade_candidate",
+            "oven_door_handle_or_free_edge", "washingmachine_door_rim_or_handle",
+        }:
+            initial_world_point = pick_semantic_surface_point(model_dir, args.link, target_link, axis_world_reference, origin_world, explicit_strategy)
+            if initial_world_point is None:
+                initial_world_point = pick_mesh_surface_farthest_point(model_dir, args.link, target_link, axis_world_reference, origin_world)
+                application_point_strategy = f"{explicit_strategy} fallback to mesh_surface_farthest_point"
+            else:
+                application_point_strategy = explicit_strategy
+            if initial_world_point is None:
+                initial_world_point = pick_farthest_from_axis_point(target_link, axis_world_reference, origin_world)
+                application_point_strategy = f"{explicit_strategy} fallback to farthest_from_joint_axis"
+            local_application_point = np.linalg.inv(target_link.get_entity_pose().to_transformation_matrix()) @ initial_world_point
+        else:
+            local_application_point = pick_handle_point_local(model_dir, args.link)
+            application_point_strategy = "center of handle mesh on selected link"
+            if local_application_point is None:
+                initial_world_point = pick_mesh_surface_farthest_point(
+                    model_dir,
+                    args.link,
+                    target_link,
+                    axis_world_reference,
+                    origin_world,
+                )
+                if initial_world_point is None:
+                    initial_world_point = pick_farthest_from_axis_point(target_link, axis_world_reference, origin_world)
+                    application_point_strategy = "farthest_from_joint_axis"
+                else:
+                    application_point_strategy = "mesh_surface_farthest_point"
+                local_application_point = np.linalg.inv(target_link.get_entity_pose().to_transformation_matrix()) @ initial_world_point
+            else:
+                initial_world_point = target_link.get_entity_pose().to_transformation_matrix() @ local_application_point
 
     temp_sim = LaptopSim(
         scene,
@@ -1459,21 +1670,25 @@ def main() -> int:
     parser.add_argument("--joint", default="joint_1")
     parser.add_argument("--link", default="link_1")
     parser.add_argument("--output", default=None)
-    parser.add_argument("--force", type=float, default=0.5)
+    parser.add_argument("--force", "--force-magnitude", dest="force", type=float, default=0.5)
     parser.add_argument("--closing-force", type=float, default=0.5)
-    parser.add_argument("--seconds", type=float, default=4.0)
+    parser.add_argument("--seconds", "--sim-duration-s", dest="seconds", type=float, default=4.0)
     parser.add_argument("--motion-source", choices=["physical_force"], default="physical_force")
-    parser.add_argument("--force-application-mode", choices=["generalized", "external_link_force"], default="generalized")
+    parser.add_argument(
+        "--force-application-mode",
+        choices=["generalized", "generalized_set_qf", "external_link_force", "impulse_then_passive_joint_dynamics"],
+        default="generalized",
+    )
     parser.add_argument("--joint-static-friction", type=float, default=0.0, help="Static friction threshold in Nm for revolute joints.")
-    parser.add_argument("--joint-dynamic-friction", type=float, default=0.0, help="Coulomb friction magnitude in Nm for revolute joints.")
-    parser.add_argument("--joint-viscous-damping", type=float, default=0.02, help="Viscous joint damping in Nm*s/rad.")
+    parser.add_argument("--joint-dynamic-friction", "--joint-friction", dest="joint_dynamic_friction", type=float, default=0.0, help="Coulomb friction magnitude in Nm for revolute joints.")
+    parser.add_argument("--joint-viscous-damping", "--joint-damping", dest="joint_viscous_damping", type=float, default=0.02, help="Viscous joint damping in Nm*s/rad.")
     parser.add_argument("--static-friction-velocity-threshold", type=float, default=1e-4)
     parser.add_argument("--link-linear-damping", type=float, default=LINEAR_DAMPING)
     parser.add_argument("--link-angular-damping", type=float, default=ANGULAR_DAMPING)
     parser.add_argument("--enable-gravity", action="store_true", help="Leave gravity enabled on articulation links.")
     parser.add_argument("--force-profile", choices=["constant", "pulse", "ramp_hold_release"], default="constant")
     parser.add_argument("--force-start-time", type=float, default=0.0)
-    parser.add_argument("--force-duration", type=float, default=4.0)
+    parser.add_argument("--force-duration", "--force-duration-s", dest="force_duration", type=float, default=4.0)
     parser.add_argument("--force-ramp-time", type=float, default=0.25)
     parser.add_argument("--simulate-until-settled", action="store_true")
     parser.add_argument("--settle-velocity-threshold", type=float, default=1e-3)
@@ -1499,8 +1714,13 @@ def main() -> int:
     parser.add_argument("--contact-point-local", nargs=3, type=float, default=None)
     parser.add_argument("--contact-point-strategy", default=None)
     parser.add_argument("--auto-direction", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--max-q-fraction-of-limit", type=float, default=0.98)
     parser.add_argument("--keep-old", action="store_true", help="Do not delete old files in the output directory")
     args = parser.parse_args()
+    if args.force_application_mode in {"external_link_force", "impulse_then_passive_joint_dynamics"} and args.force_profile == "constant":
+        args.force_profile = "pulse"
+    if args.force_application_mode == "generalized_set_qf":
+        args.force_application_mode = "generalized"
 
     if args.mode == "apply":
         return run_apply(args)
@@ -1576,6 +1796,7 @@ def main() -> int:
     physics_step_count = 0
     cumulative_work = 0.0
     previous_sample_velocity: float | None = None
+    previous_sample_time: float | None = None
     previous_sample_angle: float | None = None
     last_opening_force: RevoluteForce | None = None
     last_opening_force_step = ForceStep(scale=0.0, applied_magnitude=0.0)
@@ -1651,6 +1872,15 @@ def main() -> int:
                 opening_motion_direction,
                 auto_direction=force_auto_direction,
             )
+            current_abs_qdot = abs(float(opening_sim.laptop.get_qvel()[opening_sim.joint_index]))
+            sample_phase = (
+                "force_applied"
+                if last_opening_force_step.applied_magnitude > 1e-9
+                else "settled"
+                if current_abs_qdot <= args.settle_velocity_threshold
+                else "passive_motion"
+            )
+            sample_settled = sample_phase == "settled"
             direction_auto_flipped = direction_auto_flipped or opening_force.direction_auto_flipped
             if args.movement == "comparison":
                 closing_force = tangential_force_world(
@@ -1674,9 +1904,12 @@ def main() -> int:
                         force_step=last_opening_force_step,
                         resistance=last_opening_resistance,
                         previous_velocity=previous_sample_velocity,
+                        previous_time_s=previous_sample_time,
                         previous_angle=previous_sample_angle,
                         cumulative_work=cumulative_work,
                         force_application_mode=args.force_application_mode,
+                        phase=sample_phase,
+                        settled_flag=sample_settled,
                     )
                 )
                 samples["closing_force"].append(sample_to_dict(time_s, closing_sim, closing_force, frame=frame_index))
@@ -1692,13 +1925,17 @@ def main() -> int:
                         force_step=last_opening_force_step,
                         resistance=last_opening_resistance,
                         previous_velocity=previous_sample_velocity,
+                        previous_time_s=previous_sample_time,
                         previous_angle=previous_sample_angle,
                         cumulative_work=cumulative_work,
                         force_application_mode=args.force_application_mode,
+                        phase=sample_phase,
+                        settled_flag=sample_settled,
                     )
                 )
                 point_histories["force"].append(application_point_world(opening_sim))
             previous_sample_velocity = float(opening_sim.laptop.get_qvel()[opening_sim.joint_index])
+            previous_sample_time = time_s
             previous_sample_angle = float(opening_sim.laptop.get_qpos()[opening_sim.joint_index])
 
             left = fit_panel(render_panel(opening_sim), args.panel_width, args.panel_height)
@@ -1933,6 +2170,91 @@ def main() -> int:
             "omega_rad_s": float(primary_samples[-1]["omega_rad_s"]),
         },
         validation=validation,
+    )
+    q_values = [float(sample["q"]) for sample in primary_samples]
+    qdot_values = [float(sample["qdot"]) for sample in primary_samples]
+    force_norms = [float(sample["applied_force_norm"]) for sample in primary_samples]
+    torque_values = [float(sample["torque_about_axis"]) for sample in primary_samples]
+    times = [float(sample["time_s"]) for sample in primary_samples]
+    force_window_end = float(args.force_start_time + args.force_duration)
+    force_indices = [idx for idx, time in enumerate(times) if args.force_start_time <= time <= force_window_end + 1e-9]
+    passive_indices = [idx for idx, time in enumerate(times) if time > force_window_end + 1e-9]
+    peak_abs_qdot = max((abs(value) for value in qdot_values), default=0.0)
+    final_abs_qdot = abs(qdot_values[-1]) if qdot_values else 0.0
+    qdot_decay_ratio = final_abs_qdot / peak_abs_qdot if peak_abs_qdot > 1e-12 else math.inf
+    force_nonzero_during = any(force_norms[idx] > 1e-8 for idx in force_indices)
+    force_zero_after = all(force_norms[idx] <= 1e-8 for idx in passive_indices) if passive_indices else False
+    q_continues_after_force = False
+    if passive_indices:
+        first_passive = passive_indices[0]
+        q_continues_after_force = abs(q_values[-1] - q_values[first_passive]) > 1e-5
+    qdot_changes_during_force = False
+    if force_indices:
+        qdot_changes_during_force = max(abs(qdot_values[idx]) for idx in force_indices) > 1e-5
+    qdot_decays_after_force = qdot_decay_ratio <= 0.5 or final_abs_qdot <= args.settle_velocity_threshold
+    settled = final_abs_qdot <= args.settle_velocity_threshold
+    settle_time = next((float(sample["time_s"]) for sample in primary_samples if sample.get("settled_flag")), None)
+    dynamics_warnings: list[str] = []
+    dynamics_verdict = "PASS"
+    if args.force_application_mode in {"external_link_force", "impulse_then_passive_joint_dynamics"}:
+        if not force_nonzero_during:
+            dynamics_verdict = "FAIL"
+            dynamics_warnings.append("force was never non-zero during the force window")
+        if not force_zero_after:
+            dynamics_verdict = "FAIL"
+            dynamics_warnings.append("force did not become zero after force_duration_s")
+        if not qdot_changes_during_force:
+            dynamics_verdict = "FAIL"
+            dynamics_warnings.append("qdot did not change during force application")
+        if not q_continues_after_force:
+            dynamics_verdict = "FAIL"
+            dynamics_warnings.append("q did not continue changing after force removal")
+        if not qdot_decays_after_force:
+            dynamics_verdict = "WARN" if dynamics_verdict != "FAIL" else dynamics_verdict
+            dynamics_warnings.append("qdot did not decay enough after force removal")
+        if not settled and dynamics_verdict == "PASS":
+            dynamics_verdict = "WARN"
+            dynamics_warnings.append("motion did not fully settle by the final frame")
+    validation.setdefault("warnings", []).extend(dynamics_warnings)
+    document.update(
+        {
+            "force_application_mode": args.force_application_mode,
+            "force_units_physical": bool(args.force_application_mode == "external_link_force"),
+            "true_external_force_used": bool(args.force_application_mode == "external_link_force"),
+            "fallback_used": bool(args.force_application_mode == "impulse_then_passive_joint_dynamics"),
+            "force_duration_s": float(args.force_duration),
+            "sim_duration_s": float(args.seconds),
+            "fps": int(args.fps),
+            "timestep": float(TIMESTEP),
+            "timestep_s": float(TIMESTEP),
+            "damping": float(args.joint_viscous_damping),
+            "friction": float(args.joint_dynamic_friction),
+            "joint_damping": float(args.joint_viscous_damping),
+            "joint_friction": float(args.joint_dynamic_friction),
+            "contact_point_world_per_frame": [sample["contact_point_world_per_frame"] for sample in primary_samples],
+            "force_world_per_frame": [sample["force_world_per_frame"] for sample in primary_samples],
+            "torque_about_axis_per_frame": [sample["torque_about_axis_per_frame"] for sample in primary_samples],
+            "q": q_values,
+            "qdot": qdot_values,
+            "qddot": [float(sample["qddot"]) for sample in primary_samples],
+            "phase": [str(sample["phase"]) for sample in primary_samples],
+            "settled": bool(settled),
+            "settle_time_s": settle_time,
+            "final_abs_qdot": float(final_abs_qdot),
+            "peak_abs_qdot": float(peak_abs_qdot),
+            "qdot_decay_ratio": float(qdot_decay_ratio),
+            "warning_messages": dynamics_warnings,
+            "dynamics_verdict": dynamics_verdict,
+            "physics_mode_validation": {
+                "force_nonzero_during_force_window": force_nonzero_during,
+                "force_zero_after_force_window": force_zero_after,
+                "qdot_changes_during_force": qdot_changes_during_force,
+                "q_continues_after_force_removed": q_continues_after_force,
+                "qdot_decays_after_force_removed": qdot_decays_after_force,
+                "max_abs_torque_about_axis": max((abs(value) for value in torque_values), default=0.0),
+                "warnings": dynamics_warnings,
+            },
+        }
     )
     with json_output.open("w", encoding="utf-8") as f:
         json.dump(document, f, indent=2)
