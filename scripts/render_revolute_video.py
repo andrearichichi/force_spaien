@@ -1312,7 +1312,7 @@ def sample_to_dict(
         "mechanical_work_j": float(cumulative_work) if cumulative_work is not None else 0.0,
         "joint_lower_limit_rad": lower,
         "joint_upper_limit_rad": upper,
-        "joint_limit_distance_rad": float(joint_limit_distance),
+        "joint_limit_distance_rad": float(joint_limit_distance) if math.isfinite(joint_limit_distance) else None,
         "clamped_at_limit": bool(clamped),
         "settled_flag": bool(settled_flag),
     }
@@ -1676,8 +1676,8 @@ def main() -> int:
     parser.add_argument("--motion-source", choices=["physical_force"], default="physical_force")
     parser.add_argument(
         "--force-application-mode",
-        choices=["generalized", "generalized_set_qf", "external_link_force", "impulse_then_passive_joint_dynamics"],
-        default="generalized",
+        choices=["external_link_force"],
+        default="external_link_force",
     )
     parser.add_argument("--joint-static-friction", type=float, default=0.0, help="Static friction threshold in Nm for revolute joints.")
     parser.add_argument("--joint-dynamic-friction", "--joint-friction", dest="joint_dynamic_friction", type=float, default=0.0, help="Coulomb friction magnitude in Nm for revolute joints.")
@@ -1693,6 +1693,8 @@ def main() -> int:
     parser.add_argument("--simulate-until-settled", action="store_true")
     parser.add_argument("--settle-velocity-threshold", type=float, default=1e-3)
     parser.add_argument("--max-seconds", type=float, default=10.0)
+    parser.add_argument("--settle-window-seconds", type=float, default=0.0)
+    parser.add_argument("--post-settle-hold-seconds", type=float, default=0.0)
     parser.add_argument("--end-hold-seconds", type=float, default=2.0, help="Freeze the last frame for this many seconds")
     parser.add_argument(
         "--end-hold-mode",
@@ -1713,14 +1715,15 @@ def main() -> int:
     parser.add_argument("--output-root", default="outputs")
     parser.add_argument("--contact-point-local", nargs=3, type=float, default=None)
     parser.add_argument("--contact-point-strategy", default=None)
+    parser.add_argument("--contact-overrides", default=None, help="Batch-resolved manual contact override source.")
+    parser.add_argument("--manual-contact-required", default=None, help="Accepted for final-mode provenance; resolution occurs in the batch runner.")
+    parser.add_argument("--force-policy", choices=["fixed_magnitude", "realistic_response_calibration", "fixed_global_physics", "fixed_global_impulse_decay"], default=None)
     parser.add_argument("--auto-direction", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--max-q-fraction-of-limit", type=float, default=0.98)
     parser.add_argument("--keep-old", action="store_true", help="Do not delete old files in the output directory")
     args = parser.parse_args()
-    if args.force_application_mode in {"external_link_force", "impulse_then_passive_joint_dynamics"} and args.force_profile == "constant":
+    if args.force_profile == "constant":
         args.force_profile = "pulse"
-    if args.force_application_mode == "generalized_set_qf":
-        args.force_application_mode = "generalized"
 
     if args.mode == "apply":
         return run_apply(args)
@@ -1802,15 +1805,29 @@ def main() -> int:
     last_opening_force_step = ForceStep(scale=0.0, applied_magnitude=0.0)
     last_opening_resistance = Resistance(0.0, 0.0, 0.0, 0.0, 0.0, False)
     still_moving_at_max_seconds = False
+    below_threshold_since: float | None = None
+    settled_time_s: float | None = None
+    stopped_because = "fixed_duration"
     with imageio.get_writer(output, fps=args.fps, codec="libx264", quality=8, macro_block_size=1) as writer:
         while True:
             if frame_index >= frame_count:
                 if not args.simulate_until_settled:
                     break
-                if abs(float(opening_sim.laptop.get_qvel()[opening_sim.joint_index])) <= args.settle_velocity_threshold:
-                    break
-                if physics_step_count * TIMESTEP >= args.max_seconds:
+                now = physics_step_count * TIMESTEP
+                speed = abs(float(opening_sim.laptop.get_qvel()[opening_sim.joint_index]))
+                if speed <= args.settle_velocity_threshold:
+                    if below_threshold_since is None:
+                        below_threshold_since = now
+                    if settled_time_s is None and now - below_threshold_since >= args.settle_window_seconds:
+                        settled_time_s = now
+                    if settled_time_s is not None and now - settled_time_s >= args.post_settle_hold_seconds:
+                        stopped_because = "settled_plus_hold"
+                        break
+                else:
+                    below_threshold_since = None
+                if now >= args.max_seconds:
                     still_moving_at_max_seconds = True
+                    stopped_because = "max_duration"
                     break
             for _ in range(steps_per_frame):
                 step_time_s = physics_step_count * TIMESTEP
@@ -1876,11 +1893,9 @@ def main() -> int:
             sample_phase = (
                 "force_applied"
                 if last_opening_force_step.applied_magnitude > 1e-9
-                else "settled"
-                if current_abs_qdot <= args.settle_velocity_threshold
                 else "passive_motion"
             )
-            sample_settled = sample_phase == "settled"
+            sample_settled = current_abs_qdot <= args.settle_velocity_threshold
             direction_auto_flipped = direction_auto_flipped or opening_force.direction_auto_flipped
             if args.movement == "comparison":
                 closing_force = tangential_force_world(
@@ -2193,7 +2208,7 @@ def main() -> int:
         qdot_changes_during_force = max(abs(qdot_values[idx]) for idx in force_indices) > 1e-5
     qdot_decays_after_force = qdot_decay_ratio <= 0.5 or final_abs_qdot <= args.settle_velocity_threshold
     settled = final_abs_qdot <= args.settle_velocity_threshold
-    settle_time = next((float(sample["time_s"]) for sample in primary_samples if sample.get("settled_flag")), None)
+    settle_time = settled_time_s if settled_time_s is not None else next((float(sample["time_s"]) for sample in primary_samples if sample.get("settled_flag")), None)
     dynamics_warnings: list[str] = []
     dynamics_verdict = "PASS"
     if args.force_application_mode in {"external_link_force", "impulse_then_passive_joint_dynamics"}:
@@ -2240,6 +2255,9 @@ def main() -> int:
             "phase": [str(sample["phase"]) for sample in primary_samples],
             "settled": bool(settled),
             "settle_time_s": settle_time,
+            "actual_sim_duration_s": float(primary_samples[-1]["time_s"]),
+            "actual_video_frame_count": len(primary_samples),
+            "stopped_because": stopped_because,
             "final_abs_qdot": float(final_abs_qdot),
             "peak_abs_qdot": float(peak_abs_qdot),
             "qdot_decay_ratio": float(qdot_decay_ratio),

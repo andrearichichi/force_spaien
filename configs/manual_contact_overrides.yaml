@@ -1,0 +1,91 @@
+# Final ForceSAPIEN mode: manual_contact_fixed_force
+# Replace candidate_id after reviewing contact_selection/index.html if desired.
+10211:
+  object_name: Laptop
+  joint_name: joint_1
+  link_name: link_1
+  contact_mode: candidate_id
+  candidate_id: laptop_screen_edge_03
+  force_direction_mode: tangent_opening
+  note: "recommended screen outer-edge candidate; verify semantic placement in preview"
+
+10905:
+  object_name: Refrigerator
+  joint_name: joint_0
+  link_name: link_0
+  contact_mode: candidate_id
+  candidate_id: refrigerator_door_edge_17
+  force_direction_mode: tangent_opening
+  note: "door handle/free-edge candidate"
+
+11100:
+  object_name: Scissors
+  joint_name: joint_0
+  link_name: link_0
+  contact_mode: candidate_id
+  candidate_id: scissors_handle_or_blade_06
+  force_direction_mode: tangent_closing
+  note: "handle-or-blade candidate; closing tangent moves inward from the joint's upper limit"
+
+45135:
+  object_name: StorageFurniture
+  joint_name: joint_0
+  link_name: link_0
+  contact_mode: candidate_id
+  candidate_id: contact_01
+  force_direction_mode: prismatic_axis
+  note: "needs manual visual check"
+
+100109:
+  object_name: USB
+  joint_name: joint_0
+  link_name: link_0
+  contact_mode: candidate_id
+  candidate_id: usb_cover_tip
+  force_direction_mode: tangent_opening
+  note: "USB rotating cover tip on the moving link; outer grip edge opposite the hinge"
+
+101917:
+  object_name: Oven
+  joint_name: joint_0
+  link_name: link_0
+  contact_mode: candidate_id
+  candidate_id: oven_door_edge_03
+  force_direction_mode: tangent_opening
+  note: "door handle/free-edge candidate; verify in preview"
+
+102255:
+  object_name: FoldingChair
+  joint_name: joint_1
+  link_name: link_1
+  contact_mode: candidate_id
+  candidate_id: foldingchair_surface_08
+  force_direction_mode: tangent_opening
+  note: "moving seat/back surface candidate"
+
+103111:
+  object_name: Stapler
+  joint_name: joint_1
+  link_name: link_1
+  contact_mode: candidate_id
+  candidate_id: stapler_lid_front_top_14
+  force_direction_mode: tangent_opening
+  note: "lid front/top candidate"
+
+103706:
+  object_name: Knife
+  joint_name: joint_0
+  link_name: link_0
+  contact_mode: candidate_id
+  candidate_id: knife_prismatic_point_01
+  force_direction_mode: prismatic_axis
+  note: "moving-link point aligned with prismatic axis"
+
+103776:
+  object_name: WashingMachine
+  joint_name: joint_0
+  link_name: link_0
+  contact_mode: candidate_id
+  candidate_id: washingmachine_door_rim_13
+  force_direction_mode: tangent_opening
+  note: "door rim/handle candidate; verify in preview"

@@ -20,8 +20,12 @@ DIAGNOSTIC_FILES = [
 ]
 
 REPORT_FILES = [
-    ("Final clean 5-unit report", "final_clean_5n_physics_report.md"),
-    ("Final clean 5-unit table", "final_clean_5n_physics_table.tsv"),
+    ("Final global impulse-decay report", "final_manual_contact_global_impulse_decay_report.md"),
+    ("Final global impulse-decay table", "final_manual_contact_global_impulse_decay_table.tsv"),
+    ("Physical consistency report", "physical_consistency_manual_contact_global_impulse_decay.md"),
+    ("Physical consistency table", "physical_consistency_manual_contact_global_impulse_decay.tsv"),
+    ("Visual review report", "final_visual_review_manual_contact_global_impulse_decay.md"),
+    ("Visual review table", "final_visual_review_manual_contact_global_impulse_decay.tsv"),
 ]
 
 CONTACT_SHEETS = [
@@ -124,6 +128,8 @@ def load_simulation(path: Path) -> tuple[dict[str, Any] | None, str | None]:
 
 
 def object_id_from_sim(sim: dict[str, Any], folder: Path) -> str:
+    if str(sim.get("object_id", "")).isdigit():
+        return str(sim["object_id"])
     model_dir = nested(sim, "metadata", "object", "model_dir")
     if model_dir:
         return Path(str(model_dir)).name
@@ -700,8 +706,8 @@ def build_html(objects: list[dict[str, Any]], output_root: Path, repo_root: Path
       <div class="hero-grid">
         <div>
           <p class="eyebrow">Final dataset report</p>
-          <h1>Final 5-force-unit external-link-force physics outputs.</h1>
-          <p class="subtitle">True SAPIEN external-link-force simulations in dataset units</p>
+          <h1>Realistic manual-contact adaptive physics outputs.</h1>
+          <p class="subtitle">True SAPIEN external-link-force simulations with one manually selected point and direction per object</p>
           <nav class="nav" aria-label="Page sections">
             <a href="#repo">Repository</a>
             <a href="#pipeline">Pipeline</a>
@@ -713,7 +719,7 @@ def build_html(objects: list[dict[str, Any]], output_root: Path, repo_root: Path
           </nav>
           <div class="callout">
             <strong>Interpretation warning.</strong>
-            These outputs use true SAPIEN external link forces with a 0.2 s force pulse followed by passive motion. The force is expressed in dataset/SAPIEN units and should not be interpreted as calibrated real-world Newtons because asset scale, mass, and inertia are uncalibrated.
+            Final mode: <code>manual_contact_global_impulse_decay</code>. Every object receives the same short 0.10-second push, then evolves passively with globally shared damping and friction until settled plus one second. Only the semantic contact point and opening direction vary. True SAPIEN external-link-force; dataset/SAPIEN units; calibrated Newtons: no.
           </div>
         </div>
         <div class="stats">{stats}</div>
@@ -747,7 +753,7 @@ def build_html(objects: list[dict[str, Any]], output_root: Path, repo_root: Path
     render_screw_video.py
     build_index_html.py
   outputs/
-    &lt;object&gt;_&lt;id&gt;_&lt;joint&gt;_external_force_5n_physics_check/
+    &lt;object&gt;_&lt;id&gt;_&lt;joint&gt;_manual_contact_global_impulse_decay_check/
       simulation.json
       final_video.mp4
       diagnostics/
@@ -769,7 +775,7 @@ def build_html(objects: list[dict[str, Any]], output_root: Path, repo_root: Path
         <div class="flow-step"><span>1</span><strong>Dataset object</strong><p>Read from <code>final_dataset/</code>.</p></div>
         <div class="flow-step"><span>2</span><strong>URDF / metadata</strong><p>Parse joints and moving links.</p></div>
         <div class="flow-step"><span>3</span><strong>Joint selection</strong><p>Select the intended DOF.</p></div>
-        <div class="flow-step"><span>4</span><strong>Contact strategy</strong><p>Pick a plausible moving point.</p></div>
+        <div class="flow-step"><span>4</span><strong>Manual contact</strong><p>Select the application point and force direction.</p></div>
         <div class="flow-step"><span>5</span><strong>Renderer</strong><p>Use revolute, prismatic, or screw renderer.</p></div>
         <div class="flow-step"><span>6</span><strong>Video</strong><p>Generate <code>final_video.mp4</code>.</p></div>
         <div class="flow-step"><span>7</span><strong>simulation.json</strong><p>Write run metadata and measurements.</p></div>
@@ -793,8 +799,8 @@ def build_html(objects: list[dict[str, Any]], output_root: Path, repo_root: Path
         <details class="schema" open><summary>A. Identity and run status</summary><div><p>Use these fields to confirm which object/run produced the artifacts and whether the run completed cleanly.</p><ul>{field_list([("object_id", "dataset object identifier."), ("object_name", "human-readable object name."), ("status", "run completion state."), ("error_message", "error text if the run failed."), ("output_folder", "folder containing the generated artifacts.")])}</ul></div></details>
         <details class="schema" open><summary>B. Joint/articulation metadata</summary><div><p>These fields describe the selected degree of freedom. Revolute <code>q</code> is radians; prismatic <code>q</code> is meters. For torque/projection, interpret the joint axis in world frame.</p><ul>{field_list([("joint_type", "revolute, prismatic, or screw-style articulation."), ("selected_joint / joint_name / joint_index", "the chosen URDF joint."), ("selected_link / moving_link", "the link expected to move."), ("parent_link / child_link", "joint hierarchy when available."), ("joint_axis_urdf_local", "axis in URDF-local coordinates."), ("joint_axis_world", "axis transformed into world coordinates."), ("joint_origin_world", "world-space joint origin."), ("joint_limits", "allowed joint range."), ("q_unit", "radians for revolute, meters for prismatic.")])}</ul></div></details>
         <details class="schema"><summary>C. Motion data</summary><div><p><code>q</code> is joint-space motion, not pixel/image motion. <code>qdot</code> and <code>qddot</code> describe joint velocity and acceleration over frames.</p><ul>{field_list([("q_start", "initial joint position."), ("q_end", "final joint position."), ("delta_q", "total joint-space displacement."), ("per-frame q", "sampled joint position over time."), ("qdot", "joint velocity."), ("qddot", "joint acceleration.")])}</ul></div></details>
-        <details class="schema"><summary>D. Force/contact data</summary><div><p>The final outputs use true SAPIEN external-link forces: a 0.2 s pulse followed by passive dynamics. Magnitude 5.0 means 5 force units / 5 N-like SAPIEN force in dataset units, not calibrated real-world Newtons.</p><ul>{field_list([("force_application_mode", "external_link_force for every final object."), ("force_magnitude", "5.0 dataset/SAPIEN force units."), ("force_duration_s", "0.2-second initial pulse."), ("force_application_point_world_at_pulse", "world-space point on the moving link."), ("torque_about_axis_at_pulse / raw_projected_force_along_axis_at_pulse", "joint-axis pulse torque or projection."), ("true_external_force_used", "true for every final output."), ("fallback_used", "false for every final output.")])}</ul></div></details>
-        <details class="schema"><summary>E. Validation fields</summary><div><p>The strict final verdict is <code>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</code> for all eight objects. Remaining warnings describe contact semantics, scale, or settling—not use of fake or generalized motion.</p><ul>{field_list([("final_physical_consistency_verdict", "strict final physical-consistency result."), ("contact_semantic_verdict", "semantic confidence in the selected contact region."), ("torque_projection_verdict", "world-space recomputation check."), ("effective_joint_inertia_proxy", "diagnostic response proxy, not calibrated inertia."), ("qdot_decay_ratio", "final absolute qdot divided by peak absolute qdot."), ("settled", "whether final velocity meets the settle threshold."), ("warning_messages", "remaining dataset-scale or dynamics caveats.")])}</ul></div></details>
+        <details class="schema"><summary>D. Force/contact data</summary><div><p>The final outputs use true SAPIEN external-link forces: the same 5-unit, 0.10 s pulse for every object, at a manually selected point and direction, followed only by passive dynamics. Damping is 2.0 and friction is 0.30 globally. Calibrated Newtons: no.</p><ul>{field_list([("final_mode", "manual_contact_global_impulse_decay."), ("force_policy", "fixed_global_impulse_decay; no per-object dynamics adaptation."), ("force_application_mode", "external_link_force for every final object."), ("force_magnitude / actual_force_magnitude", "5 dataset/SAPIEN force units for every object."), ("contact_point_world_at_pulse", "manually selected world-space point on the moving link."), ("force_direction_world_at_pulse", "manually selected direction/sign."), ("true_external_force_used", "true for every final output."), ("fallback_used", "false for every final output.")])}</ul></div></details>
+        <details class="schema"><summary>E. Validation fields</summary><div><p>The strict final verdict is <code>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</code> for all ten objects. Remaining warnings describe contact semantics or normalized dataset scale—not use of fake or generalized motion. A max-duration stop is always a hard failure.</p><ul>{field_list([("final_physical_consistency_verdict", "strict final physical-consistency result."), ("contact_semantic_verdict", "semantic confidence in the selected contact region."), ("torque_projection_verdict", "world-space recomputation check."), ("effective_joint_inertia_proxy", "diagnostic response proxy, not calibrated inertia."), ("qdot_decay_ratio", "final absolute qdot divided by peak absolute qdot."), ("settled", "whether final velocity meets the settle threshold."), ("duration_verdict", "settled-plus-hold pass or hard max-duration failure."), ("final_acceptance", "final pass/fail after enforcing duration policy."), ("warning_messages", "remaining dataset-scale or contact caveats.")])}</ul></div></details>
         <details class="schema"><summary>F. Interpretation rule</summary><div><p>The final dataset does not use <code>generalized_set_qf</code>. That mode is legacy/background only. Every displayed final result uses <code>external_link_force</code>, with force reported in dataset/SAPIEN units and calibrated Newtons explicitly marked <strong>no</strong>.</p></div></details>
       </div>
       <div class="panel example">
@@ -806,19 +812,20 @@ def build_html(objects: list[dict[str, Any]], output_root: Path, repo_root: Path
   "selected_joint": "joint_1",
   "selected_link": "link_1",
   "q_unit": "radians",
-  "q_start": 0.0,
-  "q_end": 0.1022700444,
-  "delta_q": 0.1022700444,
+  "final_mode": "manual_contact_global_impulse_decay",
   "force_application_mode": "external_link_force",
+  "force_policy": "fixed_magnitude",
   "force_magnitude": 5.0,
+  "actual_force_magnitude": 5.0,
+  "per_object_force_adaptation": false,
   "force_duration_s": 0.2,
   "true_external_force_used": true,
   "fallback_used": false,
   "contact_strategy": "stapler_lid_front_top",
-  "effective_joint_inertia_proxy": 70.626782,
-  "qdot_decay_ratio": 0.713766207,
-  "settled": false,
-  "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED"
+  "contact_source": "candidate_id",
+  "force_direction_mode": "tangent_opening",
+  "calibrated_newtons": false,
+  "force_units": "dataset/SAPIEN units"
 }}</pre>
       </div>
     </section>
@@ -873,9 +880,9 @@ def build_html(objects: list[dict[str, Any]], output_root: Path, repo_root: Path
 
     <section id="physics-mode" class="section-block panel">
       <p class="eyebrow">Physics status</p>
-      <h2>Validated external-link physics mode</h2>
-      <p>All eight final outputs use <code>external_link_force</code>: a 0.2-second pulse acts at a world-space point on the moving link, then the simulation continues passively with damping and friction.</p>
-      <p>Magnitude 5.0 is reported as 5 force units / 5 N-like SAPIEN force in dataset units. It is not calibrated real-world Newton force because object scale, mass, and inertia remain dataset-specific.</p>
+      <h2>Validated manual-contact fixed-force mode</h2>
+      <p>All final outputs use <code>manual_contact_global_impulse_decay</code> with true <code>external_link_force</code>: the same 5-unit, 0.10-second pulse, damping 2.0, and friction 0.30 for every object. Force is exactly zero after the pulse and motion decelerates passively. There is no fixed six-second minimum: recording continues until settling plus one second, while reaching the 10-second maximum is a hard failure.</p>
+      <p>The same magnitude 5.0 dataset/SAPIEN force units is used for every object. The force magnitude is fixed globally rather than adapted per object. Calibrated Newtons: no.</p>
       <p>Refrigerator can move more than Scissors despite slightly lower pulse torque because the loaded dataset articulation has a lower effective joint-inertia proxy. This comparison describes the loaded SAPIEN assets, not real appliances or tools.</p>
       <div class="future-list">
         <span>initial force pulse</span>
@@ -941,12 +948,12 @@ def main() -> int:
     repo_root = Path.cwd()
     output_root = args.output_root if args.output_root.is_absolute() else repo_root / args.output_root
     index_path = args.index_path if args.index_path.is_absolute() else repo_root / args.index_path
-    summary_rows = read_summary(output_root / "forcesapien_final_validated_summary.tsv")
+    summary_rows = read_summary(output_root / "final_manual_contact_global_impulse_decay_table.tsv")
     canonical_ids = set(summary_rows)
 
     objects: list[dict[str, Any]] = []
     skipped: list[str] = []
-    for sim_path in sorted(output_root.glob("*_external_force_5n_physics_check/simulation.json")):
+    for sim_path in sorted(output_root.glob("*_manual_contact_global_impulse_decay_check/simulation.json")):
         sim, _error = load_simulation(sim_path)
         object_id = next((part for part in sim_path.parent.name.split("_") if part.isdigit()), sim_path.parent.name)
         if sim is not None:
@@ -957,7 +964,9 @@ def main() -> int:
         objects.append(make_object(sim_path, repo_root, summary_rows))
 
     objects.sort(key=lambda obj: int(obj["object_id"]) if str(obj.get("object_id", "")).isdigit() else str(obj.get("object_id", "")))
-    index_path.write_text(build_html(objects, output_root, repo_root, skipped), encoding="utf-8")
+    rendered = build_html(objects, output_root, repo_root, skipped)
+    rendered = "\n".join(line.rstrip() for line in rendered.splitlines()) + "\n"
+    index_path.write_text(rendered, encoding="utf-8")
 
     missing_files = sorted({name for obj in objects for name in obj.get("missing_files", [])})
     missing_fields = sorted({name for obj in objects for name in obj.get("missing_fields", [])})

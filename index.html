@@ -154,8 +154,8 @@
       <div class="hero-grid">
         <div>
           <p class="eyebrow">Final dataset report</p>
-          <h1>Final 5-force-unit external-link-force physics outputs.</h1>
-          <p class="subtitle">True SAPIEN external-link-force simulations in dataset units</p>
+          <h1>Realistic manual-contact adaptive physics outputs.</h1>
+          <p class="subtitle">True SAPIEN external-link-force simulations with one manually selected point and direction per object</p>
           <nav class="nav" aria-label="Page sections">
             <a href="#repo">Repository</a>
             <a href="#pipeline">Pipeline</a>
@@ -167,10 +167,10 @@
           </nav>
           <div class="callout">
             <strong>Interpretation warning.</strong>
-            These outputs use true SAPIEN external link forces with a 0.2 s force pulse followed by passive motion. The force is expressed in dataset/SAPIEN units and should not be interpreted as calibrated real-world Newtons because asset scale, mass, and inertia are uncalibrated.
+            Final mode: <code>manual_contact_global_impulse_decay</code>. Every object receives the same short 0.10-second push, then evolves passively with globally shared damping and friction until settled plus one second. Only the semantic contact point and opening direction vary. True SAPIEN external-link-force; dataset/SAPIEN units; calibrated Newtons: no.
           </div>
         </div>
-        <div class="stats"><div class="stat"><span>Objects</span><strong>8</strong><small>final validated set</small></div><div class="stat"><span>Videos</span><strong>8</strong><small>embedded MP4 cards</small></div><div class="stat"><span>Diagnostics complete</span><strong>8</strong><small>TSV, MD, PNG plots</small></div><div class="stat"><span>Failed objects</span><strong>0</strong><small>no remaining failures</small></div><div class="stat"><span>Mode</span><strong>external_link_force</strong><small>5 dataset force units</small></div><div class="stat"><span>Calibrated Newtons</span><strong>no</strong><small>dataset/SAPIEN units</small></div></div>
+        <div class="stats"><div class="stat"><span>Objects</span><strong>10</strong><small>final validated set</small></div><div class="stat"><span>Videos</span><strong>10</strong><small>embedded MP4 cards</small></div><div class="stat"><span>Diagnostics complete</span><strong>10</strong><small>TSV, MD, PNG plots</small></div><div class="stat"><span>Failed objects</span><strong>0</strong><small>no remaining failures</small></div><div class="stat"><span>Mode</span><strong>external_link_force</strong><small>5 dataset force units</small></div><div class="stat"><span>Calibrated Newtons</span><strong>no</strong><small>dataset/SAPIEN units</small></div></div>
       </div>
     </div>
   </header>
@@ -201,7 +201,7 @@
     render_screw_video.py
     build_index_html.py
   outputs/
-    &lt;object&gt;_&lt;id&gt;_&lt;joint&gt;_external_force_5n_physics_check/
+    &lt;object&gt;_&lt;id&gt;_&lt;joint&gt;_manual_contact_global_impulse_decay_check/
       simulation.json
       final_video.mp4
       diagnostics/
@@ -223,7 +223,7 @@
         <div class="flow-step"><span>1</span><strong>Dataset object</strong><p>Read from <code>final_dataset/</code>.</p></div>
         <div class="flow-step"><span>2</span><strong>URDF / metadata</strong><p>Parse joints and moving links.</p></div>
         <div class="flow-step"><span>3</span><strong>Joint selection</strong><p>Select the intended DOF.</p></div>
-        <div class="flow-step"><span>4</span><strong>Contact strategy</strong><p>Pick a plausible moving point.</p></div>
+        <div class="flow-step"><span>4</span><strong>Manual contact</strong><p>Select the application point and force direction.</p></div>
         <div class="flow-step"><span>5</span><strong>Renderer</strong><p>Use revolute, prismatic, or screw renderer.</p></div>
         <div class="flow-step"><span>6</span><strong>Video</strong><p>Generate <code>final_video.mp4</code>.</p></div>
         <div class="flow-step"><span>7</span><strong>simulation.json</strong><p>Write run metadata and measurements.</p></div>
@@ -247,8 +247,8 @@
         <details class="schema" open><summary>A. Identity and run status</summary><div><p>Use these fields to confirm which object/run produced the artifacts and whether the run completed cleanly.</p><ul><li><code>object_id</code> dataset object identifier.</li><li><code>object_name</code> human-readable object name.</li><li><code>status</code> run completion state.</li><li><code>error_message</code> error text if the run failed.</li><li><code>output_folder</code> folder containing the generated artifacts.</li></ul></div></details>
         <details class="schema" open><summary>B. Joint/articulation metadata</summary><div><p>These fields describe the selected degree of freedom. Revolute <code>q</code> is radians; prismatic <code>q</code> is meters. For torque/projection, interpret the joint axis in world frame.</p><ul><li><code>joint_type</code> revolute, prismatic, or screw-style articulation.</li><li><code>selected_joint / joint_name / joint_index</code> the chosen URDF joint.</li><li><code>selected_link / moving_link</code> the link expected to move.</li><li><code>parent_link / child_link</code> joint hierarchy when available.</li><li><code>joint_axis_urdf_local</code> axis in URDF-local coordinates.</li><li><code>joint_axis_world</code> axis transformed into world coordinates.</li><li><code>joint_origin_world</code> world-space joint origin.</li><li><code>joint_limits</code> allowed joint range.</li><li><code>q_unit</code> radians for revolute, meters for prismatic.</li></ul></div></details>
         <details class="schema"><summary>C. Motion data</summary><div><p><code>q</code> is joint-space motion, not pixel/image motion. <code>qdot</code> and <code>qddot</code> describe joint velocity and acceleration over frames.</p><ul><li><code>q_start</code> initial joint position.</li><li><code>q_end</code> final joint position.</li><li><code>delta_q</code> total joint-space displacement.</li><li><code>per-frame q</code> sampled joint position over time.</li><li><code>qdot</code> joint velocity.</li><li><code>qddot</code> joint acceleration.</li></ul></div></details>
-        <details class="schema"><summary>D. Force/contact data</summary><div><p>The final outputs use true SAPIEN external-link forces: a 0.2 s pulse followed by passive dynamics. Magnitude 5.0 means 5 force units / 5 N-like SAPIEN force in dataset units, not calibrated real-world Newtons.</p><ul><li><code>force_application_mode</code> external_link_force for every final object.</li><li><code>force_magnitude</code> 5.0 dataset/SAPIEN force units.</li><li><code>force_duration_s</code> 0.2-second initial pulse.</li><li><code>force_application_point_world_at_pulse</code> world-space point on the moving link.</li><li><code>torque_about_axis_at_pulse / raw_projected_force_along_axis_at_pulse</code> joint-axis pulse torque or projection.</li><li><code>true_external_force_used</code> true for every final output.</li><li><code>fallback_used</code> false for every final output.</li></ul></div></details>
-        <details class="schema"><summary>E. Validation fields</summary><div><p>The strict final verdict is <code>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</code> for all eight objects. Remaining warnings describe contact semantics, scale, or settling—not use of fake or generalized motion.</p><ul><li><code>final_physical_consistency_verdict</code> strict final physical-consistency result.</li><li><code>contact_semantic_verdict</code> semantic confidence in the selected contact region.</li><li><code>torque_projection_verdict</code> world-space recomputation check.</li><li><code>effective_joint_inertia_proxy</code> diagnostic response proxy, not calibrated inertia.</li><li><code>qdot_decay_ratio</code> final absolute qdot divided by peak absolute qdot.</li><li><code>settled</code> whether final velocity meets the settle threshold.</li><li><code>warning_messages</code> remaining dataset-scale or dynamics caveats.</li></ul></div></details>
+        <details class="schema"><summary>D. Force/contact data</summary><div><p>The final outputs use true SAPIEN external-link forces: the same 5-unit, 0.10 s pulse for every object, at a manually selected point and direction, followed only by passive dynamics. Damping is 2.0 and friction is 0.30 globally. Calibrated Newtons: no.</p><ul><li><code>final_mode</code> manual_contact_global_impulse_decay.</li><li><code>force_policy</code> fixed_global_impulse_decay; no per-object dynamics adaptation.</li><li><code>force_application_mode</code> external_link_force for every final object.</li><li><code>force_magnitude / actual_force_magnitude</code> 5 dataset/SAPIEN force units for every object.</li><li><code>contact_point_world_at_pulse</code> manually selected world-space point on the moving link.</li><li><code>force_direction_world_at_pulse</code> manually selected direction/sign.</li><li><code>true_external_force_used</code> true for every final output.</li><li><code>fallback_used</code> false for every final output.</li></ul></div></details>
+        <details class="schema"><summary>E. Validation fields</summary><div><p>The strict final verdict is <code>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</code> for all ten objects. Remaining warnings describe contact semantics or normalized dataset scale—not use of fake or generalized motion. A max-duration stop is always a hard failure.</p><ul><li><code>final_physical_consistency_verdict</code> strict final physical-consistency result.</li><li><code>contact_semantic_verdict</code> semantic confidence in the selected contact region.</li><li><code>torque_projection_verdict</code> world-space recomputation check.</li><li><code>effective_joint_inertia_proxy</code> diagnostic response proxy, not calibrated inertia.</li><li><code>qdot_decay_ratio</code> final absolute qdot divided by peak absolute qdot.</li><li><code>settled</code> whether final velocity meets the settle threshold.</li><li><code>duration_verdict</code> settled-plus-hold pass or hard max-duration failure.</li><li><code>final_acceptance</code> final pass/fail after enforcing duration policy.</li><li><code>warning_messages</code> remaining dataset-scale or contact caveats.</li></ul></div></details>
         <details class="schema"><summary>F. Interpretation rule</summary><div><p>The final dataset does not use <code>generalized_set_qf</code>. That mode is legacy/background only. Every displayed final result uses <code>external_link_force</code>, with force reported in dataset/SAPIEN units and calibrated Newtons explicitly marked <strong>no</strong>.</p></div></details>
       </div>
       <div class="panel example">
@@ -260,19 +260,20 @@
   "selected_joint": "joint_1",
   "selected_link": "link_1",
   "q_unit": "radians",
-  "q_start": 0.0,
-  "q_end": 0.1022700444,
-  "delta_q": 0.1022700444,
+  "final_mode": "manual_contact_global_impulse_decay",
   "force_application_mode": "external_link_force",
+  "force_policy": "fixed_magnitude",
   "force_magnitude": 5.0,
+  "actual_force_magnitude": 5.0,
+  "per_object_force_adaptation": false,
   "force_duration_s": 0.2,
   "true_external_force_used": true,
   "fallback_used": false,
   "contact_strategy": "stapler_lid_front_top",
-  "effective_joint_inertia_proxy": 70.626782,
-  "qdot_decay_ratio": 0.713766207,
-  "settled": false,
-  "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED"
+  "contact_source": "candidate_id",
+  "force_direction_mode": "tangent_opening",
+  "calibrated_newtons": false,
+  "force_units": "dataset/SAPIEN units"
 }</pre>
       </div>
     </section>
@@ -295,7 +296,7 @@
           <span class="verdict warn"><span>consistency</span>WARN</span>
         </div>
       </div>
-      <video controls muted loop preload="metadata" src="outputs/laptop_10211_revolute_external_force_5n_physics_check/final_video.mp4"></video>
+      <video controls muted loop preload="metadata" src="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/final_video.mp4"></video>
       <div class="verdict-strip">
         <span class="verdict warn"><span>contact</span>WARN</span>
         <span class="verdict pass"><span>joint</span>PASS</span>
@@ -304,35 +305,35 @@
       <dl class="metric-grid">
         <div><dt>Selected joint/link</dt><dd>joint_1 / link_1</dd></div>
         <div><dt>q start</dt><dd>0 rad</dd></div>
-        <div><dt>q end</dt><dd>0.4712 rad</dd></div>
-        <div><dt>delta q</dt><dd>0.4712 rad</dd></div>
+        <div><dt>q end</dt><dd>0.0308 rad</dd></div>
+        <div><dt>delta q</dt><dd>0.0308 rad</dd></div>
         <div><dt>Force mode</dt><dd>external_link_force</dd></div>
         <div><dt>Force magnitude</dt><dd>5 dataset/SAPIEN units</dd></div>
-        <div><dt>Force duration</dt><dd>0.2 s</dd></div>
-        <div><dt>Peak / final |qdot|</dt><dd>0.1894 / 0</dd></div>
+        <div><dt>Force duration</dt><dd>0.1 s</dd></div>
+        <div><dt>Peak / final |qdot|</dt><dd>0.0853 / 0</dd></div>
         <div><dt>qdot decay ratio</dt><dd>0</dd></div>
         <div><dt>Settled</dt><dd>true</dd></div>
-        <div><dt>Pulse torque / projection</dt><dd>3.6116</dd></div>
-        <div><dt>Effective inertia proxy</dt><dd>3.7884</dd></div>
+        <div><dt>Pulse torque / projection</dt><dd>3.544</dd></div>
+        <div><dt>Effective inertia proxy</dt><dd>4.156</dd></div>
         <div><dt>Contact semantics</dt><dd>WARN: laptop_screen_free_edge</dd></div>
         <div><dt>Physical consistency</dt><dd>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</dd></div>
         <div><dt>Force units</dt><dd>dataset/SAPIEN units</dd></div>
         <div><dt>Calibrated Newtons</dt><dd>no</dd></div>
-        <div><dt>Video frames</dt><dd>180</dd></div>
+        <div><dt>Video frames</dt><dd>75</dd></div>
       </dl>
       <div class="warnings"><strong>Warnings</strong><div class="warning-list"><span class="warning-chip"><strong>Scale</strong>normalized/dataset-specific scale</span></div></div>
-      <div class="file-row"><a class="file-chip" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/simulation.json">simulation.json</a>
-<a class="file-chip" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/final_video.mp4">final_video.mp4</a>
-<a class="file-chip" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
-<a class="file-chip" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
-<a class="file-chip" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
-<a class="file-chip" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
-<a class="file-chip" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
+      <div class="file-row"><a class="file-chip" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
       <details class="plots" open>
         <summary>Diagnostic plots</summary>
-        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
-<figure class="plot-thumb"><a href="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png"><img src="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
-<figure class="plot-thumb"><a href="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png"><img src="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
+        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png"><img src="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"><img src="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
       </details>
     </article>
 
@@ -345,10 +346,10 @@
         </div>
         <div class="object-badges">
           <span class="joint-badge">revolute</span>
-          <span class="verdict warn"><span>consistency</span>WARN</span>
+          <span class="verdict pass"><span>consistency</span>PASS</span>
         </div>
       </div>
-      <video controls muted loop preload="metadata" src="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/final_video.mp4"></video>
+      <video controls muted loop preload="metadata" src="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/final_video.mp4"></video>
       <div class="verdict-strip">
         <span class="verdict pass"><span>contact</span>PASS</span>
         <span class="verdict pass"><span>joint</span>PASS</span>
@@ -357,35 +358,35 @@
       <dl class="metric-grid">
         <div><dt>Selected joint/link</dt><dd>joint_0 / link_0</dd></div>
         <div><dt>q start</dt><dd>0 rad</dd></div>
-        <div><dt>q end</dt><dd>0.2635 rad</dd></div>
-        <div><dt>delta q</dt><dd>0.2635 rad</dd></div>
+        <div><dt>q end</dt><dd>0.0144 rad</dd></div>
+        <div><dt>delta q</dt><dd>0.0144 rad</dd></div>
         <div><dt>Force mode</dt><dd>external_link_force</dd></div>
         <div><dt>Force magnitude</dt><dd>5 dataset/SAPIEN units</dd></div>
-        <div><dt>Force duration</dt><dd>0.2 s</dd></div>
-        <div><dt>Peak / final |qdot|</dt><dd>0.076 / 0.0167</dd></div>
-        <div><dt>qdot decay ratio</dt><dd>0.2195</dd></div>
-        <div><dt>Settled</dt><dd>false</dd></div>
-        <div><dt>Pulse torque / projection</dt><dd>3.3764</dd></div>
-        <div><dt>Effective inertia proxy</dt><dd>8.8625</dd></div>
+        <div><dt>Force duration</dt><dd>0.1 s</dd></div>
+        <div><dt>Peak / final |qdot|</dt><dd>0.0346 / 0.0001</dd></div>
+        <div><dt>qdot decay ratio</dt><dd>0.0024</dd></div>
+        <div><dt>Settled</dt><dd>true</dd></div>
+        <div><dt>Pulse torque / projection</dt><dd>3.3907</dd></div>
+        <div><dt>Effective inertia proxy</dt><dd>9.8085</dd></div>
         <div><dt>Contact semantics</dt><dd>PASS: door_handle_or_free_vertical_edge</dd></div>
-        <div><dt>Physical consistency</dt><dd>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</dd></div>
+        <div><dt>Physical consistency</dt><dd>PHYSICS_CONSISTENT</dd></div>
         <div><dt>Force units</dt><dd>dataset/SAPIEN units</dd></div>
         <div><dt>Calibrated Newtons</dt><dd>no</dd></div>
-        <div><dt>Video frames</dt><dd>180</dd></div>
+        <div><dt>Video frames</dt><dd>75</dd></div>
       </dl>
-      <div class="warnings"><strong>Warnings</strong><div class="warning-list"><span class="warning-chip"><strong>Motion</strong>motion still active at final frame</span></div></div>
-      <div class="file-row"><a class="file-chip" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/simulation.json">simulation.json</a>
-<a class="file-chip" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/final_video.mp4">final_video.mp4</a>
-<a class="file-chip" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
-<a class="file-chip" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
-<a class="file-chip" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
-<a class="file-chip" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
-<a class="file-chip" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
+      <div class="warnings"><strong>Warnings</strong><div class="warning-list"><span class="warning-chip"><strong>Warning</strong>N/A</span></div></div>
+      <div class="file-row"><a class="file-chip" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
       <details class="plots" open>
         <summary>Diagnostic plots</summary>
-        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
-<figure class="plot-thumb"><a href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png"><img src="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
-<figure class="plot-thumb"><a href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png"><img src="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
+        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png"><img src="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"><img src="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
       </details>
     </article>
 
@@ -401,7 +402,7 @@
           <span class="verdict warn"><span>consistency</span>WARN</span>
         </div>
       </div>
-      <video controls muted loop preload="metadata" src="outputs/scissors_11100_revolute_external_force_5n_physics_check/final_video.mp4"></video>
+      <video controls muted loop preload="metadata" src="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/final_video.mp4"></video>
       <div class="verdict-strip">
         <span class="verdict warn"><span>contact</span>WARN</span>
         <span class="verdict pass"><span>joint</span>PASS</span>
@@ -410,35 +411,141 @@
       <dl class="metric-grid">
         <div><dt>Selected joint/link</dt><dd>joint_0 / link_0</dd></div>
         <div><dt>q start</dt><dd>0 rad</dd></div>
-        <div><dt>q end</dt><dd>-0.2488 rad</dd></div>
-        <div><dt>delta q</dt><dd>-0.2488 rad</dd></div>
+        <div><dt>q end</dt><dd>-0.019 rad</dd></div>
+        <div><dt>delta q</dt><dd>-0.019 rad</dd></div>
         <div><dt>Force mode</dt><dd>external_link_force</dd></div>
         <div><dt>Force magnitude</dt><dd>5 dataset/SAPIEN units</dd></div>
-        <div><dt>Force duration</dt><dd>0.2 s</dd></div>
-        <div><dt>Peak / final |qdot|</dt><dd>0.0557 / 0.0292</dd></div>
-        <div><dt>qdot decay ratio</dt><dd>0.5241</dd></div>
-        <div><dt>Settled</dt><dd>false</dd></div>
+        <div><dt>Force duration</dt><dd>0.1 s</dd></div>
+        <div><dt>Peak / final |qdot|</dt><dd>0.0265 / 0.0001</dd></div>
+        <div><dt>qdot decay ratio</dt><dd>0.0029</dd></div>
+        <div><dt>Settled</dt><dd>true</dd></div>
         <div><dt>Pulse torque / projection</dt><dd>-5.1973</dd></div>
-        <div><dt>Effective inertia proxy</dt><dd>18.6349</dd></div>
+        <div><dt>Effective inertia proxy</dt><dd>19.6295</dd></div>
         <div><dt>Contact semantics</dt><dd>WARN: scissors_far_handle_or_blade_candidate</dd></div>
         <div><dt>Physical consistency</dt><dd>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</dd></div>
         <div><dt>Force units</dt><dd>dataset/SAPIEN units</dd></div>
         <div><dt>Calibrated Newtons</dt><dd>no</dd></div>
-        <div><dt>Video frames</dt><dd>180</dd></div>
+        <div><dt>Video frames</dt><dd>86</dd></div>
       </dl>
-      <div class="warnings"><strong>Warnings</strong><div class="warning-list"><span class="warning-chip"><strong>Scale</strong>normalized/dataset-specific scale</span><span class="warning-chip"><strong>Motion</strong>motion still active at final frame</span></div></div>
-      <div class="file-row"><a class="file-chip" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/simulation.json">simulation.json</a>
-<a class="file-chip" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/final_video.mp4">final_video.mp4</a>
-<a class="file-chip" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
-<a class="file-chip" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
-<a class="file-chip" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
-<a class="file-chip" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
-<a class="file-chip" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
+      <div class="warnings"><strong>Warnings</strong><div class="warning-list"><span class="warning-chip"><strong>Scale</strong>normalized/dataset-specific scale</span></div></div>
+      <div class="file-row"><a class="file-chip" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
       <details class="plots" open>
         <summary>Diagnostic plots</summary>
-        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
-<figure class="plot-thumb"><a href="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png"><img src="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
-<figure class="plot-thumb"><a href="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png"><img src="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
+        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png"><img src="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"><img src="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
+      </details>
+    </article>
+
+
+    <article class="object-card">
+      <div class="object-title">
+        <div>
+          <p class="eyebrow">Object 45135</p>
+          <h3>StorageFurniture</h3>
+        </div>
+        <div class="object-badges">
+          <span class="joint-badge">prismatic</span>
+          <span class="verdict warn"><span>consistency</span>WARN</span>
+        </div>
+      </div>
+      <video controls muted loop preload="metadata" src="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/final_video.mp4"></video>
+      <div class="verdict-strip">
+        <span class="verdict warn"><span>contact</span>WARN</span>
+        <span class="verdict pass"><span>joint</span>PASS</span>
+        <span class="verdict pass"><span>scale</span>PASS</span>
+      </div>
+      <dl class="metric-grid">
+        <div><dt>Selected joint/link</dt><dd>joint_0 / link_0</dd></div>
+        <div><dt>q start</dt><dd>0 m</dd></div>
+        <div><dt>q end</dt><dd>0.0066 m</dd></div>
+        <div><dt>delta q</dt><dd>0.0066 m</dd></div>
+        <div><dt>Force mode</dt><dd>external_link_force</dd></div>
+        <div><dt>Force magnitude</dt><dd>5 dataset/SAPIEN units</dd></div>
+        <div><dt>Force duration</dt><dd>0.1 s</dd></div>
+        <div><dt>Peak / final |qdot|</dt><dd>0.0088 / 0.0001</dd></div>
+        <div><dt>qdot decay ratio</dt><dd>0.0107</dd></div>
+        <div><dt>Settled</dt><dd>true</dd></div>
+        <div><dt>Pulse torque / projection</dt><dd>5</dd></div>
+        <div><dt>Effective inertia proxy</dt><dd>57.0065</dd></div>
+        <div><dt>Contact semantics</dt><dd>WARN: candidate_id</dd></div>
+        <div><dt>Physical consistency</dt><dd>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</dd></div>
+        <div><dt>Force units</dt><dd>dataset/SAPIEN units</dd></div>
+        <div><dt>Calibrated Newtons</dt><dd>no</dd></div>
+        <div><dt>Video frames</dt><dd>81</dd></div>
+      </dl>
+      <div class="warnings"><strong>Warnings</strong><div class="warning-list"><span class="warning-chip"><strong>Warning</strong>no rough expected size registered for category</span></div></div>
+      <div class="file-row"><a class="file-chip" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
+      <details class="plots" open>
+        <summary>Diagnostic plots</summary>
+        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png"><img src="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"><img src="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
+      </details>
+    </article>
+
+
+    <article class="object-card">
+      <div class="object-title">
+        <div>
+          <p class="eyebrow">Object 100109</p>
+          <h3>USB</h3>
+        </div>
+        <div class="object-badges">
+          <span class="joint-badge">revolute</span>
+          <span class="verdict warn"><span>consistency</span>WARN</span>
+        </div>
+      </div>
+      <video controls muted loop preload="metadata" src="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/final_video.mp4"></video>
+      <div class="verdict-strip">
+        <span class="verdict warn"><span>contact</span>WARN</span>
+        <span class="verdict pass"><span>joint</span>PASS</span>
+        <span class="verdict pass"><span>scale</span>PASS</span>
+      </div>
+      <dl class="metric-grid">
+        <div><dt>Selected joint/link</dt><dd>joint_0 / link_0</dd></div>
+        <div><dt>q start</dt><dd>0 rad</dd></div>
+        <div><dt>q end</dt><dd>0.0047 rad</dd></div>
+        <div><dt>delta q</dt><dd>0.0047 rad</dd></div>
+        <div><dt>Force mode</dt><dd>external_link_force</dd></div>
+        <div><dt>Force magnitude</dt><dd>5 dataset/SAPIEN units</dd></div>
+        <div><dt>Force duration</dt><dd>0.1 s</dd></div>
+        <div><dt>Peak / final |qdot|</dt><dd>0.0048 / 0.0001</dd></div>
+        <div><dt>qdot decay ratio</dt><dd>0.0203</dd></div>
+        <div><dt>Settled</dt><dd>true</dd></div>
+        <div><dt>Pulse torque / projection</dt><dd>6.5763</dd></div>
+        <div><dt>Effective inertia proxy</dt><dd>136.4179</dd></div>
+        <div><dt>Contact semantics</dt><dd>WARN: candidate_id</dd></div>
+        <div><dt>Physical consistency</dt><dd>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</dd></div>
+        <div><dt>Force units</dt><dd>dataset/SAPIEN units</dd></div>
+        <div><dt>Calibrated Newtons</dt><dd>no</dd></div>
+        <div><dt>Video frames</dt><dd>81</dd></div>
+      </dl>
+      <div class="warnings"><strong>Warnings</strong><div class="warning-list"><span class="warning-chip"><strong>Warning</strong>no rough expected size registered for category</span></div></div>
+      <div class="file-row"><a class="file-chip" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
+      <details class="plots" open>
+        <summary>Diagnostic plots</summary>
+        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png"><img src="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"><img src="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
       </details>
     </article>
 
@@ -454,7 +561,7 @@
           <span class="verdict warn"><span>consistency</span>WARN</span>
         </div>
       </div>
-      <video controls muted loop preload="metadata" src="outputs/oven_101917_revolute_external_force_5n_physics_check/final_video.mp4"></video>
+      <video controls muted loop preload="metadata" src="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/final_video.mp4"></video>
       <div class="verdict-strip">
         <span class="verdict warn"><span>contact</span>WARN</span>
         <span class="verdict pass"><span>joint</span>PASS</span>
@@ -463,35 +570,35 @@
       <dl class="metric-grid">
         <div><dt>Selected joint/link</dt><dd>joint_0 / link_0</dd></div>
         <div><dt>q start</dt><dd>0 rad</dd></div>
-        <div><dt>q end</dt><dd>0.1639 rad</dd></div>
-        <div><dt>delta q</dt><dd>0.1639 rad</dd></div>
+        <div><dt>q end</dt><dd>0.0093 rad</dd></div>
+        <div><dt>delta q</dt><dd>0.0093 rad</dd></div>
         <div><dt>Force mode</dt><dd>external_link_force</dd></div>
         <div><dt>Force magnitude</dt><dd>5 dataset/SAPIEN units</dd></div>
-        <div><dt>Force duration</dt><dd>0.2 s</dd></div>
-        <div><dt>Peak / final |qdot|</dt><dd>0.0414 / 0.0147</dd></div>
-        <div><dt>qdot decay ratio</dt><dd>0.3553</dd></div>
-        <div><dt>Settled</dt><dd>false</dd></div>
-        <div><dt>Pulse torque / projection</dt><dd>3.702</dd></div>
-        <div><dt>Effective inertia proxy</dt><dd>17.8383</dd></div>
+        <div><dt>Force duration</dt><dd>0.1 s</dd></div>
+        <div><dt>Peak / final |qdot|</dt><dd>0.0193 / 0.0001</dd></div>
+        <div><dt>qdot decay ratio</dt><dd>0.0047</dd></div>
+        <div><dt>Settled</dt><dd>true</dd></div>
+        <div><dt>Pulse torque / projection</dt><dd>3.7016</dd></div>
+        <div><dt>Effective inertia proxy</dt><dd>19.2055</dd></div>
         <div><dt>Contact semantics</dt><dd>WARN: oven_door_handle_or_free_edge</dd></div>
         <div><dt>Physical consistency</dt><dd>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</dd></div>
         <div><dt>Force units</dt><dd>dataset/SAPIEN units</dd></div>
         <div><dt>Calibrated Newtons</dt><dd>no</dd></div>
-        <div><dt>Video frames</dt><dd>180</dd></div>
+        <div><dt>Video frames</dt><dd>75</dd></div>
       </dl>
-      <div class="warnings"><strong>Warnings</strong><div class="warning-list"><span class="warning-chip"><strong>Scale</strong>normalized/dataset-specific scale</span><span class="warning-chip"><strong>Motion</strong>motion still active at final frame</span></div></div>
-      <div class="file-row"><a class="file-chip" href="outputs/oven_101917_revolute_external_force_5n_physics_check/simulation.json">simulation.json</a>
-<a class="file-chip" href="outputs/oven_101917_revolute_external_force_5n_physics_check/final_video.mp4">final_video.mp4</a>
-<a class="file-chip" href="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
-<a class="file-chip" href="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
-<a class="file-chip" href="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
-<a class="file-chip" href="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
-<a class="file-chip" href="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
+      <div class="warnings"><strong>Warnings</strong><div class="warning-list"><span class="warning-chip"><strong>Scale</strong>normalized/dataset-specific scale</span></div></div>
+      <div class="file-row"><a class="file-chip" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
       <details class="plots" open>
         <summary>Diagnostic plots</summary>
-        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
-<figure class="plot-thumb"><a href="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png"><img src="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
-<figure class="plot-thumb"><a href="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png"><img src="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
+        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png"><img src="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"><img src="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
       </details>
     </article>
 
@@ -500,14 +607,14 @@
       <div class="object-title">
         <div>
           <p class="eyebrow">Object 102255</p>
-          <h3>Foldingchair</h3>
+          <h3>FoldingChair</h3>
         </div>
         <div class="object-badges">
           <span class="joint-badge">revolute</span>
           <span class="verdict warn"><span>consistency</span>WARN</span>
         </div>
       </div>
-      <video controls muted loop preload="metadata" src="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/final_video.mp4"></video>
+      <video controls muted loop preload="metadata" src="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/final_video.mp4"></video>
       <div class="verdict-strip">
         <span class="verdict pass"><span>contact</span>PASS</span>
         <span class="verdict pass"><span>joint</span>PASS</span>
@@ -516,35 +623,35 @@
       <dl class="metric-grid">
         <div><dt>Selected joint/link</dt><dd>joint_1 / link_1</dd></div>
         <div><dt>q start</dt><dd>0 rad</dd></div>
-        <div><dt>q end</dt><dd>0.0278 rad</dd></div>
-        <div><dt>delta q</dt><dd>0.0278 rad</dd></div>
+        <div><dt>q end</dt><dd>0.0107 rad</dd></div>
+        <div><dt>delta q</dt><dd>0.0107 rad</dd></div>
         <div><dt>Force mode</dt><dd>external_link_force</dd></div>
         <div><dt>Force magnitude</dt><dd>5 dataset/SAPIEN units</dd></div>
-        <div><dt>Force duration</dt><dd>0.2 s</dd></div>
-        <div><dt>Peak / final |qdot|</dt><dd>0.0243 / 0.0001</dd></div>
-        <div><dt>qdot decay ratio</dt><dd>0.0031</dd></div>
+        <div><dt>Force duration</dt><dd>0.1 s</dd></div>
+        <div><dt>Peak / final |qdot|</dt><dd>0.035 / 0.0001</dd></div>
+        <div><dt>qdot decay ratio</dt><dd>0.0016</dd></div>
         <div><dt>Settled</dt><dd>true</dd></div>
-        <div><dt>Pulse torque / projection</dt><dd>1.2682</dd></div>
-        <div><dt>Effective inertia proxy</dt><dd>10.3701</dd></div>
+        <div><dt>Pulse torque / projection</dt><dd>2.4918</dd></div>
+        <div><dt>Effective inertia proxy</dt><dd>7.1292</dd></div>
         <div><dt>Contact semantics</dt><dd>PASS: robust_moving_surface_point</dd></div>
         <div><dt>Physical consistency</dt><dd>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</dd></div>
         <div><dt>Force units</dt><dd>dataset/SAPIEN units</dd></div>
         <div><dt>Calibrated Newtons</dt><dd>no</dd></div>
-        <div><dt>Video frames</dt><dd>180</dd></div>
+        <div><dt>Video frames</dt><dd>75</dd></div>
       </dl>
       <div class="warnings"><strong>Warnings</strong><div class="warning-list"><span class="warning-chip"><strong>Scale</strong>normalized/dataset-specific scale</span></div></div>
-      <div class="file-row"><a class="file-chip" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/simulation.json">simulation.json</a>
-<a class="file-chip" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/final_video.mp4">final_video.mp4</a>
-<a class="file-chip" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
-<a class="file-chip" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
-<a class="file-chip" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
-<a class="file-chip" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
-<a class="file-chip" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
+      <div class="file-row"><a class="file-chip" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
       <details class="plots" open>
         <summary>Diagnostic plots</summary>
-        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
-<figure class="plot-thumb"><a href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png"><img src="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
-<figure class="plot-thumb"><a href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png"><img src="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
+        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png"><img src="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"><img src="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
       </details>
     </article>
 
@@ -560,7 +667,7 @@
           <span class="verdict warn"><span>consistency</span>WARN</span>
         </div>
       </div>
-      <video controls muted loop preload="metadata" src="outputs/stapler_103111_revolute_external_force_5n_physics_check/final_video.mp4"></video>
+      <video controls muted loop preload="metadata" src="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/final_video.mp4"></video>
       <div class="verdict-strip">
         <span class="verdict pass"><span>contact</span>PASS</span>
         <span class="verdict pass"><span>joint</span>PASS</span>
@@ -569,35 +676,35 @@
       <dl class="metric-grid">
         <div><dt>Selected joint/link</dt><dd>joint_1 / link_1</dd></div>
         <div><dt>q start</dt><dd>0 rad</dd></div>
-        <div><dt>q end</dt><dd>0.1023 rad</dd></div>
-        <div><dt>delta q</dt><dd>0.1023 rad</dd></div>
+        <div><dt>q end</dt><dd>0.0134 rad</dd></div>
+        <div><dt>delta q</dt><dd>0.0134 rad</dd></div>
         <div><dt>Force mode</dt><dd>external_link_force</dd></div>
         <div><dt>Force magnitude</dt><dd>5 dataset/SAPIEN units</dd></div>
-        <div><dt>Force duration</dt><dd>0.2 s</dd></div>
-        <div><dt>Peak / final |qdot|</dt><dd>0.0202 / 0.0144</dd></div>
-        <div><dt>qdot decay ratio</dt><dd>0.7138</dd></div>
-        <div><dt>Settled</dt><dd>false</dd></div>
-        <div><dt>Pulse torque / projection</dt><dd>7.14</dd></div>
-        <div><dt>Effective inertia proxy</dt><dd>70.6268</dd></div>
+        <div><dt>Force duration</dt><dd>0.1 s</dd></div>
+        <div><dt>Peak / final |qdot|</dt><dd>0.0112 / 0.0001</dd></div>
+        <div><dt>qdot decay ratio</dt><dd>0.0088</dd></div>
+        <div><dt>Settled</dt><dd>true</dd></div>
+        <div><dt>Pulse torque / projection</dt><dd>8.2357</dd></div>
+        <div><dt>Effective inertia proxy</dt><dd>73.5734</dd></div>
         <div><dt>Contact semantics</dt><dd>PASS: stapler_lid_front_top</dd></div>
         <div><dt>Physical consistency</dt><dd>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</dd></div>
         <div><dt>Force units</dt><dd>dataset/SAPIEN units</dd></div>
         <div><dt>Calibrated Newtons</dt><dd>no</dd></div>
-        <div><dt>Video frames</dt><dd>180</dd></div>
+        <div><dt>Video frames</dt><dd>105</dd></div>
       </dl>
-      <div class="warnings"><strong>Warnings</strong><div class="warning-list"><span class="warning-chip"><strong>Scale</strong>normalized/dataset-specific scale</span><span class="warning-chip"><strong>Motion</strong>motion still active at final frame</span></div></div>
-      <div class="file-row"><a class="file-chip" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/simulation.json">simulation.json</a>
-<a class="file-chip" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/final_video.mp4">final_video.mp4</a>
-<a class="file-chip" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
-<a class="file-chip" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
-<a class="file-chip" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
-<a class="file-chip" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
-<a class="file-chip" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
+      <div class="warnings"><strong>Warnings</strong><div class="warning-list"><span class="warning-chip"><strong>Scale</strong>normalized/dataset-specific scale</span></div></div>
+      <div class="file-row"><a class="file-chip" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
       <details class="plots" open>
         <summary>Diagnostic plots</summary>
-        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
-<figure class="plot-thumb"><a href="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png"><img src="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
-<figure class="plot-thumb"><a href="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png"><img src="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
+        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png"><img src="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"><img src="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
       </details>
     </article>
 
@@ -613,7 +720,7 @@
           <span class="verdict warn"><span>consistency</span>WARN</span>
         </div>
       </div>
-      <video controls muted loop preload="metadata" src="outputs/knife_103706_prismatic_external_force_5n_physics_check/final_video.mp4"></video>
+      <video controls muted loop preload="metadata" src="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/final_video.mp4"></video>
       <div class="verdict-strip">
         <span class="verdict pass"><span>contact</span>PASS</span>
         <span class="verdict pass"><span>joint</span>PASS</span>
@@ -622,35 +729,35 @@
       <dl class="metric-grid">
         <div><dt>Selected joint/link</dt><dd>joint_0 / link_0</dd></div>
         <div><dt>q start</dt><dd>0 m</dd></div>
-        <div><dt>q end</dt><dd>0.5321 m</dd></div>
-        <div><dt>delta q</dt><dd>0.5321 m</dd></div>
+        <div><dt>q end</dt><dd>0.0384 m</dd></div>
+        <div><dt>delta q</dt><dd>0.0384 m</dd></div>
         <div><dt>Force mode</dt><dd>external_link_force</dd></div>
         <div><dt>Force magnitude</dt><dd>5 dataset/SAPIEN units</dd></div>
-        <div><dt>Force duration</dt><dd>0.2 s</dd></div>
-        <div><dt>Peak / final |qdot|</dt><dd>0.1308 / 0.0534</dd></div>
-        <div><dt>qdot decay ratio</dt><dd>0.4082</dd></div>
-        <div><dt>Settled</dt><dd>false</dd></div>
+        <div><dt>Force duration</dt><dd>0.1 s</dd></div>
+        <div><dt>Peak / final |qdot|</dt><dd>0.0614 / 0</dd></div>
+        <div><dt>qdot decay ratio</dt><dd>0.0008</dd></div>
+        <div><dt>Settled</dt><dd>true</dd></div>
         <div><dt>Pulse torque / projection</dt><dd>5</dd></div>
-        <div><dt>Effective inertia proxy</dt><dd>7.6188</dd></div>
+        <div><dt>Effective inertia proxy</dt><dd>8.1386</dd></div>
         <div><dt>Contact semantics</dt><dd>PASS: prismatic_aligned_moving_link_point</dd></div>
         <div><dt>Physical consistency</dt><dd>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</dd></div>
         <div><dt>Force units</dt><dd>dataset/SAPIEN units</dd></div>
         <div><dt>Calibrated Newtons</dt><dd>no</dd></div>
-        <div><dt>Video frames</dt><dd>180</dd></div>
+        <div><dt>Video frames</dt><dd>85</dd></div>
       </dl>
-      <div class="warnings"><strong>Warnings</strong><div class="warning-list"><span class="warning-chip"><strong>Scale</strong>normalized/dataset-specific scale</span><span class="warning-chip"><strong>Motion</strong>motion still active at final frame</span></div></div>
-      <div class="file-row"><a class="file-chip" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/simulation.json">simulation.json</a>
-<a class="file-chip" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/final_video.mp4">final_video.mp4</a>
-<a class="file-chip" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
-<a class="file-chip" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
-<a class="file-chip" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
-<a class="file-chip" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
-<a class="file-chip" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
+      <div class="warnings"><strong>Warnings</strong><div class="warning-list"><span class="warning-chip"><strong>Scale</strong>normalized/dataset-specific scale</span></div></div>
+      <div class="file-row"><a class="file-chip" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
       <details class="plots" open>
         <summary>Diagnostic plots</summary>
-        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
-<figure class="plot-thumb"><a href="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png"><img src="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
-<figure class="plot-thumb"><a href="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/resistance_by_frame.png"><img src="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
+        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png"><img src="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"><img src="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
       </details>
     </article>
 
@@ -659,14 +766,14 @@
       <div class="object-title">
         <div>
           <p class="eyebrow">Object 103776</p>
-          <h3>Washingmachine</h3>
+          <h3>WashingMachine</h3>
         </div>
         <div class="object-badges">
           <span class="joint-badge">revolute</span>
           <span class="verdict warn"><span>consistency</span>WARN</span>
         </div>
       </div>
-      <video controls muted loop preload="metadata" src="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/final_video.mp4"></video>
+      <video controls muted loop preload="metadata" src="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/final_video.mp4"></video>
       <div class="verdict-strip">
         <span class="verdict warn"><span>contact</span>WARN</span>
         <span class="verdict pass"><span>joint</span>PASS</span>
@@ -675,35 +782,35 @@
       <dl class="metric-grid">
         <div><dt>Selected joint/link</dt><dd>joint_0 / link_0</dd></div>
         <div><dt>q start</dt><dd>0 rad</dd></div>
-        <div><dt>q end</dt><dd>0.6988 rad</dd></div>
-        <div><dt>delta q</dt><dd>0.6988 rad</dd></div>
+        <div><dt>q end</dt><dd>0.0596 rad</dd></div>
+        <div><dt>delta q</dt><dd>0.0596 rad</dd></div>
         <div><dt>Force mode</dt><dd>external_link_force</dd></div>
         <div><dt>Force magnitude</dt><dd>5 dataset/SAPIEN units</dd></div>
-        <div><dt>Force duration</dt><dd>0.2 s</dd></div>
-        <div><dt>Peak / final |qdot|</dt><dd>0.6312 / 0</dd></div>
-        <div><dt>qdot decay ratio</dt><dd>0.0001</dd></div>
+        <div><dt>Force duration</dt><dd>0.1 s</dd></div>
+        <div><dt>Peak / final |qdot|</dt><dd>0.2783 / 0</dd></div>
+        <div><dt>qdot decay ratio</dt><dd>0</dd></div>
         <div><dt>Settled</dt><dd>true</dd></div>
-        <div><dt>Pulse torque / projection</dt><dd>3.0984</dd></div>
-        <div><dt>Effective inertia proxy</dt><dd>0.9566</dd></div>
+        <div><dt>Pulse torque / projection</dt><dd>3.0975</dd></div>
+        <div><dt>Effective inertia proxy</dt><dd>1.1148</dd></div>
         <div><dt>Contact semantics</dt><dd>WARN: washingmachine_door_rim_or_handle</dd></div>
         <div><dt>Physical consistency</dt><dd>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</dd></div>
         <div><dt>Force units</dt><dd>dataset/SAPIEN units</dd></div>
         <div><dt>Calibrated Newtons</dt><dd>no</dd></div>
-        <div><dt>Video frames</dt><dd>180</dd></div>
+        <div><dt>Video frames</dt><dd>75</dd></div>
       </dl>
       <div class="warnings"><strong>Warnings</strong><div class="warning-list"><span class="warning-chip"><strong>Scale</strong>normalized/dataset-specific scale</span></div></div>
-      <div class="file-row"><a class="file-chip" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/simulation.json">simulation.json</a>
-<a class="file-chip" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/final_video.mp4">final_video.mp4</a>
-<a class="file-chip" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
-<a class="file-chip" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
-<a class="file-chip" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
-<a class="file-chip" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
-<a class="file-chip" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
+      <div class="file-row"><a class="file-chip" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div>
       <details class="plots" open>
         <summary>Diagnostic plots</summary>
-        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
-<figure class="plot-thumb"><a href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png"><img src="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
-<figure class="plot-thumb"><a href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png"><img src="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
+        <div class="thumbs"><figure class="plot-thumb"><a href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png"><img src="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png" alt="q, qdot, qddot by frame" loading="lazy"></a><figcaption>q, qdot, qddot by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png"><img src="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png" alt="force and torque by frame" loading="lazy"></a><figcaption>force and torque by frame</figcaption></figure>
+<figure class="plot-thumb"><a href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"><img src="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png" alt="resistance by frame" loading="lazy"></a><figcaption>resistance by frame</figcaption></figure></div>
       </details>
     </article>
     </div>
@@ -745,7 +852,7 @@
             <tr class="summary-main" data-object="10211" data-row="{&quot;verdicts&quot;: &quot;WARN PASS WARN WARN&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
               <td class="sticky-col object-cell"><strong>Laptop</strong><span>#10211</span></td>
               <td class="joint-cell"><strong>revolute</strong><span>joint_1 &middot; link_1</span></td>
-              <td class="motion-cell"><strong>0 &rarr; 0.471 rad</strong><span>&Delta; 0.471</span></td>
+              <td class="motion-cell"><strong>0 &rarr; 0.031 rad</strong><span>&Delta; 0.031</span></td>
               <td class="mode-cell"><strong>external_link_force</strong><span>calibrated Newtons: no</span></td>
               <td class="verdict-cell">
                 <span class="verdict warn"><span>contact</span>WARN</span>
@@ -753,64 +860,64 @@
                 <span class="verdict warn"><span>scale</span>WARN</span>
                 <span class="verdict warn"><span>consistency</span>WARN</span>
               </td>
-              <td class="status-cell"><strong>180 frames</strong><span>OK</span></td>
+              <td class="status-cell"><strong>75 frames</strong><span>OK</span></td>
               <td class="status-cell"><strong>complete</strong><span>OK</span></td>
-              <td class="warning-cell"><span title="max dimension 1.07 outside rough expected 0.25-0.45 m; q reached or nearly reached a joint limit">Scale: normalized/dataset-specific scale</span></td>
-              <td class="links-cell"><a class="mini-link" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/simulation.json">JSON</a><a class="mini-link" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
+              <td class="warning-cell"><span title="max dimension 1.07 outside rough expected 0.25-0.45 m">Scale: normalized/dataset-specific scale</span></td>
+              <td class="links-cell"><a class="mini-link" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/simulation.json">JSON</a><a class="mini-link" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
             </tr>
             <tr class="summary-detail" data-object="10211" data-row="{&quot;verdicts&quot;: &quot;WARN PASS WARN WARN&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
               <td class="sticky-col detail-label">Details</td>
               <td colspan="8"><details><summary>Expand full object details</summary>
           <div class="detail-grid">
-            <div><strong>Full warnings</strong><p>max dimension 1.07 outside rough expected 0.25-0.45 m; q reached or nearly reached a joint limit</p></div>
-            <div><strong>Motion</strong><p>q_start 0 rad; q_end 0.4712 rad; delta_q 0.4712 rad</p></div>
+            <div><strong>Full warnings</strong><p>max dimension 1.07 outside rough expected 0.25-0.45 m</p></div>
+            <div><strong>Motion</strong><p>q_start 0 rad; q_end 0.0308 rad; delta_q 0.0308 rad</p></div>
             <div><strong>Joint</strong><p>joint_1 / link_1</p></div>
             <div><strong>Mode</strong><p>external_link_force; 5 dataset/SAPIEN force units; calibrated Newtons: no</p></div>
             <div><strong>Final verdict</strong><p>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</p></div>
-            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/simulation.json">simulation.json</a>
-<a class="file-chip" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/final_video.mp4">final_video.mp4</a>
-<a class="file-chip" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
-<a class="file-chip" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
-<a class="file-chip" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
-<a class="file-chip" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
-<a class="file-chip" href="outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
+            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
           </div>
         </details></td>
             </tr>
 
 
-            <tr class="summary-main" data-object="10905" data-row="{&quot;verdicts&quot;: &quot;PASS PASS PASS WARN&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
+            <tr class="summary-main" data-object="10905" data-row="{&quot;verdicts&quot;: &quot;PASS PASS PASS PASS&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
               <td class="sticky-col object-cell"><strong>Refrigerator</strong><span>#10905</span></td>
               <td class="joint-cell"><strong>revolute</strong><span>joint_0 &middot; link_0</span></td>
-              <td class="motion-cell"><strong>0 &rarr; 0.264 rad</strong><span>&Delta; 0.264</span></td>
+              <td class="motion-cell"><strong>0 &rarr; 0.014 rad</strong><span>&Delta; 0.014</span></td>
               <td class="mode-cell"><strong>external_link_force</strong><span>calibrated Newtons: no</span></td>
               <td class="verdict-cell">
                 <span class="verdict pass"><span>contact</span>PASS</span>
                 <span class="verdict pass"><span>joint</span>PASS</span>
                 <span class="verdict pass"><span>scale</span>PASS</span>
-                <span class="verdict warn"><span>consistency</span>WARN</span>
+                <span class="verdict pass"><span>consistency</span>PASS</span>
               </td>
-              <td class="status-cell"><strong>180 frames</strong><span>OK</span></td>
+              <td class="status-cell"><strong>75 frames</strong><span>OK</span></td>
               <td class="status-cell"><strong>complete</strong><span>OK</span></td>
-              <td class="warning-cell"><span title="Motion is still active at final frame; increase duration/damping or reduce force for a settled video.; motion did not fully settle by the final frame">Motion: motion still active at final frame</span></td>
-              <td class="links-cell"><a class="mini-link" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/simulation.json">JSON</a><a class="mini-link" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
+              <td class="warning-cell"><span title="N/A">none</span></td>
+              <td class="links-cell"><a class="mini-link" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/simulation.json">JSON</a><a class="mini-link" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
             </tr>
-            <tr class="summary-detail" data-object="10905" data-row="{&quot;verdicts&quot;: &quot;PASS PASS PASS WARN&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
+            <tr class="summary-detail" data-object="10905" data-row="{&quot;verdicts&quot;: &quot;PASS PASS PASS PASS&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
               <td class="sticky-col detail-label">Details</td>
               <td colspan="8"><details><summary>Expand full object details</summary>
           <div class="detail-grid">
-            <div><strong>Full warnings</strong><p>Motion is still active at final frame; increase duration/damping or reduce force for a settled video.; motion did not fully settle by the final frame</p></div>
-            <div><strong>Motion</strong><p>q_start 0 rad; q_end 0.2635 rad; delta_q 0.2635 rad</p></div>
+            <div><strong>Full warnings</strong><p>N/A</p></div>
+            <div><strong>Motion</strong><p>q_start 0 rad; q_end 0.0144 rad; delta_q 0.0144 rad</p></div>
             <div><strong>Joint</strong><p>joint_0 / link_0</p></div>
             <div><strong>Mode</strong><p>external_link_force; 5 dataset/SAPIEN force units; calibrated Newtons: no</p></div>
-            <div><strong>Final verdict</strong><p>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</p></div>
-            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/simulation.json">simulation.json</a>
-<a class="file-chip" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/final_video.mp4">final_video.mp4</a>
-<a class="file-chip" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
-<a class="file-chip" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
-<a class="file-chip" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
-<a class="file-chip" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
-<a class="file-chip" href="outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
+            <div><strong>Final verdict</strong><p>PHYSICS_CONSISTENT</p></div>
+            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
           </div>
         </details></td>
             </tr>
@@ -819,7 +926,7 @@
             <tr class="summary-main" data-object="11100" data-row="{&quot;verdicts&quot;: &quot;WARN PASS WARN WARN&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
               <td class="sticky-col object-cell"><strong>Scissors</strong><span>#11100</span></td>
               <td class="joint-cell"><strong>revolute</strong><span>joint_0 &middot; link_0</span></td>
-              <td class="motion-cell"><strong>0 &rarr; -0.249 rad</strong><span>&Delta; -0.249</span></td>
+              <td class="motion-cell"><strong>0 &rarr; -0.019 rad</strong><span>&Delta; -0.019</span></td>
               <td class="mode-cell"><strong>external_link_force</strong><span>calibrated Newtons: no</span></td>
               <td class="verdict-cell">
                 <span class="verdict warn"><span>contact</span>WARN</span>
@@ -827,27 +934,101 @@
                 <span class="verdict warn"><span>scale</span>WARN</span>
                 <span class="verdict warn"><span>consistency</span>WARN</span>
               </td>
-              <td class="status-cell"><strong>180 frames</strong><span>OK</span></td>
+              <td class="status-cell"><strong>86 frames</strong><span>OK</span></td>
               <td class="status-cell"><strong>complete</strong><span>OK</span></td>
-              <td class="warning-cell"><span title="max dimension 1.7 outside rough expected 0.1-0.3 m; Motion is still active at final frame; increase duration/damping or reduce force for a settled video.; qdot did not decay enough after force removal">Scale: normalized/dataset-specific scale; Motion: motion still active at final frame</span></td>
-              <td class="links-cell"><a class="mini-link" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/simulation.json">JSON</a><a class="mini-link" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
+              <td class="warning-cell"><span title="max dimension 1.7 outside rough expected 0.1-0.3 m">Scale: normalized/dataset-specific scale</span></td>
+              <td class="links-cell"><a class="mini-link" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/simulation.json">JSON</a><a class="mini-link" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
             </tr>
             <tr class="summary-detail" data-object="11100" data-row="{&quot;verdicts&quot;: &quot;WARN PASS WARN WARN&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
               <td class="sticky-col detail-label">Details</td>
               <td colspan="8"><details><summary>Expand full object details</summary>
           <div class="detail-grid">
-            <div><strong>Full warnings</strong><p>max dimension 1.7 outside rough expected 0.1-0.3 m; Motion is still active at final frame; increase duration/damping or reduce force for a settled video.; qdot did not decay enough after force removal</p></div>
-            <div><strong>Motion</strong><p>q_start 0 rad; q_end -0.2488 rad; delta_q -0.2488 rad</p></div>
+            <div><strong>Full warnings</strong><p>max dimension 1.7 outside rough expected 0.1-0.3 m</p></div>
+            <div><strong>Motion</strong><p>q_start 0 rad; q_end -0.019 rad; delta_q -0.019 rad</p></div>
             <div><strong>Joint</strong><p>joint_0 / link_0</p></div>
             <div><strong>Mode</strong><p>external_link_force; 5 dataset/SAPIEN force units; calibrated Newtons: no</p></div>
             <div><strong>Final verdict</strong><p>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</p></div>
-            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/simulation.json">simulation.json</a>
-<a class="file-chip" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/final_video.mp4">final_video.mp4</a>
-<a class="file-chip" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
-<a class="file-chip" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
-<a class="file-chip" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
-<a class="file-chip" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
-<a class="file-chip" href="outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
+            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
+          </div>
+        </details></td>
+            </tr>
+
+
+            <tr class="summary-main" data-object="45135" data-row="{&quot;verdicts&quot;: &quot;WARN PASS PASS WARN&quot;, &quot;jointType&quot;: &quot;prismatic&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
+              <td class="sticky-col object-cell"><strong>StorageFurniture</strong><span>#45135</span></td>
+              <td class="joint-cell"><strong>prismatic</strong><span>joint_0 &middot; link_0</span></td>
+              <td class="motion-cell"><strong>0 &rarr; 0.007 m</strong><span>&Delta; 0.007</span></td>
+              <td class="mode-cell"><strong>external_link_force</strong><span>calibrated Newtons: no</span></td>
+              <td class="verdict-cell">
+                <span class="verdict warn"><span>contact</span>WARN</span>
+                <span class="verdict pass"><span>joint</span>PASS</span>
+                <span class="verdict pass"><span>scale</span>PASS</span>
+                <span class="verdict warn"><span>consistency</span>WARN</span>
+              </td>
+              <td class="status-cell"><strong>81 frames</strong><span>OK</span></td>
+              <td class="status-cell"><strong>complete</strong><span>OK</span></td>
+              <td class="warning-cell"><span title="no rough expected size registered for category; video appears static; selected joint came from auto first-moving-joint heuristic while multiple moving joints exist">Warning: no rough expected size registered for category</span></td>
+              <td class="links-cell"><a class="mini-link" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/simulation.json">JSON</a><a class="mini-link" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
+            </tr>
+            <tr class="summary-detail" data-object="45135" data-row="{&quot;verdicts&quot;: &quot;WARN PASS PASS WARN&quot;, &quot;jointType&quot;: &quot;prismatic&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
+              <td class="sticky-col detail-label">Details</td>
+              <td colspan="8"><details><summary>Expand full object details</summary>
+          <div class="detail-grid">
+            <div><strong>Full warnings</strong><p>no rough expected size registered for category; video appears static; selected joint came from auto first-moving-joint heuristic while multiple moving joints exist</p></div>
+            <div><strong>Motion</strong><p>q_start 0 m; q_end 0.0066 m; delta_q 0.0066 m</p></div>
+            <div><strong>Joint</strong><p>joint_0 / link_0</p></div>
+            <div><strong>Mode</strong><p>external_link_force; 5 dataset/SAPIEN force units; calibrated Newtons: no</p></div>
+            <div><strong>Final verdict</strong><p>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</p></div>
+            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
+          </div>
+        </details></td>
+            </tr>
+
+
+            <tr class="summary-main" data-object="100109" data-row="{&quot;verdicts&quot;: &quot;WARN PASS PASS WARN&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
+              <td class="sticky-col object-cell"><strong>USB</strong><span>#100109</span></td>
+              <td class="joint-cell"><strong>revolute</strong><span>joint_0 &middot; link_0</span></td>
+              <td class="motion-cell"><strong>0 &rarr; 0.005 rad</strong><span>&Delta; 0.005</span></td>
+              <td class="mode-cell"><strong>external_link_force</strong><span>calibrated Newtons: no</span></td>
+              <td class="verdict-cell">
+                <span class="verdict warn"><span>contact</span>WARN</span>
+                <span class="verdict pass"><span>joint</span>PASS</span>
+                <span class="verdict pass"><span>scale</span>PASS</span>
+                <span class="verdict warn"><span>consistency</span>WARN</span>
+              </td>
+              <td class="status-cell"><strong>81 frames</strong><span>OK</span></td>
+              <td class="status-cell"><strong>complete</strong><span>OK</span></td>
+              <td class="warning-cell"><span title="no rough expected size registered for category; video appears static">Warning: no rough expected size registered for category</span></td>
+              <td class="links-cell"><a class="mini-link" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/simulation.json">JSON</a><a class="mini-link" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
+            </tr>
+            <tr class="summary-detail" data-object="100109" data-row="{&quot;verdicts&quot;: &quot;WARN PASS PASS WARN&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
+              <td class="sticky-col detail-label">Details</td>
+              <td colspan="8"><details><summary>Expand full object details</summary>
+          <div class="detail-grid">
+            <div><strong>Full warnings</strong><p>no rough expected size registered for category; video appears static</p></div>
+            <div><strong>Motion</strong><p>q_start 0 rad; q_end 0.0047 rad; delta_q 0.0047 rad</p></div>
+            <div><strong>Joint</strong><p>joint_0 / link_0</p></div>
+            <div><strong>Mode</strong><p>external_link_force; 5 dataset/SAPIEN force units; calibrated Newtons: no</p></div>
+            <div><strong>Final verdict</strong><p>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</p></div>
+            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
           </div>
         </details></td>
             </tr>
@@ -856,7 +1037,7 @@
             <tr class="summary-main" data-object="101917" data-row="{&quot;verdicts&quot;: &quot;WARN PASS WARN WARN&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
               <td class="sticky-col object-cell"><strong>Oven</strong><span>#101917</span></td>
               <td class="joint-cell"><strong>revolute</strong><span>joint_0 &middot; link_0</span></td>
-              <td class="motion-cell"><strong>0 &rarr; 0.164 rad</strong><span>&Delta; 0.164</span></td>
+              <td class="motion-cell"><strong>0 &rarr; 0.009 rad</strong><span>&Delta; 0.009</span></td>
               <td class="mode-cell"><strong>external_link_force</strong><span>calibrated Newtons: no</span></td>
               <td class="verdict-cell">
                 <span class="verdict warn"><span>contact</span>WARN</span>
@@ -864,36 +1045,36 @@
                 <span class="verdict warn"><span>scale</span>WARN</span>
                 <span class="verdict warn"><span>consistency</span>WARN</span>
               </td>
-              <td class="status-cell"><strong>180 frames</strong><span>OK</span></td>
+              <td class="status-cell"><strong>75 frames</strong><span>OK</span></td>
               <td class="status-cell"><strong>complete</strong><span>OK</span></td>
-              <td class="warning-cell"><span title="max dimension 1.92 outside rough expected 0.45-1.0 m; Motion is still active at final frame; increase duration/damping or reduce force for a settled video.; motion did not fully settle by the final frame">Scale: normalized/dataset-specific scale; Motion: motion still active at final frame</span></td>
-              <td class="links-cell"><a class="mini-link" href="outputs/oven_101917_revolute_external_force_5n_physics_check/simulation.json">JSON</a><a class="mini-link" href="outputs/oven_101917_revolute_external_force_5n_physics_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
+              <td class="warning-cell"><span title="max dimension 1.92 outside rough expected 0.45-1.0 m; video appears static">Scale: normalized/dataset-specific scale</span></td>
+              <td class="links-cell"><a class="mini-link" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/simulation.json">JSON</a><a class="mini-link" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
             </tr>
             <tr class="summary-detail" data-object="101917" data-row="{&quot;verdicts&quot;: &quot;WARN PASS WARN WARN&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
               <td class="sticky-col detail-label">Details</td>
               <td colspan="8"><details><summary>Expand full object details</summary>
           <div class="detail-grid">
-            <div><strong>Full warnings</strong><p>max dimension 1.92 outside rough expected 0.45-1.0 m; Motion is still active at final frame; increase duration/damping or reduce force for a settled video.; motion did not fully settle by the final frame</p></div>
-            <div><strong>Motion</strong><p>q_start 0 rad; q_end 0.1639 rad; delta_q 0.1639 rad</p></div>
+            <div><strong>Full warnings</strong><p>max dimension 1.92 outside rough expected 0.45-1.0 m; video appears static</p></div>
+            <div><strong>Motion</strong><p>q_start 0 rad; q_end 0.0093 rad; delta_q 0.0093 rad</p></div>
             <div><strong>Joint</strong><p>joint_0 / link_0</p></div>
             <div><strong>Mode</strong><p>external_link_force; 5 dataset/SAPIEN force units; calibrated Newtons: no</p></div>
             <div><strong>Final verdict</strong><p>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</p></div>
-            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/oven_101917_revolute_external_force_5n_physics_check/simulation.json">simulation.json</a>
-<a class="file-chip" href="outputs/oven_101917_revolute_external_force_5n_physics_check/final_video.mp4">final_video.mp4</a>
-<a class="file-chip" href="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
-<a class="file-chip" href="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
-<a class="file-chip" href="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
-<a class="file-chip" href="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
-<a class="file-chip" href="outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
+            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
           </div>
         </details></td>
             </tr>
 
 
             <tr class="summary-main" data-object="102255" data-row="{&quot;verdicts&quot;: &quot;PASS PASS WARN WARN&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
-              <td class="sticky-col object-cell"><strong>Foldingchair</strong><span>#102255</span></td>
+              <td class="sticky-col object-cell"><strong>FoldingChair</strong><span>#102255</span></td>
               <td class="joint-cell"><strong>revolute</strong><span>joint_1 &middot; link_1</span></td>
-              <td class="motion-cell"><strong>0 &rarr; 0.028 rad</strong><span>&Delta; 0.028</span></td>
+              <td class="motion-cell"><strong>0 &rarr; 0.011 rad</strong><span>&Delta; 0.011</span></td>
               <td class="mode-cell"><strong>external_link_force</strong><span>calibrated Newtons: no</span></td>
               <td class="verdict-cell">
                 <span class="verdict pass"><span>contact</span>PASS</span>
@@ -901,27 +1082,27 @@
                 <span class="verdict warn"><span>scale</span>WARN</span>
                 <span class="verdict warn"><span>consistency</span>WARN</span>
               </td>
-              <td class="status-cell"><strong>180 frames</strong><span>OK</span></td>
+              <td class="status-cell"><strong>75 frames</strong><span>OK</span></td>
               <td class="status-cell"><strong>complete</strong><span>OK</span></td>
-              <td class="warning-cell"><span title="max dimension 1.62 outside rough expected 0.5-1.2 m">Scale: normalized/dataset-specific scale</span></td>
-              <td class="links-cell"><a class="mini-link" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/simulation.json">JSON</a><a class="mini-link" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
+              <td class="warning-cell"><span title="max dimension 1.62 outside rough expected 0.5-1.2 m; video appears static">Scale: normalized/dataset-specific scale</span></td>
+              <td class="links-cell"><a class="mini-link" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/simulation.json">JSON</a><a class="mini-link" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
             </tr>
             <tr class="summary-detail" data-object="102255" data-row="{&quot;verdicts&quot;: &quot;PASS PASS WARN WARN&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
               <td class="sticky-col detail-label">Details</td>
               <td colspan="8"><details><summary>Expand full object details</summary>
           <div class="detail-grid">
-            <div><strong>Full warnings</strong><p>max dimension 1.62 outside rough expected 0.5-1.2 m</p></div>
-            <div><strong>Motion</strong><p>q_start 0 rad; q_end 0.0278 rad; delta_q 0.0278 rad</p></div>
+            <div><strong>Full warnings</strong><p>max dimension 1.62 outside rough expected 0.5-1.2 m; video appears static</p></div>
+            <div><strong>Motion</strong><p>q_start 0 rad; q_end 0.0107 rad; delta_q 0.0107 rad</p></div>
             <div><strong>Joint</strong><p>joint_1 / link_1</p></div>
             <div><strong>Mode</strong><p>external_link_force; 5 dataset/SAPIEN force units; calibrated Newtons: no</p></div>
             <div><strong>Final verdict</strong><p>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</p></div>
-            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/simulation.json">simulation.json</a>
-<a class="file-chip" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/final_video.mp4">final_video.mp4</a>
-<a class="file-chip" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
-<a class="file-chip" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
-<a class="file-chip" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
-<a class="file-chip" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
-<a class="file-chip" href="outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
+            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
           </div>
         </details></td>
             </tr>
@@ -930,7 +1111,7 @@
             <tr class="summary-main" data-object="103111" data-row="{&quot;verdicts&quot;: &quot;PASS PASS WARN WARN&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
               <td class="sticky-col object-cell"><strong>Stapler</strong><span>#103111</span></td>
               <td class="joint-cell"><strong>revolute</strong><span>joint_1 &middot; link_1</span></td>
-              <td class="motion-cell"><strong>0 &rarr; 0.102 rad</strong><span>&Delta; 0.102</span></td>
+              <td class="motion-cell"><strong>0 &rarr; 0.013 rad</strong><span>&Delta; 0.013</span></td>
               <td class="mode-cell"><strong>external_link_force</strong><span>calibrated Newtons: no</span></td>
               <td class="verdict-cell">
                 <span class="verdict pass"><span>contact</span>PASS</span>
@@ -938,27 +1119,27 @@
                 <span class="verdict warn"><span>scale</span>WARN</span>
                 <span class="verdict warn"><span>consistency</span>WARN</span>
               </td>
-              <td class="status-cell"><strong>180 frames</strong><span>OK</span></td>
+              <td class="status-cell"><strong>105 frames</strong><span>OK</span></td>
               <td class="status-cell"><strong>complete</strong><span>OK</span></td>
-              <td class="warning-cell"><span title="max dimension 2.56 outside rough expected 0.1-0.25 m; Motion is still active at final frame; increase duration/damping or reduce force for a settled video.; qdot did not decay enough after force removal">Scale: normalized/dataset-specific scale; Motion: motion still active at final frame</span></td>
-              <td class="links-cell"><a class="mini-link" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/simulation.json">JSON</a><a class="mini-link" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
+              <td class="warning-cell"><span title="max dimension 2.56 outside rough expected 0.1-0.25 m">Scale: normalized/dataset-specific scale</span></td>
+              <td class="links-cell"><a class="mini-link" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/simulation.json">JSON</a><a class="mini-link" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
             </tr>
             <tr class="summary-detail" data-object="103111" data-row="{&quot;verdicts&quot;: &quot;PASS PASS WARN WARN&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
               <td class="sticky-col detail-label">Details</td>
               <td colspan="8"><details><summary>Expand full object details</summary>
           <div class="detail-grid">
-            <div><strong>Full warnings</strong><p>max dimension 2.56 outside rough expected 0.1-0.25 m; Motion is still active at final frame; increase duration/damping or reduce force for a settled video.; qdot did not decay enough after force removal</p></div>
-            <div><strong>Motion</strong><p>q_start 0 rad; q_end 0.1023 rad; delta_q 0.1023 rad</p></div>
+            <div><strong>Full warnings</strong><p>max dimension 2.56 outside rough expected 0.1-0.25 m</p></div>
+            <div><strong>Motion</strong><p>q_start 0 rad; q_end 0.0134 rad; delta_q 0.0134 rad</p></div>
             <div><strong>Joint</strong><p>joint_1 / link_1</p></div>
             <div><strong>Mode</strong><p>external_link_force; 5 dataset/SAPIEN force units; calibrated Newtons: no</p></div>
             <div><strong>Final verdict</strong><p>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</p></div>
-            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/simulation.json">simulation.json</a>
-<a class="file-chip" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/final_video.mp4">final_video.mp4</a>
-<a class="file-chip" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
-<a class="file-chip" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
-<a class="file-chip" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
-<a class="file-chip" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
-<a class="file-chip" href="outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
+            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
           </div>
         </details></td>
             </tr>
@@ -967,7 +1148,7 @@
             <tr class="summary-main" data-object="103706" data-row="{&quot;verdicts&quot;: &quot;PASS PASS WARN WARN&quot;, &quot;jointType&quot;: &quot;prismatic&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
               <td class="sticky-col object-cell"><strong>Knife</strong><span>#103706</span></td>
               <td class="joint-cell"><strong>prismatic</strong><span>joint_0 &middot; link_0</span></td>
-              <td class="motion-cell"><strong>0 &rarr; 0.532 m</strong><span>&Delta; 0.532</span></td>
+              <td class="motion-cell"><strong>0 &rarr; 0.038 m</strong><span>&Delta; 0.038</span></td>
               <td class="mode-cell"><strong>external_link_force</strong><span>calibrated Newtons: no</span></td>
               <td class="verdict-cell">
                 <span class="verdict pass"><span>contact</span>PASS</span>
@@ -975,36 +1156,36 @@
                 <span class="verdict warn"><span>scale</span>WARN</span>
                 <span class="verdict warn"><span>consistency</span>WARN</span>
               </td>
-              <td class="status-cell"><strong>180 frames</strong><span>OK</span></td>
+              <td class="status-cell"><strong>85 frames</strong><span>OK</span></td>
               <td class="status-cell"><strong>complete</strong><span>OK</span></td>
-              <td class="warning-cell"><span title="max dimension 1.86 outside rough expected 0.1-0.35 m; Motion is still active at final frame; increase duration/damping or reduce force for a settled video.; motion did not fully settle by the final frame">Scale: normalized/dataset-specific scale; Motion: motion still active at final frame</span></td>
-              <td class="links-cell"><a class="mini-link" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/simulation.json">JSON</a><a class="mini-link" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
+              <td class="warning-cell"><span title="max dimension 1.86 outside rough expected 0.1-0.35 m; video appears static">Scale: normalized/dataset-specific scale</span></td>
+              <td class="links-cell"><a class="mini-link" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/simulation.json">JSON</a><a class="mini-link" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
             </tr>
             <tr class="summary-detail" data-object="103706" data-row="{&quot;verdicts&quot;: &quot;PASS PASS WARN WARN&quot;, &quot;jointType&quot;: &quot;prismatic&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
               <td class="sticky-col detail-label">Details</td>
               <td colspan="8"><details><summary>Expand full object details</summary>
           <div class="detail-grid">
-            <div><strong>Full warnings</strong><p>max dimension 1.86 outside rough expected 0.1-0.35 m; Motion is still active at final frame; increase duration/damping or reduce force for a settled video.; motion did not fully settle by the final frame</p></div>
-            <div><strong>Motion</strong><p>q_start 0 m; q_end 0.5321 m; delta_q 0.5321 m</p></div>
+            <div><strong>Full warnings</strong><p>max dimension 1.86 outside rough expected 0.1-0.35 m; video appears static</p></div>
+            <div><strong>Motion</strong><p>q_start 0 m; q_end 0.0384 m; delta_q 0.0384 m</p></div>
             <div><strong>Joint</strong><p>joint_0 / link_0</p></div>
             <div><strong>Mode</strong><p>external_link_force; 5 dataset/SAPIEN force units; calibrated Newtons: no</p></div>
             <div><strong>Final verdict</strong><p>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</p></div>
-            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/simulation.json">simulation.json</a>
-<a class="file-chip" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/final_video.mp4">final_video.mp4</a>
-<a class="file-chip" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
-<a class="file-chip" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
-<a class="file-chip" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
-<a class="file-chip" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
-<a class="file-chip" href="outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
+            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
           </div>
         </details></td>
             </tr>
 
 
             <tr class="summary-main" data-object="103776" data-row="{&quot;verdicts&quot;: &quot;WARN PASS WARN WARN&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
-              <td class="sticky-col object-cell"><strong>Washingmachine</strong><span>#103776</span></td>
+              <td class="sticky-col object-cell"><strong>WashingMachine</strong><span>#103776</span></td>
               <td class="joint-cell"><strong>revolute</strong><span>joint_0 &middot; link_0</span></td>
-              <td class="motion-cell"><strong>0 &rarr; 0.699 rad</strong><span>&Delta; 0.699</span></td>
+              <td class="motion-cell"><strong>0 &rarr; 0.06 rad</strong><span>&Delta; 0.06</span></td>
               <td class="mode-cell"><strong>external_link_force</strong><span>calibrated Newtons: no</span></td>
               <td class="verdict-cell">
                 <span class="verdict warn"><span>contact</span>WARN</span>
@@ -1012,27 +1193,27 @@
                 <span class="verdict warn"><span>scale</span>WARN</span>
                 <span class="verdict warn"><span>consistency</span>WARN</span>
               </td>
-              <td class="status-cell"><strong>180 frames</strong><span>OK</span></td>
+              <td class="status-cell"><strong>75 frames</strong><span>OK</span></td>
               <td class="status-cell"><strong>complete</strong><span>OK</span></td>
-              <td class="warning-cell"><span title="max dimension 1.49 outside rough expected 0.5-1.2 m">Scale: normalized/dataset-specific scale</span></td>
-              <td class="links-cell"><a class="mini-link" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/simulation.json">JSON</a><a class="mini-link" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
+              <td class="warning-cell"><span title="max dimension 1.49 outside rough expected 0.5-1.2 m; video appears static">Scale: normalized/dataset-specific scale</span></td>
+              <td class="links-cell"><a class="mini-link" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/simulation.json">JSON</a><a class="mini-link" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">Video</a><a class="mini-link" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">TSV</a><a class="mini-link" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">Plots</a></td>
             </tr>
             <tr class="summary-detail" data-object="103776" data-row="{&quot;verdicts&quot;: &quot;WARN PASS WARN WARN&quot;, &quot;jointType&quot;: &quot;revolute&quot;, &quot;forceMode&quot;: &quot;external_link_force&quot;}">
               <td class="sticky-col detail-label">Details</td>
               <td colspan="8"><details><summary>Expand full object details</summary>
           <div class="detail-grid">
-            <div><strong>Full warnings</strong><p>max dimension 1.49 outside rough expected 0.5-1.2 m</p></div>
-            <div><strong>Motion</strong><p>q_start 0 rad; q_end 0.6988 rad; delta_q 0.6988 rad</p></div>
+            <div><strong>Full warnings</strong><p>max dimension 1.49 outside rough expected 0.5-1.2 m; video appears static</p></div>
+            <div><strong>Motion</strong><p>q_start 0 rad; q_end 0.0596 rad; delta_q 0.0596 rad</p></div>
             <div><strong>Joint</strong><p>joint_0 / link_0</p></div>
             <div><strong>Mode</strong><p>external_link_force; 5 dataset/SAPIEN force units; calibrated Newtons: no</p></div>
             <div><strong>Final verdict</strong><p>PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED</p></div>
-            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/simulation.json">simulation.json</a>
-<a class="file-chip" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/final_video.mp4">final_video.mp4</a>
-<a class="file-chip" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
-<a class="file-chip" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
-<a class="file-chip" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
-<a class="file-chip" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
-<a class="file-chip" href="outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
+            <div><strong>Files</strong><div class="file-row"><a class="file-chip" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/simulation.json">simulation.json</a>
+<a class="file-chip" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/final_video.mp4">final_video.mp4</a>
+<a class="file-chip" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv">physics_timeseries.tsv</a>
+<a class="file-chip" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md">physics_diagnostics.md</a>
+<a class="file-chip" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png">q/qdot/qddot plot</a>
+<a class="file-chip" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png">force/torque plot</a>
+<a class="file-chip" href="outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png">resistance plot</a></div></div>
           </div>
         </details></td>
             </tr>
@@ -1048,16 +1229,16 @@
         <h2>Audit links and contact sheets</h2>
         <p>Open the validated summary, audit tables, and postfix reports directly from the generated output tree.</p>
       </div>
-      <div class="report-grid"><a class="report-card" href="outputs/final_clean_5n_physics_report.md"><strong>Final clean 5-unit report</strong><span>final_clean_5n_physics_report.md</span></a><a class="report-card" href="outputs/final_clean_5n_physics_table.tsv"><strong>Final clean 5-unit table</strong><span>final_clean_5n_physics_table.tsv</span></a></div>
+      <div class="report-grid"><a class="report-card" href="outputs/final_manual_contact_global_impulse_decay_report.md"><strong>Final global impulse-decay report</strong><span>final_manual_contact_global_impulse_decay_report.md</span></a><a class="report-card" href="outputs/final_manual_contact_global_impulse_decay_table.tsv"><strong>Final global impulse-decay table</strong><span>final_manual_contact_global_impulse_decay_table.tsv</span></a><a class="report-card" href="outputs/physical_consistency_manual_contact_global_impulse_decay.md"><strong>Physical consistency report</strong><span>physical_consistency_manual_contact_global_impulse_decay.md</span></a><a class="report-card" href="outputs/physical_consistency_manual_contact_global_impulse_decay.tsv"><strong>Physical consistency table</strong><span>physical_consistency_manual_contact_global_impulse_decay.tsv</span></a><a class="report-card" href="outputs/final_visual_review_manual_contact_global_impulse_decay.md"><strong>Visual review report</strong><span>final_visual_review_manual_contact_global_impulse_decay.md</span></a><a class="report-card" href="outputs/final_visual_review_manual_contact_global_impulse_decay.tsv"><strong>Visual review table</strong><span>final_visual_review_manual_contact_global_impulse_decay.tsv</span></a></div>
       <div class="contact-sheets"><div class="missing-sheet">forcesapien_physics_audit/frames/contact_sheet.png not available</div><div class="missing-sheet">forcesapien_physics_audit/postfix_contact_sheet.jpg not available</div></div>
     </section>
 
 
     <section id="physics-mode" class="section-block panel">
       <p class="eyebrow">Physics status</p>
-      <h2>Validated external-link physics mode</h2>
-      <p>All eight final outputs use <code>external_link_force</code>: a 0.2-second pulse acts at a world-space point on the moving link, then the simulation continues passively with damping and friction.</p>
-      <p>Magnitude 5.0 is reported as 5 force units / 5 N-like SAPIEN force in dataset units. It is not calibrated real-world Newton force because object scale, mass, and inertia remain dataset-specific.</p>
+      <h2>Validated manual-contact fixed-force mode</h2>
+      <p>All final outputs use <code>manual_contact_global_impulse_decay</code> with true <code>external_link_force</code>: the same 5-unit, 0.10-second pulse, damping 2.0, and friction 0.30 for every object. Force is exactly zero after the pulse and motion decelerates passively. There is no fixed six-second minimum: recording continues until settling plus one second, while reaching the 10-second maximum is a hard failure.</p>
+      <p>The same magnitude 5.0 dataset/SAPIEN force units is used for every object. The force magnitude is fixed globally rather than adapted per object. Calibrated Newtons: no.</p>
       <p>Refrigerator can move more than Scissors despite slightly lower pulse torque because the loaded dataset articulation has a lower effective joint-inertia proxy. This comparison describes the loaded SAPIEN assets, not real appliances or tools.</p>
       <div class="future-list">
         <span>initial force pulse</span>
@@ -1070,14 +1251,14 @@
 
     <section class="section-block panel generator-notes">
       <h2>Generator notes</h2>
-      <p>Objects included: 8. Objects with videos: 8. Objects with complete diagnostics: 8. Successful outputs: 8. PASS/WARN/FAIL object states: 0/8/0.</p>
+      <p>Objects included: 10. Objects with videos: 10. Objects with complete diagnostics: 10. Successful outputs: 4. PASS/WARN/FAIL object states: 1/9/0.</p>
       <p>Missing optional files among included objects: none.</p>
       <p>Missing important fields among included objects: none.</p>
       <p>This page is self-contained and uses relative links from the repository root. Open <code>index.html</code> locally; no web server or external CDN is required.</p>
     </section>
   </main>
   <script>
-    const objects = [{"object_id": "10211", "object_name": "Laptop", "folder": "outputs/laptop_10211_revolute_external_force_5n_physics_check", "status": "success", "error_message": "", "joint_type": "revolute", "selected_joint": "joint_1", "selected_link": "link_1", "parent_link": null, "child_link": null, "joint_axis_world": [0.0003874350951615707, 0.999999903161211, -0.00020873815033554808], "joint_origin_world": [0.24714726209640503, -5.960467319710006e-08, -0.007706254720687866], "joint_limits": [[-1.8346900939941406, 0.471238911151886]], "q_start": 0.0, "q_end": 0.471238911151886, "delta_q": 0.471238911151886, "q_unit": "rad", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.2, "force_direction_world": [0.9560631303244596, -0.0004316062463882721, -0.2931605439861296], "force_application_point_world": [0.45912662148475647, 0.5824841260910034, 0.6827490925788879], "torque_about_axis": 3.6115653454987227, "projected_force_along_axis": null, "contact_strategy": "laptop_screen_free_edge", "contact_semantic_verdict": "WARN", "contact_semantic_explanation": "screen free-edge candidate is far from hinge, but geometry alone cannot prove semantic edge quality", "contact_verdict": "WARN", "joint_verdict": "PASS", "scale_verdict": "WARN", "physics_verdict": "WARN", "peak_abs_qdot": 0.18935628235340118, "final_abs_qdot": 1.098421886780443e-08, "qdot_decay_ratio": 5.8008209346359365e-08, "settled": true, "effective_joint_inertia_proxy": 3.7884251027690965, "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED", "video_frame_count": 180, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "max dimension 1.07 outside rough expected 0.25-0.45 m; q reached or nearly reached a joint limit", "files": {"simulation_json": "outputs/laptop_10211_revolute_external_force_5n_physics_check/simulation.json", "final_video": "outputs/laptop_10211_revolute_external_force_5n_physics_check/final_video.mp4", "physics_diagnostics.md": "outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/laptop_10211_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}, {"object_id": "10905", "object_name": "Refrigerator", "folder": "outputs/refrigerator_10905_revolute_external_force_5n_physics_check", "status": "success", "error_message": "", "joint_type": "revolute", "selected_joint": "joint_0", "selected_link": "link_0", "parent_link": null, "child_link": null, "joint_axis_world": [-1.4844611498788866e-05, -7.464038914108606e-05, 0.999999997104225], "joint_origin_world": [-0.1669122874736786, -0.22691775858402252, 0.4569486379623413], "joint_limits": [[-1.919862151145935, 1.0471975803375244]], "q_start": 0.0, "q_end": 0.2635343074798584, "delta_q": 0.2635343074798584, "q_unit": "rad", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.2, "force_direction_world": [0.19358821872297147, -0.9810828693957951, -7.035467190177693e-05], "force_application_point_world": [-0.8294074535369873, -0.3575953245162964, -0.19310471415519714], "torque_about_axis": 3.3763956194465523, "projected_force_along_axis": null, "contact_strategy": "door_handle_or_free_vertical_edge", "contact_semantic_verdict": "PASS", "contact_semantic_explanation": "semantic refrigerator handle/free vertical edge on moving door", "contact_verdict": "PASS", "joint_verdict": "PASS", "scale_verdict": "PASS", "physics_verdict": "WARN", "peak_abs_qdot": 0.07596521079540253, "final_abs_qdot": 0.016676291823387146, "qdot_decay_ratio": 0.21952538074700384, "settled": false, "effective_joint_inertia_proxy": 8.862530735041595, "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED", "video_frame_count": 180, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "Motion is still active at final frame; increase duration/damping or reduce force for a settled video.; motion did not fully settle by the final frame", "files": {"simulation_json": "outputs/refrigerator_10905_revolute_external_force_5n_physics_check/simulation.json", "final_video": "outputs/refrigerator_10905_revolute_external_force_5n_physics_check/final_video.mp4", "physics_diagnostics.md": "outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/refrigerator_10905_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}, {"object_id": "11100", "object_name": "Scissors", "folder": "outputs/scissors_11100_revolute_external_force_5n_physics_check", "status": "success", "error_message": "", "joint_type": "revolute", "selected_joint": "joint_0", "selected_link": "link_0", "parent_link": null, "child_link": null, "joint_axis_world": [8.954860783093136e-05, -2.9884371409555865e-05, -0.9999999955439856], "joint_origin_world": [0.0006199479103088379, 0.3094087541103363, 0.021691903471946716], "joint_limits": [[-0.823097288608551, -0.0]], "q_start": 0.0, "q_end": -0.24884483218193054, "delta_q": -0.24884483218193054, "q_unit": "rad", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.2, "force_direction_world": [0.6914749597779767, -0.7224004242982384, 8.35091047281865e-05], "force_application_point_world": [-0.7502845525741577, -0.4093581736087799, -0.04845718294382095], "torque_about_axis": -5.19733078430673, "projected_force_along_axis": null, "contact_strategy": "scissors_far_handle_or_blade_candidate", "contact_semantic_verdict": "WARN", "contact_semantic_explanation": "far handle-or-blade candidate; mesh geometry cannot distinguish finger loop from blade tip", "contact_verdict": "WARN", "joint_verdict": "PASS", "scale_verdict": "WARN", "physics_verdict": "WARN", "peak_abs_qdot": 0.055688317865133286, "final_abs_qdot": 0.02918599173426628, "qdot_decay_ratio": 0.5240954091116437, "settled": false, "effective_joint_inertia_proxy": 18.634854518526254, "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED", "video_frame_count": 180, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "max dimension 1.7 outside rough expected 0.1-0.3 m; Motion is still active at final frame; increase duration/damping or reduce force for a settled video.; qdot did not decay enough after force removal", "files": {"simulation_json": "outputs/scissors_11100_revolute_external_force_5n_physics_check/simulation.json", "final_video": "outputs/scissors_11100_revolute_external_force_5n_physics_check/final_video.mp4", "physics_diagnostics.md": "outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/scissors_11100_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}, {"object_id": "101917", "object_name": "Oven", "folder": "outputs/oven_101917_revolute_external_force_5n_physics_check", "status": "success", "error_message": "", "joint_type": "revolute", "selected_joint": "joint_0", "selected_link": "link_0", "parent_link": null, "child_link": null, "joint_axis_world": [-0.00010432035138649543, -0.9999999944475839, 1.4902900064970343e-05], "joint_origin_world": [-0.41942816972732544, 0.6382361650466919, -0.4423215687274933], "joint_limits": [[0.0, 1.5707963705062866]], "q_start": 0.0, "q_end": 0.16393738985061646, "delta_q": 0.16393738985061646, "q_unit": "rad", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.2, "force_direction_world": [-0.9987873487547237, 0.00010346014188112461, -0.049232319298493185], "force_application_point_world": [-0.45587995648384094, 0.635749101638794, 0.2971789538860321], "torque_about_axis": 3.7019918335038957, "projected_force_along_axis": null, "contact_strategy": "oven_door_handle_or_free_edge", "contact_semantic_verdict": "WARN", "contact_semantic_explanation": "door handle/free-edge candidate is plausible but not supported by semantic mesh labels", "contact_verdict": "WARN", "joint_verdict": "PASS", "scale_verdict": "WARN", "physics_verdict": "WARN", "peak_abs_qdot": 0.041439082473516464, "final_abs_qdot": 0.014722674153745174, "qdot_decay_ratio": 0.3552847523386738, "settled": false, "effective_joint_inertia_proxy": 17.838284279932346, "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED", "video_frame_count": 180, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "max dimension 1.92 outside rough expected 0.45-1.0 m; Motion is still active at final frame; increase duration/damping or reduce force for a settled video.; motion did not fully settle by the final frame", "files": {"simulation_json": "outputs/oven_101917_revolute_external_force_5n_physics_check/simulation.json", "final_video": "outputs/oven_101917_revolute_external_force_5n_physics_check/final_video.mp4", "physics_diagnostics.md": "outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/oven_101917_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}, {"object_id": "102255", "object_name": "Foldingchair", "folder": "outputs/foldingchair_102255_revolute_external_force_5n_physics_check", "status": "success", "error_message": "", "joint_type": "revolute", "selected_joint": "joint_1", "selected_link": "link_1", "parent_link": null, "child_link": null, "joint_axis_world": [-0.0002681726204194301, 0.9999998889380738, 0.000387565847151438], "joint_origin_world": [-0.012001819908618927, 8.568167686462402e-08, 0.007995188236236572], "joint_limits": [[-0.0, 1.9729201793670654]], "q_start": 0.0, "q_end": 0.027802536264061928, "delta_q": 0.027802536264061928, "q_unit": "rad", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.2, "force_direction_world": [0.16457550642923857, 0.00042641583839185597, -0.9863643955724944], "force_application_point_world": [0.23808333277702332, 0.3425571024417877, 0.04987013712525368], "torque_about_axis": 1.268177390472846, "projected_force_along_axis": null, "contact_strategy": "robust_moving_surface_point", "contact_semantic_verdict": "PASS", "contact_semantic_explanation": "robust moving seat/back surface point", "contact_verdict": "PASS", "joint_verdict": "PASS", "scale_verdict": "WARN", "physics_verdict": "WARN", "peak_abs_qdot": 0.024346020072698593, "final_abs_qdot": 7.56463996367529e-05, "qdot_decay_ratio": 0.003107136173011789, "settled": true, "effective_joint_inertia_proxy": 10.370124250801133, "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED", "video_frame_count": 180, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "max dimension 1.62 outside rough expected 0.5-1.2 m", "files": {"simulation_json": "outputs/foldingchair_102255_revolute_external_force_5n_physics_check/simulation.json", "final_video": "outputs/foldingchair_102255_revolute_external_force_5n_physics_check/final_video.mp4", "physics_diagnostics.md": "outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/foldingchair_102255_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}, {"object_id": "103111", "object_name": "Stapler", "folder": "outputs/stapler_103111_revolute_external_force_5n_physics_check", "status": "success", "error_message": "", "joint_type": "revolute", "selected_joint": "joint_1", "selected_link": "link_1", "parent_link": null, "child_link": null, "joint_axis_world": [0.00019367913305011263, 0.9999999757982317, -0.00010436440536327609], "joint_origin_world": [0.7520667314529419, -4.470348002882929e-08, 0.10500876605510712], "joint_limits": [[-0.09424778074026108, 2.0106194019317627]], "q_start": 0.0, "q_end": 0.10227004438638687, "delta_q": 0.10227004438638687, "q_unit": "rad", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.2, "force_direction_world": [0.24474733882106434, 5.3787903625973274e-05, 0.9695868899932943], "force_application_point_world": [-0.632494330406189, 0.002027955139055848, 0.4545056223869324], "torque_about_axis": 7.139955810449418, "projected_force_along_axis": null, "contact_strategy": "stapler_lid_front_top", "contact_semantic_verdict": "PASS", "contact_semantic_explanation": "semantic stapler lid front/top point on joint_1/link_1", "contact_verdict": "PASS", "joint_verdict": "PASS", "scale_verdict": "WARN", "physics_verdict": "WARN", "peak_abs_qdot": 0.020207596942782402, "final_abs_qdot": 0.014423499815165997, "qdot_decay_ratio": 0.7137662066403039, "settled": false, "effective_joint_inertia_proxy": 70.62678169938961, "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED", "video_frame_count": 180, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "max dimension 2.56 outside rough expected 0.1-0.25 m; Motion is still active at final frame; increase duration/damping or reduce force for a settled video.; qdot did not decay enough after force removal", "files": {"simulation_json": "outputs/stapler_103111_revolute_external_force_5n_physics_check/simulation.json", "final_video": "outputs/stapler_103111_revolute_external_force_5n_physics_check/final_video.mp4", "physics_diagnostics.md": "outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/stapler_103111_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}, {"object_id": "103706", "object_name": "Knife", "folder": "outputs/knife_103706_prismatic_external_force_5n_physics_check", "status": "success", "error_message": "", "joint_type": "prismatic", "selected_joint": "joint_0", "selected_link": "link_0", "parent_link": null, "child_link": null, "joint_axis_world": [-0.9999999999997224, 0.0, 7.450565249198668e-07], "joint_origin_world": [-0.00041154026985168457, -3.9799559203856916e-09, -3.3527612686157227e-08], "joint_limits": [[-0.01600000075995922, 0.8799999952316284]], "q_start": 0.0, "q_end": 0.5321168899536133, "delta_q": 0.5321168899536133, "q_unit": "m", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.2, "force_direction_world": [-0.9999999999997226, 0.0, 7.450565135511831e-07], "force_application_point_world": [-0.2306579202413559, -0.00041051951120607555, 0.09896697103977203], "torque_about_axis": null, "projected_force_along_axis": 5.000000000001388, "contact_strategy": "prismatic_aligned_moving_link_point", "contact_semantic_verdict": "PASS", "contact_semantic_explanation": "moving-link point with force aligned to prismatic world axis", "contact_verdict": "PASS", "joint_verdict": "PASS", "scale_verdict": "WARN", "physics_verdict": "WARN", "peak_abs_qdot": 0.13079287111759186, "final_abs_qdot": 0.053387630730867386, "qdot_decay_ratio": 0.4081845613960734, "settled": false, "effective_joint_inertia_proxy": 7.618849234007292, "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED", "video_frame_count": 180, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "max dimension 1.86 outside rough expected 0.1-0.35 m; Motion is still active at final frame; increase duration/damping or reduce force for a settled video.; motion did not fully settle by the final frame", "files": {"simulation_json": "outputs/knife_103706_prismatic_external_force_5n_physics_check/simulation.json", "final_video": "outputs/knife_103706_prismatic_external_force_5n_physics_check/final_video.mp4", "physics_diagnostics.md": "outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/knife_103706_prismatic_external_force_5n_physics_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}, {"object_id": "103776", "object_name": "Washingmachine", "folder": "outputs/washingmachine_103776_revolute_external_force_5n_physics_check", "status": "success", "error_message": "", "joint_type": "revolute", "selected_joint": "joint_0", "selected_link": "link_0", "parent_link": null, "child_link": null, "joint_axis_world": [2.9854387188509257e-05, 0.9999999955489374, 8.950330044351294e-05], "joint_origin_world": [0.19949859380722046, 8.881784197001252e-16, 0.5355254411697388], "joint_limits": [[-0.0, 1.4011503458023071]], "q_start": 0.0, "q_end": 0.6988398432731628, "delta_q": 0.6988398432731628, "q_unit": "rad", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.2, "force_direction_world": [0.0763576841647797, -9.152160209545069e-05, 0.9970804860655874], "force_application_point_world": [-0.4183672368526459, -0.07828596234321594, 0.5828351974487305], "torque_about_axis": 3.098363261996416, "projected_force_along_axis": null, "contact_strategy": "washingmachine_door_rim_or_handle", "contact_semantic_verdict": "WARN", "contact_semantic_explanation": "door rim/handle candidate is plausible but not supported by semantic mesh labels", "contact_verdict": "WARN", "joint_verdict": "PASS", "scale_verdict": "WARN", "physics_verdict": "WARN", "peak_abs_qdot": 0.6312491297721863, "final_abs_qdot": 3.524299609125592e-05, "qdot_decay_ratio": 5.58305658242648e-05, "settled": true, "effective_joint_inertia_proxy": 0.9566175425439302, "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED", "video_frame_count": 180, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "max dimension 1.49 outside rough expected 0.5-1.2 m", "files": {"simulation_json": "outputs/washingmachine_103776_revolute_external_force_5n_physics_check/simulation.json", "final_video": "outputs/washingmachine_103776_revolute_external_force_5n_physics_check/final_video.mp4", "physics_diagnostics.md": "outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/washingmachine_103776_revolute_external_force_5n_physics_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}];
+    const objects = [{"object_id": "10211", "object_name": "Laptop", "folder": "outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check", "status": "success", "error_message": "", "joint_type": "revolute", "selected_joint": "joint_1", "selected_link": "link_1", "parent_link": null, "child_link": null, "joint_axis_world": [0.0003874350951615707, 0.999999903161211, -0.00020873815033554808], "joint_origin_world": [0.24714705348014832, -1.1920927533992653e-07, -0.007706254720687866], "joint_limits": [[-1.8346900939941406, 0.471238911151886]], "q_start": "0.0", "q_end": "0.030785737559199333", "delta_q": "0.030785737559199333", "q_unit": "rad", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.1, "force_direction_world": [0.9558841234689233, -0.0004316586322895293, -0.293743691286934], "force_application_point_world": [0.45558813214302063, 0.6151567697525024, 0.6696869134902954], "torque_about_axis": 3.5439522902368963, "projected_force_along_axis": null, "contact_strategy": "laptop_screen_free_edge", "contact_semantic_verdict": "WARN", "contact_semantic_explanation": "screen free-edge candidate is far from hinge, but geometry alone cannot prove semantic edge quality", "contact_verdict": "WARN", "joint_verdict": "PASS", "scale_verdict": "WARN", "physics_verdict": "WARN", "peak_abs_qdot": 0.08528188616037369, "final_abs_qdot": 1.4278604687500973e-10, "qdot_decay_ratio": 1.6742834065196297e-09, "settled": true, "effective_joint_inertia_proxy": 4.15595162229982, "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED", "video_frame_count": 75, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "max dimension 1.07 outside rough expected 0.25-0.45 m", "files": {"simulation_json": "outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/simulation.json", "final_video": "outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/final_video.mp4", "physics_diagnostics.md": "outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/laptop_10211_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}, {"object_id": "10905", "object_name": "Refrigerator", "folder": "outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check", "status": "success", "error_message": "", "joint_type": "revolute", "selected_joint": "joint_0", "selected_link": "link_0", "parent_link": null, "child_link": null, "joint_axis_world": [-1.4844611498788866e-05, -7.464038914108606e-05, 0.999999997104225], "joint_origin_world": [-0.1669122576713562, -0.2269177883863449, 0.45694854855537415], "joint_limits": [[-1.919862151145935, 1.0471975803375244]], "q_start": "0.0", "q_end": "0.014430016279220581", "delta_q": "0.014430016279220581", "q_unit": "rad", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.1, "force_direction_world": [0.38066790727129074, -0.9247118147606536, -6.33699829820331e-05], "force_application_point_world": [-0.793980598449707, -0.48500025272369385, -0.37813612818717957], "torque_about_axis": 3.3906819763288976, "projected_force_along_axis": null, "contact_strategy": "door_handle_or_free_vertical_edge", "contact_semantic_verdict": "PASS", "contact_semantic_explanation": "semantic refrigerator handle/free vertical edge on moving door", "contact_verdict": "PASS", "joint_verdict": "PASS", "scale_verdict": "PASS", "physics_verdict": "PASS", "peak_abs_qdot": 0.034569960087537766, "final_abs_qdot": 8.39497079141438e-05, "qdot_decay_ratio": 0.0024284004870577533, "settled": true, "effective_joint_inertia_proxy": 9.80847616771916, "final_physical_consistency_verdict": "PHYSICS_CONSISTENT", "video_frame_count": 75, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "", "files": {"simulation_json": "outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/simulation.json", "final_video": "outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/final_video.mp4", "physics_diagnostics.md": "outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/refrigerator_10905_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}, {"object_id": "11100", "object_name": "Scissors", "folder": "outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check", "status": "success", "error_message": "", "joint_type": "revolute", "selected_joint": "joint_0", "selected_link": "link_0", "parent_link": null, "child_link": null, "joint_axis_world": [8.954860783093136e-05, -2.9884371409555865e-05, -0.9999999955439856], "joint_origin_world": [0.0006199181079864502, 0.3094088137149811, 0.021691925823688507], "joint_limits": [[-0.823097288608551, -0.0]], "q_start": "0.0", "q_end": "-0.01895938813686371", "delta_q": "-0.01895938813686371", "q_unit": "rad", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.1, "force_direction_world": [0.6879221144848626, -0.7257845117285874, 8.329208578945071e-05], "force_application_point_world": [-0.7538022398948669, -0.4056650698184967, -0.048457324504852295], "torque_about_axis": -5.197330738297421, "projected_force_along_axis": null, "contact_strategy": "scissors_far_handle_or_blade_candidate", "contact_semantic_verdict": "WARN", "contact_semantic_explanation": "far handle-or-blade candidate; mesh geometry cannot distinguish finger loop from blade tip", "contact_verdict": "WARN", "joint_verdict": "PASS", "scale_verdict": "WARN", "physics_verdict": "WARN", "peak_abs_qdot": 0.026477282866835594, "final_abs_qdot": 7.677398389205337e-05, "qdot_decay_ratio": 0.0028996171653329823, "settled": true, "effective_joint_inertia_proxy": 19.629528006910903, "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED", "video_frame_count": 86, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "max dimension 1.7 outside rough expected 0.1-0.3 m", "files": {"simulation_json": "outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/simulation.json", "final_video": "outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/final_video.mp4", "physics_diagnostics.md": "outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/scissors_11100_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}, {"object_id": "45135", "object_name": "StorageFurniture", "folder": "outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check", "status": "warning", "error_message": "video appears static", "joint_type": "prismatic", "selected_joint": "joint_0", "selected_link": "link_0", "parent_link": null, "child_link": null, "joint_axis_world": [-0.9999999999988898, 0.0, -1.4901130498384929e-06], "joint_origin_world": [-0.38237643241882324, 0.014597693458199501, 0.13559405505657196], "joint_limits": [[0.0, 0.5600000023841858]], "q_start": "0.0", "q_end": "0.006594052538275719", "delta_q": "0.006594052538275719", "q_unit": "m", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.1, "force_direction_world": [-0.9999999999988898, 0.0, -1.4901130271011252e-06], "force_application_point_world": [0.2627987265586853, 0.5048270225524902, -0.033256903290748596], "torque_about_axis": null, "projected_force_along_axis": 5.000000000005551, "contact_strategy": "candidate_id", "contact_semantic_verdict": "WARN", "contact_semantic_explanation": "no category semantic contact rule", "contact_verdict": "WARN", "joint_verdict": "PASS", "scale_verdict": "PASS", "physics_verdict": "WARN", "peak_abs_qdot": 0.008770937100052834, "final_abs_qdot": 9.346449951408431e-05, "qdot_decay_ratio": 0.010656158908438792, "settled": true, "effective_joint_inertia_proxy": 57.00645448058705, "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED", "video_frame_count": 81, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "no rough expected size registered for category; video appears static; selected joint came from auto first-moving-joint heuristic while multiple moving joints exist", "files": {"simulation_json": "outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/simulation.json", "final_video": "outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/final_video.mp4", "physics_diagnostics.md": "outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/storagefurniture_45135_prismatic_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}, {"object_id": "100109", "object_name": "USB", "folder": "outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check", "status": "warning", "error_message": "video appears static", "joint_type": "revolute", "selected_joint": "joint_0", "selected_link": "link_0", "parent_link": null, "child_link": null, "joint_axis_world": [0.00011920372987224953, -2.9800547595486864e-08, 0.999999992895235], "joint_origin_world": [0.387080579996109, 0.24055862426757812, -1.0710204279007485e-08], "joint_limits": [[null, null]], "q_start": "0.0", "q_end": "0.00471944035962224", "delta_q": "0.00471944035962224", "q_unit": "rad", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.1, "force_direction_world": [0.6353482015994868, -0.7722257810931259, -7.575889192528034e-05], "force_application_point_world": [-0.6286116242408752, -0.5950919985771179, -0.09624621272087097], "torque_about_axis": 6.576320071032114, "projected_force_along_axis": null, "contact_strategy": "candidate_id", "contact_semantic_verdict": "WARN", "contact_semantic_explanation": "no category semantic contact rule", "contact_verdict": "WARN", "joint_verdict": "PASS", "scale_verdict": "PASS", "physics_verdict": "WARN", "peak_abs_qdot": 0.00482072401791811, "final_abs_qdot": 9.776712249731645e-05, "qdot_decay_ratio": 0.02028058900155384, "settled": true, "effective_joint_inertia_proxy": 136.4178984178603, "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED", "video_frame_count": 81, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "no rough expected size registered for category; video appears static", "files": {"simulation_json": "outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/simulation.json", "final_video": "outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/final_video.mp4", "physics_diagnostics.md": "outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/usb_100109_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}, {"object_id": "101917", "object_name": "Oven", "folder": "outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check", "status": "warning", "error_message": "video appears static", "joint_type": "revolute", "selected_joint": "joint_0", "selected_link": "link_0", "parent_link": null, "child_link": null, "joint_axis_world": [-0.00010432035138649543, -0.9999999944475839, 1.4902900064970343e-05], "joint_origin_world": [-0.4194282293319702, 0.6382363438606262, -0.44232162833213806], "joint_limits": [[0.0, 1.5707963705062866]], "q_start": "0.0", "q_end": "0.009292458184063435", "delta_q": "0.009292458184063435", "q_unit": "rad", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.1, "force_direction_world": [-0.9989557202949201, 0.00010489231141887633, 0.04568870634698033], "force_application_point_world": [-0.3856041729450226, 0.6357491612434387, 0.29722651839256287], "torque_about_axis": 3.701606062678764, "projected_force_along_axis": null, "contact_strategy": "oven_door_handle_or_free_edge", "contact_semantic_verdict": "WARN", "contact_semantic_explanation": "door handle/free-edge candidate is plausible but not supported by semantic mesh labels", "contact_verdict": "WARN", "joint_verdict": "PASS", "scale_verdict": "WARN", "physics_verdict": "WARN", "peak_abs_qdot": 0.01927371509373188, "final_abs_qdot": 9.031814988702536e-05, "qdot_decay_ratio": 0.004686078913576878, "settled": true, "effective_joint_inertia_proxy": 19.20552714023088, "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED", "video_frame_count": 75, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "max dimension 1.92 outside rough expected 0.45-1.0 m; video appears static", "files": {"simulation_json": "outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/simulation.json", "final_video": "outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/final_video.mp4", "physics_diagnostics.md": "outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/oven_101917_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}, {"object_id": "102255", "object_name": "FoldingChair", "folder": "outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check", "status": "warning", "error_message": "video appears static", "joint_type": "revolute", "selected_joint": "joint_1", "selected_link": "link_1", "parent_link": null, "child_link": null, "joint_axis_world": [-0.0002681726204194301, 0.9999998889380738, 0.000387565847151438], "joint_origin_world": [-0.01200179010629654, -3.3527612686157227e-08, 0.007995069026947021], "joint_limits": [[-0.0, 1.9729201793670654]], "q_start": "0.0", "q_end": "0.01067353691905737", "delta_q": "0.01067353691905737", "q_unit": "rad", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.1, "force_direction_world": [0.09118448336183464, -0.00036149811297902384, 0.9958339516772611], "force_application_point_world": [-0.5081841945648193, -0.3475700914859772, 0.053302306681871414], "torque_about_axis": 2.491758618712745, "projected_force_along_axis": null, "contact_strategy": "robust_moving_surface_point", "contact_semantic_verdict": "PASS", "contact_semantic_explanation": "robust moving seat/back surface point", "contact_verdict": "PASS", "joint_verdict": "PASS", "scale_verdict": "WARN", "physics_verdict": "WARN", "peak_abs_qdot": 0.034953802824020386, "final_abs_qdot": 5.754654193879105e-05, "qdot_decay_ratio": 0.0016463599748650195, "settled": true, "effective_joint_inertia_proxy": 7.12916777141055, "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED", "video_frame_count": 75, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "max dimension 1.62 outside rough expected 0.5-1.2 m; video appears static", "files": {"simulation_json": "outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/simulation.json", "final_video": "outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/final_video.mp4", "physics_diagnostics.md": "outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/foldingchair_102255_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}, {"object_id": "103111", "object_name": "Stapler", "folder": "outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check", "status": "success", "error_message": "", "joint_type": "revolute", "selected_joint": "joint_1", "selected_link": "link_1", "parent_link": null, "child_link": null, "joint_axis_world": [0.00019367913305011263, 0.9999999757982317, -0.00010436440536327609], "joint_origin_world": [0.7520670890808105, -1.3411046495548362e-07, 0.10500861704349518], "joint_limits": [[-0.09424778074026108, 2.0106194019317627]], "q_start": "0.0", "q_end": "0.01341317594051361", "delta_q": "0.01341317594051361", "q_unit": "rad", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.1, "force_direction_world": [0.09450129955970749, 8.55944189917064e-05, 0.9955247345270342], "force_application_point_world": [-0.887701153755188, 0.0021551407407969236, 0.26066526770591736], "torque_about_axis": 8.235700488723184, "projected_force_along_axis": null, "contact_strategy": "stapler_lid_front_top", "contact_semantic_verdict": "PASS", "contact_semantic_explanation": "semantic stapler lid front/top point on joint_1/link_1", "contact_verdict": "PASS", "joint_verdict": "PASS", "scale_verdict": "WARN", "physics_verdict": "WARN", "peak_abs_qdot": 0.011193876154720783, "final_abs_qdot": 9.803289140108973e-05, "qdot_decay_ratio": 0.008757725210292451, "settled": true, "effective_joint_inertia_proxy": 73.57340713190528, "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED", "video_frame_count": 105, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "max dimension 2.56 outside rough expected 0.1-0.25 m", "files": {"simulation_json": "outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/simulation.json", "final_video": "outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/final_video.mp4", "physics_diagnostics.md": "outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/stapler_103111_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}, {"object_id": "103706", "object_name": "Knife", "folder": "outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check", "status": "warning", "error_message": "video appears static", "joint_type": "prismatic", "selected_joint": "joint_0", "selected_link": "link_0", "parent_link": null, "child_link": null, "joint_axis_world": [-0.9999999999997224, 0.0, 7.450565249198668e-07], "joint_origin_world": [-0.00038857758045196533, 1.4646495571923879e-08, -1.1175870895385742e-08], "joint_limits": [[-0.01600000075995922, 0.8799999952316284]], "q_start": "0.0", "q_end": "0.03843575343489647", "delta_q": "0.03843575343489647", "q_unit": "m", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.1, "force_direction_world": [-0.9999999999997226, 0.0, 7.450565135511831e-07], "force_application_point_world": [0.5007654428482056, 0.05268904194235802, -0.005937040783464909], "torque_about_axis": null, "projected_force_along_axis": 5.000000000001388, "contact_strategy": "prismatic_aligned_moving_link_point", "contact_semantic_verdict": "PASS", "contact_semantic_explanation": "moving-link point with force aligned to prismatic world axis", "contact_verdict": "PASS", "joint_verdict": "PASS", "scale_verdict": "WARN", "physics_verdict": "WARN", "peak_abs_qdot": 0.06143757700920105, "final_abs_qdot": 4.893172445008531e-05, "qdot_decay_ratio": 0.0007964461951804702, "settled": true, "effective_joint_inertia_proxy": 8.138572487080722, "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED", "video_frame_count": 85, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "max dimension 1.86 outside rough expected 0.1-0.35 m; video appears static", "files": {"simulation_json": "outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/simulation.json", "final_video": "outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/final_video.mp4", "physics_diagnostics.md": "outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/knife_103706_prismatic_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}, {"object_id": "103776", "object_name": "WashingMachine", "folder": "outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check", "status": "warning", "error_message": "video appears static", "joint_type": "revolute", "selected_joint": "joint_0", "selected_link": "link_0", "parent_link": null, "child_link": null, "joint_axis_world": [2.9854387188509257e-05, 0.9999999955489374, 8.950330044351294e-05], "joint_origin_world": [0.19949868321418762, -4.470348002882929e-08, 0.5355254411697388], "joint_limits": [[-0.0, 1.4011503458023071]], "q_start": "0.0", "q_end": "0.0595952607691288", "delta_q": "0.0595952607691288", "q_unit": "rad", "force_application_mode": "external_link_force", "calibrated_newtons": false, "force_units": "dataset/SAPIEN units", "force_magnitude": 5.0, "force_duration_s": 0.1, "force_direction_world": [0.018681243224464166, -9.004539539175064e-05, 0.9998254862941908], "force_application_point_world": [-0.41989949345588684, -0.0782179906964302, 0.547091543674469], "torque_about_axis": 3.0975197264660683, "projected_force_along_axis": null, "contact_strategy": "washingmachine_door_rim_or_handle", "contact_semantic_verdict": "WARN", "contact_semantic_explanation": "door rim/handle candidate is plausible but not supported by semantic mesh labels", "contact_verdict": "WARN", "joint_verdict": "PASS", "scale_verdict": "WARN", "physics_verdict": "WARN", "peak_abs_qdot": 0.27827638387680054, "final_abs_qdot": 8.418404168208937e-11, "qdot_decay_ratio": 3.0251953295238884e-10, "settled": true, "effective_joint_inertia_proxy": 1.114798109012785, "final_physical_consistency_verdict": "PHYSICS_PLAUSIBLE_BUT_UNCALIBRATED", "video_frame_count": 75, "diagnostics_complete": true, "motion_detected": true, "warning_messages": "max dimension 1.49 outside rough expected 0.5-1.2 m; video appears static", "files": {"simulation_json": "outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/simulation.json", "final_video": "outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/final_video.mp4", "physics_diagnostics.md": "outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_diagnostics.md", "physics_timeseries.tsv": "outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/physics_timeseries.tsv", "force_torque_by_frame.png": "outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/force_torque_by_frame.png", "q_qdot_qddot_by_frame.png": "outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/q_qdot_qddot_by_frame.png", "resistance_by_frame.png": "outputs/washingmachine_103776_revolute_manual_contact_global_impulse_decay_check/diagnostics/resistance_by_frame.png"}, "missing_files": [], "json_error": null, "missing_fields": []}];
     const rows = Array.from(document.querySelectorAll("#object-table tbody tr"));
     const search = document.getElementById("search");
     const buttons = Array.from(document.querySelectorAll("[data-filter]"));
