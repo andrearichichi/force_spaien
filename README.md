@@ -9,7 +9,7 @@ Generate and validate the ten-object, physically calibrated ForceSAPIEN dataset 
 - `configs/`: validated contacts, physical priors, and resolved production configuration.
 - `final_dataset/`: source URDFs, meshes, textures, and object metadata.
 - `scripts/`: production generator, renderers, physical solver, runtime shim, validator, package builder, and one Slurm entry point.
-- `final_scaled_70pct_zero_friction_definitive/`: sole retained generated package.
+- `output/`: sole retained generated package.
 
 ## Environment
 
@@ -36,12 +36,12 @@ sbatch scripts/generate_definitive_dataset.sbatch
 
 ```bash
 /leonardo_work/IscrC_EditGS/andrea/FORCEARTGS/.venv/bin/python scripts/validate_definitive_dataset.py \
-  --package final_scaled_70pct_zero_friction_definitive
+  --package output
 ```
 
 ## Definitive index
 
-`final_scaled_70pct_zero_friction_definitive/index.html`
+`output/index.html`
 
 Each object directory in the package contains exactly `final_video.mp4`, `simulation.json`, `contact_sheet.png`, and `run.log`.
 
