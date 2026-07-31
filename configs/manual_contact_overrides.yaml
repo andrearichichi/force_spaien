@@ -1,91 +1,124 @@
-# Final ForceSAPIEN mode: manual_contact_fixed_force
-# Replace candidate_id after reviewing contact_selection/index.html if desired.
+# Validated production contacts in calibrated moving-link local coordinates.
 10211:
   object_name: Laptop
   joint_name: joint_1
   link_name: link_1
-  contact_mode: candidate_id
+  contact_mode: manual_local_point
   candidate_id: laptop_screen_edge_03
   force_direction_mode: tangent_opening
-  note: "recommended screen outer-edge candidate; verify semantic placement in preview"
-
+  note: recommended screen outer-edge candidate; verify semantic placement in preview
+  local_point:
+  - -0.19556793570518494
+  - 0.21538202464580536
+  - -0.06617438048124313
 10905:
   object_name: Refrigerator
   joint_name: joint_0
   link_name: link_0
-  contact_mode: candidate_id
+  contact_mode: manual_local_point
   candidate_id: refrigerator_door_edge_17
   force_direction_mode: tangent_opening
-  note: "door handle/free-edge candidate"
-
+  note: door handle/free-edge candidate
+  local_point:
+  - 0.3445611894130707
+  - -1.1194430589675903
+  - 0.8411701917648315
 11100:
   object_name: Scissors
   joint_name: joint_0
   link_name: link_0
-  contact_mode: candidate_id
+  contact_mode: manual_local_point
   candidate_id: scissors_handle_or_blade_06
   force_direction_mode: tangent_closing
-  note: "handle-or-blade candidate; closing tangent moves inward from the joint's upper limit"
-
+  note: handle-or-blade candidate; closing tangent moves inward from the joint's upper
+    limit
+  local_point:
+  - 0.08850761502981186
+  - -0.008687706664204597
+  - 0.09348153322935104
 45135:
   object_name: StorageFurniture
   joint_name: joint_0
   link_name: link_0
-  contact_mode: candidate_id
-  candidate_id: contact_01
+  contact_mode: manual_local_point
+  local_point:
+  - 0.007691087666898966
+  - 0.11948219686746597
+  - 0.048913147300481796
+  candidate_id: storagefurniture_drawer_handle_center
   force_direction_mode: prismatic_axis
-  note: "needs manual visual check"
-
+  note: centre of the visible exterior face of handle-27/original-64.obj on moving
+    drawer link_0
 100109:
   object_name: USB
   joint_name: joint_0
   link_name: link_0
-  contact_mode: candidate_id
+  contact_mode: manual_local_point
   candidate_id: usb_cover_tip
   force_direction_mode: tangent_opening
-  note: "USB rotating cover tip on the moving link; outer grip edge opposite the hinge"
-
+  note: USB rotating cover tip on the moving link; outer grip edge opposite the hinge
+  local_point:
+  - 0.025275349617004395
+  - -0.0029119057580828667
+  - 0.030735433101654053
 101917:
   object_name: Oven
   joint_name: joint_0
   link_name: link_0
-  contact_mode: candidate_id
+  contact_mode: manual_local_point
   candidate_id: oven_door_edge_03
   force_direction_mode: tangent_opening
-  note: "door handle/free-edge candidate; verify in preview"
-
+  note: door handle/free-edge candidate; verify in preview
+  local_point:
+  - 0.0007765529444441199
+  - 0.23091016709804535
+  - -0.010775886476039886
 102255:
   object_name: FoldingChair
   joint_name: joint_1
   link_name: link_1
-  contact_mode: candidate_id
+  contact_mode: manual_local_point
   candidate_id: foldingchair_surface_08
   force_direction_mode: tangent_opening
-  note: "moving seat/back surface candidate"
-
+  note: moving seat/back surface candidate
+  local_point:
+  - 0.18250823020935059
+  - 0.023350024595856667
+  - 0.26058411598205566
 103111:
   object_name: Stapler
   joint_name: joint_1
   link_name: link_1
-  contact_mode: candidate_id
+  contact_mode: manual_local_point
   candidate_id: stapler_lid_front_top_14
   force_direction_mode: tangent_opening
-  note: "lid front/top candidate"
-
+  note: lid front/top candidate
+  local_point:
+  - -0.00013483308430295438
+  - 0.009715070016682148
+  - 0.10259855538606644
 103706:
   object_name: Knife
   joint_name: joint_0
   link_name: link_0
-  contact_mode: candidate_id
-  candidate_id: knife_prismatic_point_01
+  contact_mode: manual_local_point
+  local_point:
+  - -0.0018931300146505237
+  - 0.01700771600008011
+  - -0.05438143014907837
+  candidate_id: knife_plastic_slider_center
   force_direction_mode: prismatic_axis
-  note: "moving-link point aligned with prismatic axis"
-
+  note: centre of the exposed outer thumb-contact surface on moving-link plastic slider
+    mesh original-27.obj
 103776:
   object_name: WashingMachine
   joint_name: joint_0
   link_name: link_0
-  contact_mode: candidate_id
+  contact_mode: manual_local_point
   candidate_id: washingmachine_door_rim_13
   force_direction_mode: tangent_opening
-  note: "door rim/handle candidate; verify in preview"
+  note: door rim/handle candidate; verify in preview
+  local_point:
+  - 0.0446159765124321
+  - 0.004421602003276348
+  - 0.3533419966697693

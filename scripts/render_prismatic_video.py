@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 from dataclasses import dataclass
 from pathlib import Path
 import xml.etree.ElementTree as ET
@@ -15,6 +16,7 @@ import imageio.v2 as imageio
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 import sapien
+from scripts.force_overlay import fixed_arrow_endpoint
 
 try:
     from physics_force_model import (
@@ -33,6 +35,11 @@ try:
         sample_time_from_step,
         validation_for_motion,
     )
+    from systematic_resistance import (
+        calibrate_effective_coordinate_inertia,
+        calibration_metadata,
+        derive_systematic_resistance,
+    )
 except ModuleNotFoundError:
     from scripts.physics_force_model import (
         ForceStep,
@@ -49,6 +56,11 @@ except ModuleNotFoundError:
         sample_time_from_frame,
         sample_time_from_step,
         validation_for_motion,
+    )
+    from scripts.systematic_resistance import (
+        calibrate_effective_coordinate_inertia,
+        calibration_metadata,
+        derive_systematic_resistance,
     )
 
 
@@ -92,6 +104,8 @@ COLOR_TEXT = (24, 28, 34)
 COLOR_MUTED = (101, 112, 126)
 COLOR_ACCENT = (0, 122, 255)
 COLOR_ALT = (255, 59, 48)
+COLOR_AXIS = (220, 38, 38)
+CONTACT_TRACKING_TOLERANCE_M = 1e-5
 
 
 def should_append_end_hold(mode: str, hold_frames: int, final_motion: float) -> bool:
@@ -111,6 +125,11 @@ def warn_if_holding_active_motion(final_motion: float) -> None:
         "This may look like an abrupt stop in the video.\n"
         "Use --end-hold-seconds 0 or --end-hold-mode never for diagnostic videos."
     )
+
+
+def force_annotation_magnitude(force_step: ForceStep) -> float:
+    """Keep visualization synchronized with the physical pulse state."""
+    return float(force_step.applied_magnitude)
 
 
 def force_profile_scale(args: argparse.Namespace, time_s: float) -> float:
@@ -273,8 +292,7 @@ def write_physics_diagnostics(output_dir: Path, samples: list[dict[str, object]]
         "## Current Code Behavior",
         "",
         "- Main render loop uses SAPIEN `scene.step()` for state evolution.",
-        "- In `generalized` mode, the net joint force is applied with `set_qf`.",
-        "- In `external_link_force` mode, SAPIEN `add_force_at_point` is used and only resistance is applied through joint generalized force.",
+        "- SAPIEN `add_force_at_point(..., mode=\"force\")` applies the physical force; `set_qf` supplies viscous resistance only.",
         "- Joint drives are set to zero stiffness/damping/force limit.",
         f"- Gravity enabled: `{metadata.get('actuation', {}).get('force', {}).get('gravity_enabled', False)}`",
         "- URDF joint dynamics are logged under `metadata.physics.urdf_joint_dynamics`; the render path exposes explicit friction/damping overrides.",
@@ -316,6 +334,73 @@ def look_at_pose(eye: np.ndarray, target: np.ndarray) -> sapien.Pose:
 
 def zoomed_eye(eye: np.ndarray, target: np.ndarray) -> np.ndarray:
     return target + (eye - target) * CAMERA_ZOOM_OUT
+
+
+def fit_camera_to_swept_visual_geometry(
+    articulation: sapien.physx.PhysxArticulation,
+    joint_index: int,
+    target_displacement: float,
+    camera: sapien.render.RenderCameraComponent,
+    reference_eye: np.ndarray,
+    reference_target: np.ndarray,
+    vertical_fov: float,
+    width: int,
+    height: int,
+) -> tuple[np.ndarray, float, float]:
+    """Fit only articulation visual-link AABBs; overlays are never scene bounds."""
+    original_qpos = articulation.get_qpos().copy()
+    initial_q = float(original_qpos[joint_index])
+    bounds = []
+    for q_value in np.linspace(initial_q, initial_q + target_displacement, 33):
+        qpos = original_qpos.copy()
+        qpos[joint_index] = q_value
+        articulation.set_qpos(qpos)
+        for link in articulation.get_links():
+            try:
+                aabb = np.asarray(link.compute_global_aabb_tight(), dtype=np.float32)
+            except RuntimeError:
+                continue
+            if aabb.shape == (2, 3) and np.isfinite(aabb).all() and np.all(aabb[1] >= aabb[0]):
+                bounds.append(aabb)
+    articulation.set_qpos(original_qpos)
+    if not bounds:
+        raise RuntimeError("No finite visual-link bounds available for camera fitting")
+    minimum = np.min(np.stack([bound[0] for bound in bounds]), axis=0)
+    maximum = np.max(np.stack([bound[1] for bound in bounds]), axis=0)
+    center = 0.5 * (minimum + maximum)
+    view = reference_target - reference_eye
+    view /= np.linalg.norm(view) or 1.0
+    left = np.cross(np.array([0.0, 0.0, 1.0], dtype=np.float32), view)
+    left /= np.linalg.norm(left) or 1.0
+    up = np.cross(view, left)
+    corners = np.asarray([[x, y, z] for x in (minimum[0], maximum[0]) for y in (minimum[1], maximum[1]) for z in (minimum[2], maximum[2])], dtype=np.float32)
+    offsets = corners - center
+    horizontal_fov = 2.0 * math.atan(math.tan(vertical_fov / 2.0) * width / height)
+    desired_occupancy = 0.74
+    lateral = offsets @ left
+    vertical = offsets @ up
+    longitudinal = offsets @ view
+
+    def occupancy(distance: float) -> float:
+        depth = distance + longitudinal
+        horizontal_fraction = (np.max(lateral / depth) - np.min(lateral / depth)) / (2.0 * math.tan(horizontal_fov / 2.0))
+        vertical_fraction = (np.max(vertical / depth) - np.min(vertical / depth)) / (2.0 * math.tan(vertical_fov / 2.0))
+        return float(max(horizontal_fraction, vertical_fraction))
+
+    low = max(0.011 - float(np.min(longitudinal)), 0.011)
+    high = max(low * 2.0, float(np.max(maximum - minimum)))
+    while occupancy(high) > desired_occupancy:
+        high *= 2.0
+    for _ in range(60):
+        middle = 0.5 * (low + high)
+        if occupancy(middle) > desired_occupancy:
+            low = middle
+        else:
+            high = middle
+    distance = high
+    eye = center - view * distance
+    camera.set_entity_pose(look_at_pose(eye.astype(np.float32), center.astype(np.float32)))
+    return center, distance, float(np.max(maximum - minimum))
 
 
 def border_connected_mask(mask: np.ndarray) -> np.ndarray:
@@ -370,6 +455,9 @@ def clear_object_output(path: Path) -> None:
 def load_physics_only_articulation(scene: sapien.Scene, model_dir: Path) -> sapien.physx.PhysxArticulation:
     loader = scene.create_urdf_loader()
     loader.fix_root_link = True
+    density_text = os.environ.get("FORCESAPIEN_CALIBRATION_DENSITY")
+    if density_text is not None:
+        loader.set_density(float(density_text))
     articulation_builders, actor_builders, _cameras = loader.parse(str(model_dir / "mobility.urdf"))
     if len(articulation_builders) != 1 or actor_builders:
         raise RuntimeError("Expected one articulation and no standalone actors in URDF.")
@@ -389,6 +477,9 @@ class DrawerSim:
     local_application_point: np.ndarray
     positive_pull_dir_world: np.ndarray
     application_point_strategy: str
+    joint_axis_local: np.ndarray
+    initial_link_pose_matrix: np.ndarray
+    initial_application_point_world: np.ndarray
 
 
 def _mesh_vertices(mesh_path: Path) -> np.ndarray:
@@ -498,6 +589,41 @@ def explicit_contact_point(args: argparse.Namespace) -> tuple[np.ndarray | None,
     return point, args.contact_point_strategy
 
 
+def sapien_joint_axis_local() -> np.ndarray:
+    """SAPIEN articulation joint poses use canonical +X as the motion axis."""
+    return np.array([1.0, 0.0, 0.0], dtype=np.float32)
+
+
+def transform_material_point(pose_matrix: np.ndarray, local_point: np.ndarray) -> np.ndarray:
+    """Transform a homogeneous material point from link-local to world space."""
+    return (pose_matrix @ local_point)[:3].astype(np.float32)
+
+
+def back_transform_material_point(pose_matrix: np.ndarray, world_point: np.ndarray) -> np.ndarray:
+    """Reconstruct homogeneous link-local coordinates from a world-space point."""
+    world_h = np.append(np.asarray(world_point, dtype=np.float32), np.float32(1.0))
+    return (np.linalg.inv(pose_matrix) @ world_h).astype(np.float32)
+
+
+def axis_world_from_joint_pose(joint_pose_matrix: np.ndarray, axis_local: np.ndarray) -> np.ndarray:
+    axis = joint_pose_matrix[:3, :3] @ axis_local
+    return (axis / (np.linalg.norm(axis) or 1.0)).astype(np.float32)
+
+
+def apply_force_at_material_point(
+    link: sapien.physx.PhysxArticulationLinkComponent,
+    force_world: np.ndarray,
+    local_point: np.ndarray,
+) -> np.ndarray:
+    """Apply force at the material point's current world location and return it."""
+    point_world = transform_material_point(
+        link.get_entity_pose().to_transformation_matrix(),
+        local_point,
+    )
+    link.add_force_at_point(force_world, point_world, "force")
+    return point_world
+
+
 def setup_sim(
     model_dir: Path,
     joint_name: str,
@@ -569,22 +695,51 @@ def setup_sim(
     positive_pull_dir_world = (probe_point - base_point).astype(np.float32)
     positive_pull_dir_world /= np.linalg.norm(positive_pull_dir_world) or 1.0
 
-    camera = scene.add_camera("camera", width, height, math.radians(44), 0.01, 20.0)
+    vertical_fov = math.radians(44)
+    camera = scene.add_camera("camera", width, height, vertical_fov, 0.01, 20.0)
     camera_eye = np.array([-1.45, -1.55, 0.86], dtype=np.float32)
     camera_target = np.array([0.0, -0.04, 0.06], dtype=np.float32)
-    camera.set_entity_pose(
-        look_at_pose(
-            zoomed_eye(camera_eye, camera_target),
-            camera_target,
-        )
+    target_displacement = float(os.environ.get("FORCESAPIEN_CAMERA_TARGET_DISPLACEMENT", "0.1"))
+    fit_center, fit_distance, fit_dominant = fit_camera_to_swept_visual_geometry(
+        cabinet, joint_index, target_displacement, camera,
+        camera_eye, camera_target, vertical_fov, width, height,
     )
 
-    return DrawerSim(scene, cabinet, drawer, joint_index, camera, local_application_point, positive_pull_dir_world, application_point_strategy)
+    initial_link_pose_matrix = drawer.get_entity_pose().to_transformation_matrix().copy()
+    initial_application_point_world = transform_material_point(initial_link_pose_matrix, local_application_point)
+    result = DrawerSim(
+        scene,
+        cabinet,
+        drawer,
+        joint_index,
+        camera,
+        local_application_point,
+        positive_pull_dir_world,
+        application_point_strategy,
+        sapien_joint_axis_local(),
+        initial_link_pose_matrix,
+        initial_application_point_world,
+    )
+    result.camera_fit_center = fit_center
+    result.camera_distance = fit_distance
+    result.camera_object_dominant_size = fit_dominant
+    return result
 
 
 def application_point_world(sim: DrawerSim) -> np.ndarray:
-    point = sim.drawer.get_entity_pose().to_transformation_matrix() @ sim.local_application_point
-    return point[:3].astype(np.float32)
+    return transform_material_point(
+        sim.drawer.get_entity_pose().to_transformation_matrix(),
+        sim.local_application_point,
+    )
+
+
+def joint_frame_world(sim: DrawerSim) -> tuple[np.ndarray, np.ndarray]:
+    joint = sim.cabinet.get_active_joints()[sim.joint_index]
+    pose = joint.get_global_pose()
+    return (
+        pose.p.astype(np.float32),
+        axis_world_from_joint_pose(pose.to_transformation_matrix(), sim.joint_axis_local),
+    )
 
 
 def project(camera: sapien.render.RenderCameraComponent, point: np.ndarray) -> tuple[int, int] | None:
@@ -644,12 +799,15 @@ def draw_force_annotation(
     force: float,
     color: tuple[int, int, int],
     point_history: list[np.ndarray],
+    force_active: bool,
 ) -> None:
-    projected_history = [uv for p in point_history if (uv := project(sim.camera, p)) is not None]
+    projected_history: list[tuple[int, int]] = []
+    for history_point in point_history:
+        history_uv = project(sim.camera, history_point)
+        if history_uv is not None and (not projected_history or history_uv != projected_history[-1]):
+            projected_history.append(history_uv)
     if len(projected_history) > 1:
-        cv2.polylines(img, [np.array(projected_history, dtype=np.int32)], False, color, 3, cv2.LINE_AA)
-        for history_uv in projected_history[:: max(1, len(projected_history) // 12)]:
-            cv2.circle(img, history_uv, 3, color, -1, cv2.LINE_AA)
+        cv2.polylines(img, [np.asarray(projected_history, dtype=np.int32)], False, color, 5, cv2.LINE_AA)
 
     point = application_point_world(sim)
     uv = project(sim.camera, point)
@@ -661,9 +819,8 @@ def draw_force_annotation(
     cv2.circle(img, (px, py), 14, color, 4, cv2.LINE_AA)
     cv2.circle(img, (px, py), 4, color, -1, cv2.LINE_AA)
 
-    if force > 0:
+    if force_active:
         projected_dir = project(sim.camera, point + force_dir * 0.18)
-        arrow_len = int(120 + 12 * math.log10(max(1.0, force)))
         if projected_dir is None:
             direction_px = np.array([-1.0, 0.0], dtype=np.float32)
         else:
@@ -674,12 +831,28 @@ def draw_force_annotation(
             else:
                 direction_px /= norm
 
-        ex = int(np.clip(px + direction_px[0] * arrow_len, 32, img.shape[1] - 32))
-        ey = int(np.clip(py + direction_px[1] * arrow_len, 32, img.shape[0] - 32))
+        ex, ey = fixed_arrow_endpoint((px, py), (px + int(direction_px[0] * 1000), py + int(direction_px[1] * 1000)))
         cv2.arrowedLine(img, (px, py), (ex, ey), color, 10, cv2.LINE_AA, tipLength=0.2)
         cv2.arrowedLine(img, (px, py), (ex, ey), (255, 255, 255), 4, cv2.LINE_AA, tipLength=0.2)
         label_offset = (direction_px * 20 + np.array([-42.0, -10.0], dtype=np.float32)).astype(int)
         draw_label(img, f"{force:g} N", (ex + int(label_offset[0]), ey + int(label_offset[1])), color, 0.58)
+
+
+def draw_prismatic_axis(img: np.ndarray, sim: DrawerSim) -> None:
+    """Draw the current SAPIEN joint-frame axis through its current origin."""
+    origin, axis = joint_frame_world(sim)
+    axis_length = 0.30 * float(getattr(sim, "camera_object_dominant_size", 0.6))
+    uv_a = project(sim.camera, origin - axis * axis_length)
+    uv_b = project(sim.camera, origin + axis * axis_length)
+    uv_origin = project(sim.camera, origin)
+    if uv_a is None or uv_b is None:
+        return
+    cv2.line(img, uv_a, uv_b, (255, 255, 255), 9, cv2.LINE_AA)
+    cv2.line(img, uv_a, uv_b, COLOR_AXIS, 5, cv2.LINE_AA)
+    if uv_origin is not None:
+        cv2.circle(img, uv_origin, 8, (255, 255, 255), -1, cv2.LINE_AA)
+        cv2.circle(img, uv_origin, 5, COLOR_AXIS, -1, cv2.LINE_AA)
+
 
 def draw_info_card(canvas: np.ndarray, x: int, y: int, w: int, h: int, title: str, force_text: str, disp: float, color: tuple[int, int, int]) -> None:
     x0, y0 = x + 18, y + 12
@@ -757,7 +930,10 @@ def sample_to_dict(
     force_application_mode: str = "generalized",
     phase: str | None = None,
     settled_flag: bool = False,
+    actual_force_application_point_world: np.ndarray | None = None,
+    force_application_tracking_error_m: float = 0.0,
 ) -> dict[str, object]:
+    moving_pose = sim.drawer.get_entity_pose()
     position = float(sim.cabinet.get_qpos()[sim.joint_index])
     velocity = float(sim.cabinet.get_qvel()[sim.joint_index])
     sample_dt = time_s - previous_time_s if previous_time_s is not None else 0.0
@@ -765,7 +941,16 @@ def sample_to_dict(
     delta_q = 0.0 if previous_position is None else position - previous_position
     resistance = resistance or Resistance(0.0, 0.0, 0.0, 0.0, generalized_force, False)
     limits = sim.cabinet.get_active_joints()[sim.joint_index].get_limit().tolist()
-    joint_origin_world = sim.cabinet.get_active_joints()[sim.joint_index].get_global_pose().p.astype(float)
+    joint_origin_world, joint_axis_world = joint_frame_world(sim)
+    current_link_pose = sim.drawer.get_entity_pose().to_transformation_matrix()
+    current_point = application_point_world(sim)
+    reconstructed_local = back_transform_material_point(current_link_pose, current_point)
+    local_error = float(np.linalg.norm(reconstructed_local[:3] - sim.local_application_point[:3]))
+    moving_link_displacement = current_link_pose[:3, 3] - sim.initial_link_pose_matrix[:3, 3]
+    contact_displacement = current_point - sim.initial_application_point_world
+    displacement_axis_dot = float(np.dot(contact_displacement, joint_axis_world))
+    actual_force_point = current_point if actual_force_application_point_world is None else actual_force_application_point_world
+    force_point_tracking_error = float(np.linalg.norm(actual_force_point - current_point))
     lower, upper = float(limits[0][0]), float(limits[0][1])
     clamped = (math.isfinite(lower) and abs(position - lower) <= 1e-3) or (math.isfinite(upper) and abs(position - upper) <= 1e-3)
     if math.isfinite(lower) and math.isfinite(upper):
@@ -781,6 +966,8 @@ def sample_to_dict(
         "time": float(time_s),
         "time_s": float(time_s),
         "phase": phase or "force_applied",
+        "force_active": bool(force_step is not None and force_step.applied_magnitude > 1e-9),
+        "moving_link_pose": {"position": moving_pose.p.astype(float).tolist(), "quaternion_wxyz": moving_pose.q.astype(float).tolist()},
         "q": position,
         "qdot": velocity,
         "qddot": acceleration,
@@ -791,7 +978,18 @@ def sample_to_dict(
         "joint_velocity_m_s": velocity,
         "joint_acceleration_m_s2": acceleration,
         "delta_q_m": delta_q,
-        "application_point_world": application_point_world(sim).astype(float).tolist(),
+        "application_point_world": current_point.astype(float).tolist(),
+        "contact_point_world_per_frame": current_point.astype(float).tolist(),
+        "contact_point_local_reconstructed": reconstructed_local[:3].astype(float).tolist(),
+        "contact_point_local_back_transform_error_m": local_error,
+        "contact_tracking_tolerance_m": CONTACT_TRACKING_TOLERANCE_M,
+        "contact_tracking_within_tolerance": local_error <= CONTACT_TRACKING_TOLERANCE_M,
+        "actual_force_application_point_world": actual_force_point.astype(float).tolist(),
+        "force_point_vs_material_point_error_m": force_point_tracking_error,
+        "force_application_tracking_error_at_step_m": float(force_application_tracking_error_m),
+        "moving_link_displacement_world": moving_link_displacement.astype(float).tolist(),
+        "contact_displacement_world": contact_displacement.astype(float).tolist(),
+        "contact_displacement_axis_dot_m": displacement_axis_dot,
         "applied_force_world": applied_force.astype(float).tolist(),
         "force_model": "linear_force",
         "force_application_mode": force_application_mode,
@@ -813,8 +1011,9 @@ def sample_to_dict(
         "mechanical_work_j": float(cumulative_work) if cumulative_work is not None else 0.0,
         "damping_n_s_m": 0.0,
         "mass_or_effective_mass": None,
-        "joint_axis_world": sim.positive_pull_dir_world.astype(float).tolist(),
-        "joint_origin_world": joint_origin_world.tolist(),
+        "joint_axis_local": sim.joint_axis_local.astype(float).tolist(),
+        "joint_axis_world": joint_axis_world.astype(float).tolist(),
+        "joint_origin_world": joint_origin_world.astype(float).tolist(),
         "raw_projected_force_along_axis": float(generalized_force),
         "joint_lower_limit_m": lower,
         "joint_upper_limit_m": upper,
@@ -925,6 +1124,9 @@ def run_apply(args: argparse.Namespace) -> int:
         local_application_point,
         direction,
         application_point_strategy,
+        sapien_joint_axis_local(),
+        target_link.get_entity_pose().to_transformation_matrix().copy(),
+        application_point_world_on_link(target_link, local_application_point),
     )
 
     samples = []
@@ -1023,8 +1225,8 @@ def main() -> int:
     parser.add_argument("--motion-source", choices=["physical_force"], default="physical_force")
     parser.add_argument(
         "--force-application-mode",
-        choices=["external_link_force"],
-        default="external_link_force",
+        choices=["native_sapien_add_force_at_point"],
+        default="native_sapien_add_force_at_point",
     )
     parser.add_argument("--joint-static-friction", type=float, default=0.0, help="Static friction threshold in N for prismatic joints.")
     parser.add_argument("--joint-dynamic-friction", "--joint-friction", dest="joint_dynamic_friction", type=float, default=0.0, help="Coulomb friction magnitude in N for prismatic joints.")
@@ -1032,10 +1234,15 @@ def main() -> int:
     parser.add_argument("--static-friction-velocity-threshold", type=float, default=1e-4)
     parser.add_argument("--link-linear-damping", type=float, default=LINEAR_DAMPING)
     parser.add_argument("--link-angular-damping", type=float, default=ANGULAR_DAMPING)
+    parser.add_argument("--resistance-model", choices=["systematic_joint_space"], default="systematic_joint_space")
+    parser.add_argument("--systematic-decay-time-s", type=float, default=2.0)
+    parser.add_argument("--systematic-friction-ratio", type=float, default=0.0)
+    parser.add_argument("--require-zero-joint-friction", action="store_true")
+    parser.add_argument("--effective-inertia-validation-tolerance", type=float, default=0.10)
     parser.add_argument("--enable-gravity", action="store_true", help="Leave gravity enabled on articulation links.")
-    parser.add_argument("--force-profile", choices=["constant", "pulse", "ramp_hold_release"], default="constant")
+    parser.add_argument("--force-profile", choices=["square_pulse"], default="square_pulse")
     parser.add_argument("--force-start-time", type=float, default=0.0)
-    parser.add_argument("--force-duration", "--force-duration-s", dest="force_duration", type=float, default=4.0)
+    parser.add_argument("--force-duration", "--force-duration-s", dest="force_duration", type=float, default=2.0)
     parser.add_argument("--force-ramp-time", type=float, default=0.25)
     parser.add_argument("--simulate-until-settled", action="store_true")
     parser.add_argument("--settle-velocity-threshold", type=float, default=1e-3)
@@ -1061,13 +1268,10 @@ def main() -> int:
     parser.add_argument("--contact-point-strategy", default=None)
     parser.add_argument("--contact-overrides", default=None, help="Batch-resolved manual contact override source.")
     parser.add_argument("--manual-contact-required", default=None, help="Accepted for final-mode provenance; resolution occurs in the batch runner.")
-    parser.add_argument("--force-policy", choices=["fixed_magnitude", "realistic_response_calibration", "fixed_global_physics", "fixed_global_impulse_decay"], default=None)
+    parser.add_argument("--force-policy", choices=["native_sapien_force"], default="native_sapien_force")
     parser.add_argument("--max-q-fraction-of-limit", type=float, default=0.98)
     parser.add_argument("--keep-old", action="store_true", help="Do not delete old files in the output directory")
     args = parser.parse_args()
-    if args.force_profile == "constant":
-        args.force_profile = "pulse"
-
     if args.mode == "apply":
         return run_apply(args)
 
@@ -1092,6 +1296,9 @@ def main() -> int:
     generalized_force = compute_prismatic_generalized_force(force_dir, force_dir * args.force)
 
     explicit_point, explicit_strategy = explicit_contact_point(args)
+    systematic_mode = args.resistance_model == "systematic_joint_space"
+    installed_link_linear_damping = 0.0 if systematic_mode else args.link_linear_damping
+    installed_link_angular_damping = 0.0 if systematic_mode else args.link_angular_damping
     still_sim = (
         setup_sim(
             model_dir,
@@ -1102,8 +1309,8 @@ def main() -> int:
             force_dir,
             explicit_point,
             explicit_strategy,
-            args.link_linear_damping,
-            args.link_angular_damping,
+            installed_link_linear_damping,
+            installed_link_angular_damping,
             not args.enable_gravity,
         )
         if args.movement == "comparison"
@@ -1118,10 +1325,62 @@ def main() -> int:
         force_dir,
         explicit_point,
         explicit_strategy,
-        args.link_linear_damping,
-        args.link_angular_damping,
+        installed_link_linear_damping,
+        installed_link_angular_damping,
         not args.enable_gravity,
     )
+    native_joint = pulling_sim.cabinet.get_active_joints()[pulling_sim.joint_index]
+    imported_friction = float(native_joint.get_friction())
+    effective_joint_friction_installed = imported_friction
+    systematic_calibration = None
+    systematic_resistance = None
+    if systematic_mode:
+        native_joint.set_friction(0.0)
+        diagnostic_sim = setup_sim(
+            model_dir,
+            selected_joint,
+            selected_link,
+            args.panel_width,
+            args.panel_height,
+            force_dir,
+            explicit_point,
+            explicit_strategy,
+            0.0,
+            0.0,
+            not args.enable_gravity,
+        )
+        diagnostic_joint = diagnostic_sim.cabinet.get_active_joints()[diagnostic_sim.joint_index]
+        diagnostic_joint.set_friction(0.0)
+        systematic_calibration = calibrate_effective_coordinate_inertia(
+            diagnostic_sim.cabinet,
+            diagnostic_sim.scene,
+            diagnostic_sim.joint_index,
+            "prismatic",
+            generalized_force,
+            TIMESTEP,
+            args.effective_inertia_validation_tolerance,
+        )
+        systematic_resistance = derive_systematic_resistance(
+            systematic_calibration,
+            generalized_force,
+            args.systematic_decay_time_s,
+            args.systematic_friction_ratio,
+        )
+        effective_joint_friction_installed = systematic_resistance.friction_magnitude
+        native_joint.set_friction(effective_joint_friction_installed)
+    elif args.force_application_mode == "native_sapien_add_force_at_point":
+        effective_joint_friction_installed = imported_friction if imported_friction > 0.0 else args.joint_dynamic_friction
+        native_joint.set_friction(effective_joint_friction_installed)
+    joint_friction_fallback_used = False
+    if args.require_zero_joint_friction:
+        if abs(args.systematic_friction_ratio) > 1e-15:
+            raise RuntimeError("zero-joint-friction mode forbids systematic friction compensation")
+        native_joint.set_friction(0.0)
+        effective_joint_friction_installed = float(native_joint.get_friction())
+        if abs(effective_joint_friction_installed) > 1e-12:
+            raise RuntimeError(
+                f"native SAPIEN joint friction verification failed: {effective_joint_friction_installed}"
+            )
     pull_dir_world = pulling_sim.positive_pull_dir_world if generalized_force >= 0 else -pulling_sim.positive_pull_dir_world
     force = pull_dir_world * args.force
 
@@ -1149,6 +1408,34 @@ def main() -> int:
     below_threshold_since: float | None = None
     settled_time_s: float | None = None
     stopped_because = "fixed_duration"
+    active_force_physics_steps = 0
+    actual_force_start_time_s: float | None = None
+    actual_force_stop_time_s: float | None = None
+    previous_force_active = False
+    q_at_force_release: float | None = None
+    joint_limits = pulling_sim.cabinet.get_active_joints()[pulling_sim.joint_index].get_limit().tolist()[0]
+    joint_lower, joint_upper = float(joint_limits[0]), float(joint_limits[1])
+    joint_range = joint_upper - joint_lower if math.isfinite(joint_lower) and math.isfinite(joint_upper) else None
+    teleport_threshold = max(0.05, 0.25 * joint_range) if joint_range is not None else 0.05
+    joint_limit_arrival_time_s: float | None = None
+    active_force_limit_steps_total = 0
+    active_force_limit_steps_current = 0
+    active_force_limit_steps_max_continuous = 0
+    repeated_limit_impact_count = 0
+    limit_jitter_count = 0
+    previously_at_limit = False
+    previous_limit_velocity_sign = 0
+    force_continued_after_limit = False
+    maximum_abs_velocity_physics_steps = 0.0
+    maximum_abs_acceleration_physics_steps = 0.0
+    non_finite_state_detected = False
+    teleportation_detected_physics_steps = False
+    previous_physics_velocity = float(pulling_sim.cabinet.get_qvel()[pulling_sim.joint_index])
+    last_physics_application_point = application_point_world(pulling_sim)
+    last_force_application_tracking_error_m = 0.0
+    maximum_force_application_tracking_error_m = 0.0
+    q_after_force_release_values: list[float] = []
+    qdot_after_force_release_values: list[float] = []
     with imageio.get_writer(output, fps=args.fps, codec="libx264", quality=8, macro_block_size=1) as writer:
         while True:
             if frame_index >= frame_count:
@@ -1156,7 +1443,8 @@ def main() -> int:
                     break
                 now = physics_step_count * TIMESTEP
                 speed = abs(float(pulling_sim.cabinet.get_qvel()[pulling_sim.joint_index]))
-                if speed <= args.settle_velocity_threshold:
+                force_end_time = args.force_start_time + args.force_duration
+                if now >= force_end_time and speed <= args.settle_velocity_threshold:
                     if below_threshold_since is None:
                         below_threshold_since = now
                     if settled_time_s is None and now - below_threshold_since >= args.settle_window_seconds:
@@ -1166,6 +1454,7 @@ def main() -> int:
                         break
                 else:
                     below_threshold_since = None
+                    settled_time_s = None
                 if now >= args.max_seconds:
                     still_moving_at_max_seconds = True
                     stopped_because = "max_duration"
@@ -1178,24 +1467,89 @@ def main() -> int:
                     force * force_step.scale,
                 )
                 resistance = resistance_for_motion(signed_generalized_force, float(pulling_sim.cabinet.get_qvel()[pulling_sim.joint_index]), args)
+                resistance = Resistance(0.0, 0.0, 0.0, 0.0, signed_generalized_force, False)
                 q_before = float(pulling_sim.cabinet.get_qpos()[pulling_sim.joint_index])
                 qf = np.zeros_like(pulling_sim.cabinet.get_qf(), dtype=np.float32)
-                if args.force_application_mode == "external_link_force":
-                    pulling_sim.drawer.add_force_at_point(force * force_step.scale, application_point_world(pulling_sim), "force")
+                if systematic_resistance is not None:
+                    qvel_before = float(pulling_sim.cabinet.get_qvel()[pulling_sim.joint_index])
+                    qf[pulling_sim.joint_index] = -systematic_resistance.damping_coefficient * qvel_before
+                last_physics_application_point = application_point_world(pulling_sim)
+                last_force_application_tracking_error_m = 0.0
+                if force_step.applied_magnitude > 1e-9:
+                    expected_application_point = last_physics_application_point.copy()
+                    last_physics_application_point = apply_force_at_material_point(
+                        pulling_sim.drawer,
+                        force * force_step.scale,
+                        pulling_sim.local_application_point,
+                    )
+                    last_force_application_tracking_error_m = float(
+                        np.linalg.norm(last_physics_application_point - expected_application_point)
+                    )
+                    maximum_force_application_tracking_error_m = max(
+                        maximum_force_application_tracking_error_m,
+                        last_force_application_tracking_error_m,
+                    )
                     qf[pulling_sim.joint_index] = resistance.total
                 else:
                     qf[pulling_sim.joint_index] = resistance.net
-                pulling_sim.cabinet.set_qf(qf)
+                if args.force_application_mode != "native_sapien_add_force_at_point" or systematic_resistance is not None:
+                    pulling_sim.cabinet.set_qf(qf)
                 if still_sim is not None:
                     still_sim.scene.step()
                 pulling_sim.scene.step()
                 q_after = float(pulling_sim.cabinet.get_qpos()[pulling_sim.joint_index])
+                qvel_after = float(pulling_sim.cabinet.get_qvel()[pulling_sim.joint_index])
+                force_active = force_step.applied_magnitude > 1e-9
+                if force_active:
+                    active_force_physics_steps += 1
+                    if actual_force_start_time_s is None:
+                        actual_force_start_time_s = step_time_s
+                    actual_force_stop_time_s = step_time_s + TIMESTEP
+                elif previous_force_active and q_at_force_release is None:
+                    q_at_force_release = q_before
+                    actual_force_stop_time_s = step_time_s
+                if not force_active:
+                    q_after_force_release_values.append(q_after)
+                    qdot_after_force_release_values.append(qvel_after)
+                acceleration_step = (qvel_after - previous_physics_velocity) / TIMESTEP
+                maximum_abs_velocity_physics_steps = max(maximum_abs_velocity_physics_steps, abs(qvel_after))
+                maximum_abs_acceleration_physics_steps = max(maximum_abs_acceleration_physics_steps, abs(acceleration_step))
+                if not all(math.isfinite(value) for value in (q_after, qvel_after, acceleration_step)):
+                    non_finite_state_detected = True
+                if abs(q_after - q_before) > teleport_threshold:
+                    teleportation_detected_physics_steps = True
+                lower_distance = q_after - joint_lower if math.isfinite(joint_lower) else math.inf
+                upper_distance = joint_upper - q_after if math.isfinite(joint_upper) else math.inf
+                at_limit = min(lower_distance, upper_distance) <= 1e-4
+                if at_limit and not previously_at_limit:
+                    repeated_limit_impact_count += 1
+                    if joint_limit_arrival_time_s is None:
+                        joint_limit_arrival_time_s = step_time_s + TIMESTEP
+                if force_active and at_limit:
+                    active_force_limit_steps_total += 1
+                    active_force_limit_steps_current += 1
+                    active_force_limit_steps_max_continuous = max(active_force_limit_steps_max_continuous, active_force_limit_steps_current)
+                    force_continued_after_limit = joint_limit_arrival_time_s is not None
+                    velocity_sign = 1 if qvel_after > 1e-5 else -1 if qvel_after < -1e-5 else 0
+                    if velocity_sign and previous_limit_velocity_sign and velocity_sign != previous_limit_velocity_sign:
+                        limit_jitter_count += 1
+                    if velocity_sign:
+                        previous_limit_velocity_sign = velocity_sign
+                else:
+                    active_force_limit_steps_current = 0
+                    if not at_limit:
+                        previous_limit_velocity_sign = 0
+                previously_at_limit = at_limit
+                previous_force_active = force_active
+                previous_physics_velocity = qvel_after
                 cumulative_work += resistance.net * (q_after - q_before)
                 last_force_step = force_step
                 last_resistance = resistance
                 physics_step_count += 1
 
             time_s = physics_step_count * TIMESTEP
+            frame_force_active = args.force_start_time <= time_s < args.force_start_time + args.force_duration
+            frame_force_step = last_force_step if frame_force_active else ForceStep(0.0, 0.0)
             current_abs_qdot = abs(float(pulling_sim.cabinet.get_qvel()[pulling_sim.joint_index]))
             sample_phase = (
                 "force_applied"
@@ -1209,10 +1563,10 @@ def main() -> int:
                     sample_to_dict(
                         time_s,
                         pulling_sim,
-                        force * last_force_step.scale,
-                        generalized_force * last_force_step.scale,
+                        force * frame_force_step.scale,
+                        generalized_force * frame_force_step.scale,
                         frame=frame_index,
-                        force_step=last_force_step,
+                        force_step=frame_force_step,
                         resistance=last_resistance,
                         previous_velocity=previous_sample_velocity,
                         previous_time_s=previous_sample_time,
@@ -1221,6 +1575,8 @@ def main() -> int:
                         force_application_mode=args.force_application_mode,
                         phase=sample_phase,
                         settled_flag=sample_settled,
+                        actual_force_application_point_world=application_point_world(pulling_sim),
+                        force_application_tracking_error_m=last_force_application_tracking_error_m,
                     )
                 )
                 point_histories["no_force"].append(application_point_world(still_sim))
@@ -1230,10 +1586,10 @@ def main() -> int:
                     sample_to_dict(
                         time_s,
                         pulling_sim,
-                        force * last_force_step.scale,
-                        generalized_force * last_force_step.scale,
+                        force * frame_force_step.scale,
+                        generalized_force * frame_force_step.scale,
                         frame=frame_index,
-                        force_step=last_force_step,
+                        force_step=frame_force_step,
                         resistance=last_resistance,
                         previous_velocity=previous_sample_velocity,
                         previous_time_s=previous_sample_time,
@@ -1242,6 +1598,8 @@ def main() -> int:
                         force_application_mode=args.force_application_mode,
                         phase=sample_phase,
                         settled_flag=sample_settled,
+                        actual_force_application_point_world=application_point_world(pulling_sim),
+                        force_application_tracking_error_m=last_force_application_tracking_error_m,
                     )
                 )
                 point_histories["force"].append(application_point_world(pulling_sim))
@@ -1252,13 +1610,15 @@ def main() -> int:
             right = fit_panel(render_panel(pulling_sim), args.panel_width, args.panel_height)
             canvas = np.full((out_h, out_w, 3), COLOR_BG, dtype=np.uint8)
 
+            draw_prismatic_axis(right, pulling_sim)
             draw_force_annotation(
                 right,
                 pulling_sim,
                 pull_dir_world,
-                args.force,
+                force_annotation_magnitude(frame_force_step),
                 COLOR_ACCENT,
                 point_histories["pulling_force"] if args.movement == "comparison" else point_histories["force"],
+                frame_force_active,
             )
             canvas[: args.panel_height, : args.panel_width] = right
             draw_panel_frame(canvas, 0, 0, args.panel_width, args.panel_height, COLOR_ACCENT)
@@ -1270,7 +1630,8 @@ def main() -> int:
 
             if still_sim is not None:
                 left = fit_panel(render_panel(still_sim), args.panel_width, args.panel_height)
-                draw_force_annotation(left, still_sim, pull_dir_world, 0.0, COLOR_MUTED, point_histories["no_force"])
+                draw_prismatic_axis(left, still_sim)
+                draw_force_annotation(left, still_sim, pull_dir_world, 0.0, COLOR_MUTED, point_histories["no_force"], False)
                 canvas[: args.panel_height, : args.panel_width] = left
                 canvas[: args.panel_height, args.panel_width :] = right
                 draw_panel_frame(canvas, 0, 0, args.panel_width, args.panel_height, COLOR_MUTED)
@@ -1315,6 +1676,21 @@ def main() -> int:
         initial_position_value=0.0,
     )
     primary_samples = samples["force" if args.movement != "comparison" else "pulling_force"]
+    release_time_s = args.force_start_time + args.force_duration
+    release_sample = min(primary_samples, key=lambda sample: abs(float(sample["time_s"]) - release_time_s))
+    tracking_keyframes = {
+        "frame0": primary_samples[0],
+        "release": release_sample,
+        "final": primary_samples[-1],
+    }
+    maximum_local_back_transform_error_m = max(
+        float(sample["contact_point_local_back_transform_error_m"]) for sample in primary_samples
+    )
+    all_tracking_samples_within_tolerance = (
+        maximum_local_back_transform_error_m <= CONTACT_TRACKING_TOLERANCE_M
+    )
+    initial_joint_origin_world = np.asarray(primary_samples[0]["joint_origin_world"], dtype=np.float32)
+    initial_joint_axis_world = np.asarray(primary_samples[0]["joint_axis_world"], dtype=np.float32)
     metadata = build_metadata(
         model_dir=model_dir,
         mode="render",
@@ -1359,6 +1735,7 @@ def main() -> int:
         application_point={
             "strategy": pulling_sim.application_point_strategy,
             "local_on_link": pulling_sim.local_application_point[:3].astype(float).tolist(),
+            "initial_world": pulling_sim.initial_application_point_world.astype(float).tolist(),
         },
         summary=summary,
         articulation=pulling_sim.cabinet,
@@ -1377,6 +1754,38 @@ def main() -> int:
         "stopped_by_settle_threshold": bool(args.simulate_until_settled and not still_moving_at_max_seconds),
         "still_moving_at_max_seconds": bool(still_moving_at_max_seconds),
     }
+    metadata["prismatic_tracking_audit"] = {
+        "material_point_formula": "world = current_moving_link_pose @ local_homogeneous",
+        "back_transform_formula": "local = inverse(current_moving_link_pose) @ world_homogeneous",
+        "tolerance_m": CONTACT_TRACKING_TOLERANCE_M,
+        "maximum_local_back_transform_error_m": maximum_local_back_transform_error_m,
+        "maximum_force_application_tracking_error_m": maximum_force_application_tracking_error_m,
+        "all_samples_within_tolerance": all_tracking_samples_within_tolerance,
+        "keyframes": {
+            name: {
+                key: sample[key]
+                for key in (
+                    "frame",
+                    "time_s",
+                    "phase",
+                    "application_point_world",
+                    "contact_point_local_reconstructed",
+                    "contact_point_local_back_transform_error_m",
+                    "moving_link_displacement_world",
+                    "contact_displacement_world",
+                    "contact_displacement_axis_dot_m",
+                )
+            }
+            for name, sample in tracking_keyframes.items()
+        },
+    }
+    metadata["prismatic_joint_axis_audit"] = {
+        "joint_origin_world": initial_joint_origin_world.astype(float).tolist(),
+        "joint_axis_local": pulling_sim.joint_axis_local.astype(float).tolist(),
+        "joint_axis_world": initial_joint_axis_world.astype(float).tolist(),
+        "source": "current SAPIEN joint global pose rotation applied to canonical joint-frame +X axis",
+        "visual_style": {"color": "red", "rgb": list(COLOR_AXIS)},
+    }
     metadata["physics"]["uses_separate_static_dynamic_friction"] = True
     metadata["physics"]["overrides"]["joint_resistance"] = {
         "static_friction": args.joint_static_friction,
@@ -1393,6 +1802,11 @@ def main() -> int:
     )
     if still_moving_at_max_seconds:
         validation["warnings"].append("Simulate-until-settled reached max seconds while motion was still active.")
+    validation["contact_tracking_within_tolerance"] = all_tracking_samples_within_tolerance
+    if not all_tracking_samples_within_tolerance:
+        validation["warnings"].append(
+            f"Material contact back-transform exceeded {CONTACT_TRACKING_TOLERANCE_M:g} m."
+        )
     document = motion_document(
         motion_type="prismatic",
         metadata=metadata,
@@ -1407,26 +1821,123 @@ def main() -> int:
     physics_results, dynamics_warnings = physics_mode_results(primary_samples, args)
     validation.setdefault("warnings", []).extend(dynamics_warnings)
     document.update(physics_results)
+    expected_active_force_physics_steps = int(round(args.force_duration / TIMESTEP))
+    actual_force_duration_s = (
+        actual_force_stop_time_s - actual_force_start_time_s
+        if actual_force_start_time_s is not None and actual_force_stop_time_s is not None
+        else 0.0
+    )
+    active_force_time_at_limit_s = active_force_limit_steps_total * TIMESTEP
+    continuous_active_force_at_limit_s = active_force_limit_steps_max_continuous * TIMESTEP
+    substantial_limit_push_threshold_s = max(1.0, 0.10 * float(args.force_duration))
+    post_release_displacement = (
+        float(primary_samples[-1]["position_m"]) - q_at_force_release
+        if q_at_force_release is not None
+        else None
+    )
     document.update(
         {
             "force_application_mode": args.force_application_mode,
-            "true_external_force_used": args.force_application_mode == "external_link_force",
-            "fallback_used": args.force_application_mode == "impulse_then_passive_joint_dynamics",
-            "force_units_physical": args.force_application_mode == "external_link_force",
+            "true_external_force_used": True,
+            "native_sapien_add_force_at_point_used": True,
+            "set_qf_motion_driver_used": False,
+            "set_qf_passive_resistance_used": systematic_resistance is not None,
+            "joint_drive_used": False,
+            "manual_q_interpolation_used": False,
+            "target_motion_used": False,
+            "target_torque_used": False,
+            "fallback_used": False,
+            "force_units_physical": True,
+            "engine_units": "SI_MKS",
+            "force_mode": "force",
             "force_duration_s": float(args.force_duration),
+            "requested_force_start_time_s": float(args.force_start_time),
+            "requested_force_stop_time_s": float(args.force_start_time + args.force_duration),
+            "expected_active_force_physics_steps": expected_active_force_physics_steps,
+            "active_force_physics_steps": active_force_physics_steps,
+            "actual_force_start_time_s": actual_force_start_time_s,
+            "actual_force_stop_time_s": actual_force_stop_time_s,
+            "actual_force_duration_s": float(actual_force_duration_s),
+            "incomplete_pulse": active_force_physics_steps != expected_active_force_physics_steps,
             "sim_duration_s": float(args.seconds),
             "timestep_s": float(TIMESTEP),
             "fps": int(args.fps),
-            "joint_damping": float(args.joint_viscous_damping),
-            "joint_friction": float(args.joint_dynamic_friction),
+            "damping": float(systematic_resistance.damping_coefficient if systematic_resistance else args.joint_viscous_damping),
+            "friction": float(effective_joint_friction_installed),
+            "joint_damping": float(systematic_resistance.damping_coefficient if systematic_resistance else args.joint_viscous_damping),
+            "joint_friction": float(effective_joint_friction_installed),
+            "joint_friction_requested": 0.0 if args.require_zero_joint_friction else float(args.joint_dynamic_friction),
+            "joint_friction_imported": float(imported_friction),
+            "joint_friction_installed": float(effective_joint_friction_installed),
+            "joint_friction_fallback_used": False if args.require_zero_joint_friction else bool(joint_friction_fallback_used),
+            "friction_compensation_used": bool(
+                systematic_resistance is not None and systematic_resistance.friction_magnitude > 1e-12
+            ),
+            "generalized_friction_force_applied": False if args.require_zero_joint_friction else None,
+            "zero_generalized_friction_force_verified": bool(
+                args.require_zero_joint_friction and
+                systematic_resistance is not None and
+                abs(systematic_resistance.friction_magnitude) <= 1e-12
+            ),
+            "T_decay": float(args.systematic_decay_time_s),
+            "resistance_model": "viscous_damping_only" if args.require_zero_joint_friction else args.resistance_model,
+            "imported_joint_friction": float(imported_friction),
+            "effective_joint_friction_installed": float(effective_joint_friction_installed),
+            "requested_legacy_link_linear_damping": float(args.link_linear_damping),
+            "requested_legacy_link_angular_damping": float(args.link_angular_damping),
+            "installed_link_linear_damping": float(installed_link_linear_damping),
+            "installed_link_angular_damping": float(installed_link_angular_damping),
             "warning_messages": dynamics_warnings,
             "settle_time_s": settled_time_s,
             "settled": settled_time_s is not None,
+            "settling_timestamp_s": settled_time_s,
+            "force_release_timestamp_s": actual_force_stop_time_s,
+            "settle_threshold": float(args.settle_velocity_threshold),
+            "settle_window_duration_s": float(args.settle_window_seconds),
+            "post_settle_duration_s": float(args.post_settle_hold_seconds),
+            "max_duration_reached": stopped_because == "max_duration",
             "actual_sim_duration_s": float(primary_samples[-1]["time_s"]),
             "actual_video_frame_count": len(primary_samples),
-            "stopped_because": stopped_because,
+            "stopped_because": (
+                "maximum_duration_cap"
+                if args.require_zero_joint_friction and stopped_because == "max_duration"
+                else stopped_because
+            ),
+            "final_q": float(primary_samples[-1]["q"]),
+            "final_qdot": float(primary_samples[-1]["qdot"]),
+            "final_abs_qdot": abs(float(primary_samples[-1]["qdot"])),
+            "contact_point_world_per_frame": [
+                sample["contact_point_world_per_frame"] for sample in primary_samples
+            ],
+            "application_point_world_trajectory": [
+                sample["contact_point_world_per_frame"] for sample in primary_samples
+            ],
+            "moving_link_pose_per_frame": [sample["moving_link_pose"] for sample in primary_samples],
+            "q": [float(sample["q"]) for sample in primary_samples],
+            "qdot": [float(sample["qdot"]) for sample in primary_samples],
+            "qddot": [float(sample["qddot"]) for sample in primary_samples],
+            "maximum_abs_velocity_physics_steps": float(maximum_abs_velocity_physics_steps),
+            "maximum_abs_acceleration_physics_steps": float(maximum_abs_acceleration_physics_steps),
+            "joint_limit_arrival_time_s": joint_limit_arrival_time_s,
+            "active_force_time_at_limit_s": float(active_force_time_at_limit_s),
+            "continuous_active_force_at_limit_s": float(continuous_active_force_at_limit_s),
+            "substantial_limit_push_threshold_s": float(substantial_limit_push_threshold_s),
+            "substantial_limit_push": continuous_active_force_at_limit_s >= substantial_limit_push_threshold_s,
+            "repeated_limit_impact_count": int(repeated_limit_impact_count),
+            "limit_jitter_count": int(limit_jitter_count),
+            "force_continued_after_limit": bool(force_continued_after_limit),
+            "non_finite_state_detected": bool(non_finite_state_detected),
+            "teleportation_detected_physics_steps": bool(teleportation_detected_physics_steps),
+            "q_at_force_release": q_at_force_release,
+            "post_release_displacement": post_release_displacement,
+            "post_release_peak_abs_velocity": max((abs(value) for value in qdot_after_force_release_values), default=0.0),
+            "post_release_settled": bool(settled_time_s is not None),
+            "prismatic_contact_tracking": metadata["prismatic_tracking_audit"],
+            "prismatic_joint_axis": metadata["prismatic_joint_axis_audit"],
         }
     )
+    if systematic_calibration is not None and systematic_resistance is not None:
+        document.update(calibration_metadata(systematic_calibration, systematic_resistance))
     with json_output.open("w", encoding="utf-8") as f:
         json.dump(document, f, indent=2)
     write_physics_diagnostics(output.parent, primary_samples, metadata, validation)

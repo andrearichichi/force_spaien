@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "object_id": "103111",
+  "object_name": "Stapler",
+  "issue": "grey elongated rail counter-rotated through unintended joint_0 instead of remaining rigid with upper assembly",
+  "geometry_preview": "stapler_103111_rigid_assembly_preview.png",
+  "grey_component": {
+    "mesh": "textured_objs/original-4.obj",
+    "material": "textured_objs/original-4.mtl",
+    "diffuse_materials": {
+      "material_0_0": [
+        0.5568627451,
+        0.5568627451,
+        0.5568627451
+      ],
+      "material_1_0": [
+        1,
+        1,
+        1
+      ],
+      "material_2_0": [
+        0.4,
+        0.2392156863,
+        0.0745098039
+      ]
+    },
+    "before_owner": "link_0",
+    "after_owner": "link_1",
+    "visual_geometry": true,
+    "collision_geometry": true,
+    "contributes_to_calibrated_mass_inertia": true,
+    "local_geometry_origin_xyz_unscaled_m": [
+      0,
+      -0.10500870623151695,
+      0.752066445189761
+    ],
+    "before_link0_to_link1_transform": {
+      "translation_m": [
+        0,
+        0,
+        0
+      ],
+      "quaternion_wxyz": [
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    "after_geometry_transform_in_link1": {
+      "translation_m": [
+        0,
+        -0.10500870623151695,
+        0.752066445189761
+      ],
+      "quaternion_wxyz": [
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    "initial_world_pose_preserved": true,
+    "duplicate_mesh_count_after": 1
+  },
+  "before_hierarchy": {
+    "links": [
+      "base",
+      "link_2",
+      "link_1",
+      "link_0"
+    ],
+    "joints": [
+      {
+        "name": "joint_2",
+        "type": "fixed",
+        "parent": "base",
+        "child": "link_2"
+      },
+      {
+        "name": "joint_1",
+        "type": "revolute",
+        "parent": "link_2",
+        "child": "link_1"
+      },
+      {
+        "name": "joint_0",
+        "type": "revolute",
+        "parent": "link_1",
+        "child": "link_0"
+      }
+    ],
+    "link_0_visuals": [
+      "textured_objs/original-4.obj"
+    ],
+    "link_0_collisions": [
+      "textured_objs/original-4.obj"
+    ]
+  },
+  "after_hierarchy": {
+    "links": [
+      "base",
+      "link_2",
+      "link_1"
+    ],
+    "joints": [
+      {
+        "name": "joint_2",
+        "type": "fixed",
+        "parent": "base",
+        "child": "link_2"
+      },
+      {
+        "name": "joint_1",
+        "type": "revolute",
+        "parent": "link_2",
+        "child": "link_1"
+      }
+    ],
+    "link_1_visuals": [
+      "textured_objs/original-4.obj",
+      "textured_objs/original-2.obj",
+      "textured_objs/original-3.obj",
+      "textured_objs/original-1.obj"
+    ],
+    "link_1_collisions": [
+      "textured_objs/original-4.obj",
+      "textured_objs/original-2.obj",
+      "textured_objs/original-3.obj",
+      "textured_objs/original-1.obj"
+    ],
+    "ownership_method": "visual and collision geometry merged into selected moving link; obsolete link_0 and joint_0 removed"
+  },
+  "physical_calibration": {
+    "total_mass_before_kg": 0.2499999792704557,
+    "total_mass_after_kg": 0.2499999792704557,
+    "links_before": [
+      {
+        "name": "base",
+        "mass_kg": 9.999999974752427e-07,
+        "com_local_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "inertia_principal_kg_m2": [
+          9.999999974752427e-07,
+          9.999999974752427e-07,
+          9.999999974752427e-07
+        ],
+        "inertia_frame_quaternion": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "name": "link_2",
+        "mass_kg": 0.16519606113433838,
+        "com_local_m": [
+          2.301600579812657e-05,
+          -0.006734082009643316,
+          -0.009459218010306358
+        ],
+        "inertia_principal_kg_m2": [
+          0.00018489711510483176,
+          0.00018985371571034193,
+          1.6381825844291598e-05
+        ],
+        "inertia_frame_quaternion": [
+          0.9989482164382935,
+          0.045465435832738876,
+          0.0014762702630832791,
+          -0.005772725213319063
+        ]
+      },
+      {
+        "name": "link_1",
+        "mass_kg": 0.06813865900039673,
+        "com_local_m": [
+          -0.00013584499538410455,
+          0.009678940288722515,
+          0.05105765163898468
+        ],
+        "inertia_principal_kg_m2": [
+          6.0096335801063105e-05,
+          5.9217367379460484e-05,
+          2.228494849987328e-06
+        ],
+        "inertia_frame_quaternion": [
+          0.9993298649787903,
+          -0.03660343214869499,
+          1.4356259271153249e-05,
+          -7.981546514201909e-05
+        ]
+      },
+      {
+        "name": "link_0",
+        "mass_kg": 0.016664259135723114,
+        "com_local_m": [
+          -0.00013480187044478953,
+          -0.0012178379110991955,
+          0.053355321288108826
+        ],
+        "inertia_principal_kg_m2": [
+          1.196568518935237e-05,
+          1.2001699360553175e-05,
+          9.999999974752427e-07
+        ],
+        "inertia_frame_quaternion": [
+          0.9999315738677979,
+          -0.011697113513946533,
+          0.0,
+          0.0
+        ]
+      }
+    ],
+    "links_after": [
+      {
+        "name": "base",
+        "mass_kg": 9.999999974752427e-07,
+        "com_local_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "inertia_principal_kg_m2": [
+          9.999999974752427e-07,
+          9.999999974752427e-07,
+          9.999999974752427e-07
+        ],
+        "inertia_frame_quaternion": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "name": "link_2",
+        "mass_kg": 0.16519606113433838,
+        "com_local_m": [
+          2.301600579812657e-05,
+          -0.006734082009643316,
+          -0.009459218010306358
+        ],
+        "inertia_principal_kg_m2": [
+          0.00018489711510483176,
+          0.00018985371571034193,
+          1.6381825844291598e-05
+        ],
+        "inertia_frame_quaternion": [
+          0.9989482164382935,
+          0.045465435832738876,
+          0.0014762702630832791,
+          -0.005772725213319063
+        ]
+      },
+      {
+        "name": "link_1",
+        "mass_kg": 0.08480291813611984,
+        "com_local_m": [
+          -0.00013564008986577392,
+          0.0075376625172793865,
+          0.051509153097867966
+        ],
+        "inertia_principal_kg_m2": [
+          7.372259278781712e-05,
+          7.12293476681225e-05,
+          4.023822384624509e-06
+        ],
+        "inertia_frame_quaternion": [
+          0.9995324611663818,
+          -0.030575288459658623,
+          1.4420875231735408e-05,
+          -2.346586143175955e-06
+        ]
+      }
+    ],
+    "effective_joint_inertia_before_kg_m2": 0.0002441092866809758,
+    "effective_joint_inertia_after_kg_m2": 0.00030353927953935333,
+    "damping_before_n_m_s_per_rad": 0.0001220546433404879,
+    "damping_after_n_m_s_per_rad": 0.00015176963976967667,
+    "T_decay_s": 2.0,
+    "joint_friction_installed": 0.0,
+    "personalized_force_before_n": 0.0008334865049838262,
+    "personalized_force_after_n": 0.0010363420405025616
+  },
+  "validation": {
+    "grey_red_max_relative_position_error_m": 0.0,
+    "grey_red_max_relative_rotation_error_rad": 0.0,
+    "rigidity_basis": "grey mesh is a render and collision shape of link_1; no independent transform or joint remains",
+    "achieved_displacement_rad": 1.4055824279785156,
+    "achieved_percent_available_travel": 69.90793479246524,
+    "relative_target_error": 0.0013152172504965127,
+    "force_duration_s": 2.0,
+    "active_force_physics_steps": 480,
+    "settled": true,
+    "stopped_because": "settled_plus_hold",
+    "interpenetration_detected": false,
+    "teleportation_detected": false,
+    "physics_verdict": "PASS",
+    "final_acceptance": "PASS"
+  }
+}

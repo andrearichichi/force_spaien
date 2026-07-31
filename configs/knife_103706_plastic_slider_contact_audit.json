@@ -1,0 +1,130 @@
+{
+  "object_id": "103706",
+  "object_name": "Knife",
+  "old_contact_label": "knife_translating_blade_flat_center",
+  "new_contact_label": "knife_plastic_slider_center",
+  "urdf": "final_dataset/103706/mobility.urdf",
+  "joint": "joint_0",
+  "joint_type": "prismatic",
+  "owning_moving_link": "link_0",
+  "fixed_body_link": "link_1",
+  "selected_mesh": "textured_objs/original-27.obj",
+  "blade_mesh": "textured_objs/original-3.obj",
+  "moving_link_meshes": [
+    "original-3.obj",
+    "original-2.obj",
+    "original-5.obj",
+    "original-31.obj",
+    "original-32.obj",
+    "original-29.obj",
+    "original-16.obj",
+    "original-21.obj",
+    "original-22.obj",
+    "original-25.obj",
+    "original-11.obj",
+    "original-9.obj",
+    "original-12.obj",
+    "original-8.obj",
+    "original-14.obj",
+    "original-19.obj",
+    "original-27.obj",
+    "original-15.obj",
+    "original-30.obj",
+    "original-17.obj",
+    "original-18.obj",
+    "original-10.obj",
+    "original-13.obj",
+    "original-24.obj",
+    "original-20.obj",
+    "original-26.obj",
+    "original-23.obj",
+    "original-33.obj",
+    "original-4.obj"
+  ],
+  "fixed_link_meshes": [
+    "original-36.obj",
+    "original-41.obj",
+    "original-43.obj",
+    "original-44.obj",
+    "original-45.obj",
+    "original-35.obj",
+    "original-49.obj",
+    "original-51.obj",
+    "original-50.obj",
+    "original-37.obj",
+    "original-38.obj",
+    "original-42.obj",
+    "original-47.obj",
+    "original-40.obj",
+    "original-46.obj"
+  ],
+  "selected_mesh_local_bounds_m": [
+    [
+      -0.0034210656825374615,
+      0.013627551438883587,
+      -0.05682935386352868
+    ],
+    [
+      0.001085935301549918,
+      0.017007716250750236,
+      -0.05232235287944129
+    ]
+  ],
+  "moving_link_local_bounds_m": [
+    [
+      -0.011308231478491486,
+      -0.001020287685599282,
+      -0.08612451655530108
+    ],
+    [
+      0.01144932229706602,
+      0.017007716250750236,
+      0.16526134276461055
+    ]
+  ],
+  "selected_local_point_m": [
+    -0.0018931300146505237,
+    0.01700771600008011,
+    -0.05438143014907837
+  ],
+  "initial_world_point_m": [
+    0.05436395160470628,
+    0.0018931332212519523,
+    0.0170077427325589
+  ],
+  "selected_mesh_surface_distance_m": 2.506701257142584e-10,
+  "blade_surface_distance_m": 0.036156736789264926,
+  "local_world_local_round_trip_error_m": 2.168404344971009e-19,
+  "maximum_rigid_motion_tracking_error_m": 2.579286721700617e-08,
+  "maximum_force_application_tracking_error_m": 0.0,
+  "force_axis_alignment_dot": 0.9999999999999977,
+  "personalized_force_n": 0.0005516654197921702,
+  "target_displacement_m": 0.10586107703034489,
+  "achieved_displacement_m": 0.11064928770065308,
+  "achieved_travel_percentage": 73.16617548511711,
+  "relative_target_travel_error": 0.045231078358815985,
+  "installed_joint_friction": 0.0,
+  "geometry_classification": {
+    "selected_component": "central raised plastic thumb-slider tread",
+    "exposed_surface": "positive local-y outer face",
+    "inside_geometry": false,
+    "edge_contact": false,
+    "belongs_to_fixed_body": false,
+    "lies_on_metal_blade": false
+  },
+  "acceptance": {
+    "selected_mesh_surface_distance_pass": true,
+    "not_on_blade_pass": true,
+    "local_world_local_pass": true,
+    "rigid_tracking_pass": true,
+    "force_tracking_pass": true,
+    "force_axis_alignment_pass": true,
+    "motion_sign_pass": true,
+    "travel_error_pass": true,
+    "joint_limits_pass": true,
+    "finite_states_pass": true,
+    "zero_joint_friction_pass": true,
+    "natural_settling_pass": true
+  },
+  "verdict": "PASS"
+}

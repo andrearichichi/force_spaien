@@ -54,7 +54,7 @@ def compute_force_profile_scale(
         return 1.0
     if elapsed >= duration_s:
         return 0.0
-    if profile == "pulse":
+    if profile in {"pulse", "square_pulse"}:
         return 1.0
     if profile != "ramp_hold_release":
         raise ValueError(f"Unsupported force profile: {profile}")

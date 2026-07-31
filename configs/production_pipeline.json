@@ -1,0 +1,950 @@
+{
+  "schema_version": 1,
+  "object_ids": [
+    "10211",
+    "10905",
+    "11100",
+    "45135",
+    "100109",
+    "101917",
+    "102255",
+    "103111",
+    "103706",
+    "103776"
+  ],
+  "physics": {
+    "timestep_s": 0.004166666666666667,
+    "gravity_enabled": false,
+    "force_duration_s": 2.0,
+    "force_steps": 480,
+    "joint_friction": 0.0,
+    "friction_compensation": false,
+    "resistance_model": "viscous_damping_only",
+    "T_decay_s": 2.0,
+    "minimum_force_n": 1e-07,
+    "maximum_force_n": 150.0,
+    "minimum_duration_s": 6.0,
+    "maximum_duration_s": 20.0,
+    "settle_threshold": 0.002,
+    "settle_window_s": 0.5,
+    "post_settle_hold_s": 1.0
+  },
+  "rendering": {
+    "application_marker": "blue",
+    "historical_trail": "cyan_actual_world_space_samples_through_current_frame",
+    "joint_axis": "red",
+    "force_arrow": "blue_only_elapsed_lt_2s",
+    "direction_arrow": false,
+    "only_video_text": "active_force_magnitude"
+  },
+  "objects": {
+    "102255": {
+      "name": "FoldingChair",
+      "joint_type": "revolute",
+      "joint_name": "joint_1",
+      "moving_link": "link_1",
+      "contact_label": "foldingchair_surface_08",
+      "contact_local_scaled_m": [
+        0.18250823020935059,
+        0.023350024595856667,
+        0.26058411598205566
+      ],
+      "force_direction_world": [
+        0.5395160639257071,
+        -8.998303473286115e-06,
+        0.8419753064580593
+      ],
+      "reverse_direction": false,
+      "q_start": 0.0,
+      "intended_sign": 1.0,
+      "available_travel": 1.97292018645439,
+      "target_displacement": 1.381044130518073,
+      "target_kind": "70_percent_available_joint_travel",
+      "personalized_force_n": 0.014532893333207574,
+      "scale": 0.5250977702599752,
+      "equivalent_density_kg_m3": 47.911528649354366,
+      "target_total_mass_kg": 5.0,
+      "actual_total_mass_kg": 5.000000165534971,
+      "links": [
+        {
+          "name": "base",
+          "mass_kg": 9.999999974752427e-07,
+          "local_com_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "local_inertia_kg_m2": [
+            9.999999974752427e-07,
+            9.999999974752427e-07,
+            9.999999974752427e-07
+          ]
+        },
+        {
+          "name": "link_0",
+          "mass_kg": 4.368627071380615,
+          "local_com_m": [
+            -0.004181892145425081,
+            -0.110743947327137,
+            -0.0755162388086319
+          ],
+          "local_inertia_kg_m2": [
+            0.24277420341968536,
+            0.1078265830874443,
+            0.28484296798706055
+          ]
+        },
+        {
+          "name": "link_1",
+          "mass_kg": 0.6313720941543579,
+          "local_com_m": [
+            -0.006211271975189447,
+            0.0013364367187023163,
+            0.06555240601301193
+          ],
+          "local_inertia_kg_m2": [
+            0.008303720504045486,
+            0.015006432309746742,
+            0.006923359353095293
+          ]
+        }
+      ],
+      "effective_inertia_or_mass": 0.011012789503385089,
+      "cartesian_efficiency": 0.2616340786790168
+    },
+    "103706": {
+      "name": "Knife",
+      "joint_type": "prismatic",
+      "joint_name": "joint_0",
+      "moving_link": "link_0",
+      "contact_label": "knife_plastic_slider_center",
+      "contact_local_scaled_m": [
+        -0.0018931300146505237,
+        0.01700771600008011,
+        -0.05438143014907837
+      ],
+      "force_direction_world": [
+        -0.9999999999999609,
+        -2.793967173555173e-07,
+        0.0
+      ],
+      "reverse_direction": false,
+      "q_start": 0.0,
+      "intended_sign": 1.0,
+      "available_travel": 0.15123011004334985,
+      "target_displacement": 0.10586107703034489,
+      "target_kind": "70_percent_available_joint_travel",
+      "personalized_force_n": 0.0005516654197921702,
+      "scale": 0.17185239777653394,
+      "equivalent_density_kg_m3": 516.0741803741305,
+      "target_total_mass_kg": 0.2,
+      "actual_total_mass_kg": 0.19999999901449428,
+      "links": [
+        {
+          "name": "base",
+          "mass_kg": 9.999999974752427e-07,
+          "local_com_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "local_inertia_kg_m2": [
+            9.999999974752427e-07,
+            9.999999974752427e-07,
+            9.999999974752427e-07
+          ]
+        },
+        {
+          "name": "link_1",
+          "mass_kg": 0.18038195371627808,
+          "local_com_m": [
+            0.002358312951400876,
+            -0.00026154049555771053,
+            -0.004388262052088976
+          ],
+          "local_inertia_kg_m2": [
+            0.001210168469697237,
+            0.0012256362242624164,
+            2.665509055077564e-05
+          ]
+        },
+        {
+          "name": "link_0",
+          "mass_kg": 0.019617045298218727,
+          "local_com_m": [
+            3.5424757243163185e-06,
+            0.007310422137379646,
+            -0.03252113237977028
+          ],
+          "local_inertia_kg_m2": [
+            5.296316521707922e-05,
+            5.317501199897379e-05,
+            9.999999974752427e-07
+          ]
+        }
+      ],
+      "effective_inertia_or_mass": 0.019617045298218727,
+      "cartesian_efficiency": 0.999999982196811
+    },
+    "10211": {
+      "name": "Laptop",
+      "joint_type": "revolute",
+      "joint_name": "joint_1",
+      "moving_link": "link_1",
+      "contact_label": "laptop_screen_edge_03",
+      "contact_local_scaled_m": [
+        -0.19556793570518494,
+        0.21538202464580536,
+        -0.06617438048124313
+      ],
+      "force_direction_world": [
+        -0.9868787754666964,
+        0.00018712837206861095,
+        -0.16146283633185063
+      ],
+      "reverse_direction": true,
+      "q_start": 0.0,
+      "intended_sign": -1.0,
+      "available_travel": 1.834690109696439,
+      "target_displacement": 1.2842830767875073,
+      "target_kind": "70_percent_available_joint_travel",
+      "personalized_force_n": 0.012760504176714375,
+      "scale": 0.3179154766962537,
+      "equivalent_density_kg_m3": 812.107250608325,
+      "target_total_mass_kg": 1.5,
+      "actual_total_mass_kg": 1.5000001059303258,
+      "links": [
+        {
+          "name": "base",
+          "mass_kg": 9.999999974752427e-07,
+          "local_com_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "local_inertia_kg_m2": [
+            9.999999974752427e-07,
+            9.999999974752427e-07,
+            9.999999974752427e-07
+          ]
+        },
+        {
+          "name": "link_0",
+          "mass_kg": 0.909461498260498,
+          "local_com_m": [
+            -0.02990700490772724,
+            -0.0021004851441830397,
+            0.03466476500034332
+          ],
+          "local_inertia_kg_m2": [
+            0.0038227499462664127,
+            0.012173021212220192,
+            0.008381648920476437
+          ]
+        },
+        {
+          "name": "link_1",
+          "mass_kg": 0.5905376076698303,
+          "local_com_m": [
+            -0.02257668599486351,
+            0.09860456734895706,
+            -0.034873880445957184
+          ],
+          "local_inertia_kg_m2": [
+            0.0024878112599253654,
+            0.005087810102850199,
+            0.007565554231405258
+          ]
+        }
+      ],
+      "effective_inertia_or_mass": 0.008956605132917832,
+      "cartesian_efficiency": 0.22536063839062148
+    },
+    "101917": {
+      "name": "Oven",
+      "joint_type": "revolute",
+      "joint_name": "joint_0",
+      "moving_link": "link_0",
+      "contact_label": "oven_door_edge_03",
+      "contact_local_scaled_m": [
+        0.0007765529444441199,
+        0.23091016709804535,
+        -0.010775886476039886
+      ],
+      "force_direction_world": [
+        -0.9993984411410974,
+        -4.1340841822875714e-06,
+        0.03468077028634038
+      ],
+      "reverse_direction": false,
+      "q_start": 0.0,
+      "intended_sign": 1.0,
+      "available_travel": 1.5707963267948966,
+      "target_displacement": 1.0995574287564276,
+      "target_kind": "70_percent_available_joint_travel",
+      "personalized_force_n": 0.041217047380970075,
+      "scale": 0.3122448487723264,
+      "equivalent_density_kg_m3": 723.6292307331163,
+      "target_total_mass_kg": 35.0,
+      "actual_total_mass_kg": 34.99999126954174,
+      "links": [
+        {
+          "name": "base",
+          "mass_kg": 9.999999974752427e-07,
+          "local_com_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "local_inertia_kg_m2": [
+            9.999999974752427e-07,
+            9.999999974752427e-07,
+            9.999999974752427e-07
+          ]
+        },
+        {
+          "name": "link_8",
+          "mass_kg": 33.01374816894531,
+          "local_com_m": [
+            0.001002372009679675,
+            -0.008458717726171017,
+            -0.014545086771249771
+          ],
+          "local_inertia_kg_m2": [
+            0.6758685111999512,
+            0.658973753452301,
+            0.89344322681427
+          ]
+        },
+        {
+          "name": "link_0",
+          "mass_kg": 1.8542650938034058,
+          "local_com_m": [
+            0.2002038210630417,
+            0.11642369627952576,
+            0.0021351296454668045
+          ],
+          "local_inertia_kg_m2": [
+            0.009518380276858807,
+            0.024038992822170258,
+            0.033263858407735825
+          ]
+        },
+        {
+          "name": "link_1",
+          "mass_kg": 0.01885230839252472,
+          "local_com_m": [
+            -5.943877840763889e-05,
+            0.00034933429560624063,
+            0.14458110928535461
+          ],
+          "local_inertia_kg_m2": [
+            2.1780570023111068e-06,
+            2.176412408516626e-06,
+            2.2566171082871733e-06
+          ]
+        },
+        {
+          "name": "link_2",
+          "mass_kg": 0.01885305531322956,
+          "local_com_m": [
+            -4.865651499130763e-05,
+            0.0004287655174266547,
+            0.14465102553367615
+          ],
+          "local_inertia_kg_m2": [
+            2.1765656583738746e-06,
+            2.1781354462291347e-06,
+            2.2566950974578504e-06
+          ]
+        },
+        {
+          "name": "link_3",
+          "mass_kg": 0.01885668933391571,
+          "local_com_m": [
+            -4.735228867502883e-05,
+            0.00038672739174216986,
+            0.14461645483970642
+          ],
+          "local_inertia_kg_m2": [
+            2.177322585339425e-06,
+            2.1785058379464317e-06,
+            2.257279675177415e-06
+          ]
+        },
+        {
+          "name": "link_4",
+          "mass_kg": 0.01885233074426651,
+          "local_com_m": [
+            -4.891267235507257e-05,
+            0.00048287841491401196,
+            0.14469943940639496
+          ],
+          "local_inertia_kg_m2": [
+            2.1765665678685764e-06,
+            2.1779121652798494e-06,
+            2.2566048301086994e-06
+          ]
+        },
+        {
+          "name": "link_5",
+          "mass_kg": 0.018856819719076157,
+          "local_com_m": [
+            -4.8296711611328647e-05,
+            0.00048167360364459455,
+            0.14470264315605164
+          ],
+          "local_inertia_kg_m2": [
+            2.1773366825073026e-06,
+            2.178595195800881e-06,
+            2.257329470012337e-06
+          ]
+        },
+        {
+          "name": "link_6",
+          "mass_kg": 0.01884644664824009,
+          "local_com_m": [
+            -4.752918903250247e-05,
+            0.00048019702080637217,
+            0.1447034478187561
+          ],
+          "local_inertia_kg_m2": [
+            2.178096110583283e-06,
+            2.1765752080682432e-06,
+            2.254967057524482e-06
+          ]
+        },
+        {
+          "name": "link_7",
+          "mass_kg": 0.01885935664176941,
+          "local_com_m": [
+            -4.765018093166873e-05,
+            0.00047747776261530817,
+            0.14470449090003967
+          ],
+          "local_inertia_kg_m2": [
+            2.1788468984595966e-06,
+            2.1779892449558247e-06,
+            2.257794221804943e-06
+          ]
+        }
+      ],
+      "effective_inertia_or_mass": 0.03466044189573332,
+      "cartesian_efficiency": 0.23116158861701827
+    },
+    "10905": {
+      "name": "Refrigerator",
+      "joint_type": "revolute",
+      "joint_name": "joint_0",
+      "moving_link": "link_0",
+      "contact_label": "refrigerator_door_edge_17",
+      "contact_local_scaled_m": [
+        0.3445611894130707,
+        -1.1194430589675903,
+        0.8411701917648315
+      ],
+      "force_direction_world": [
+        0.37941138973641303,
+        -0.9252280779562908,
+        3.316009039662207e-05
+      ],
+      "reverse_direction": false,
+      "q_start": 0.0,
+      "intended_sign": 1.0,
+      "available_travel": 1.0471975511965976,
+      "target_displacement": 0.7330382858376183,
+      "target_kind": "70_percent_available_joint_travel",
+      "personalized_force_n": 0.37568926985166523,
+      "scale": 1.3405155045202992,
+      "equivalent_density_kg_m3": 52.31545960257584,
+      "target_total_mass_kg": 70.0,
+      "actual_total_mass_kg": 69.99995045526123,
+      "links": [
+        {
+          "name": "base",
+          "mass_kg": 9.999999974752427e-07,
+          "local_com_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "local_inertia_kg_m2": [
+            9.999999974752427e-07,
+            9.999999974752427e-07,
+            9.999999974752427e-07
+          ]
+        },
+        {
+          "name": "link_1",
+          "mass_kg": 63.56560516357422,
+          "local_com_m": [
+            -0.14984406530857086,
+            0.0070395516231656075,
+            -0.20671764016151428
+          ],
+          "local_inertia_kg_m2": [
+            11.475987434387207,
+            8.292813301086426,
+            13.196928977966309
+          ]
+        },
+        {
+          "name": "link_0",
+          "mass_kg": 6.434344291687012,
+          "local_com_m": [
+            0.10500911623239517,
+            -0.5849907398223877,
+            0.4425634741783142
+          ],
+          "local_inertia_kg_m2": [
+            1.235154151916504,
+            0.5319401025772095,
+            0.7793282270431519
+          ]
+        }
+      ],
+      "effective_inertia_or_mass": 1.8635012443553793,
+      "cartesian_efficiency": 0.9090078219158683
+    },
+    "11100": {
+      "name": "Scissors",
+      "joint_type": "revolute",
+      "joint_name": "joint_0",
+      "moving_link": "link_0",
+      "contact_label": "scissors_handle_or_blade_06",
+      "contact_local_scaled_m": [
+        0.08850761502981186,
+        -0.008687706664204597,
+        0.09348153322935104
+      ],
+      "force_direction_world": [
+        0.6941891463380628,
+        -0.7197926158116236,
+        0.00013903054317159822
+      ],
+      "reverse_direction": false,
+      "q_start": 0.0,
+      "intended_sign": -1.0,
+      "available_travel": 0.8230972752405259,
+      "target_displacement": 0.5761680926683681,
+      "target_kind": "70_percent_available_joint_travel",
+      "personalized_force_n": 0.00044629674425094445,
+      "scale": 0.12384648375697806,
+      "equivalent_density_kg_m3": 751.2581025778414,
+      "target_total_mass_kg": 0.1,
+      "actual_total_mass_kg": 0.09999999193644271,
+      "links": [
+        {
+          "name": "base",
+          "mass_kg": 9.999999974752427e-07,
+          "local_com_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "local_inertia_kg_m2": [
+            9.999999974752427e-07,
+            9.999999974752427e-07,
+            9.999999974752427e-07
+          ]
+        },
+        {
+          "name": "link_1",
+          "mass_kg": 0.05022329464554787,
+          "local_com_m": [
+            0.007680729031562805,
+            -0.001448091701604426,
+            -0.05224784091114998
+          ],
+          "local_inertia_kg_m2": [
+            0.00015068636275827885,
+            0.00015767615695949644,
+            8.378206985071301e-06
+          ]
+        },
+        {
+          "name": "link_0",
+          "mass_kg": 0.04977569729089737,
+          "local_com_m": [
+            0.04752533510327339,
+            -0.0016486116219311953,
+            0.05128059536218643
+          ],
+          "local_inertia_kg_m2": [
+            0.00014852017920929939,
+            0.00015550544776488096,
+            8.370714567718096e-06
+          ]
+        }
+      ],
+      "effective_inertia_or_mass": 0.0003988184052581171,
+      "cartesian_efficiency": 0.1287328383002109
+    },
+    "103111": {
+      "name": "Stapler",
+      "joint_type": "revolute",
+      "joint_name": "joint_1",
+      "moving_link": "link_1",
+      "contact_label": "stapler_lid_front_top_14",
+      "contact_local_scaled_m": [
+        -0.00013483308430295438,
+        0.009715070016682148,
+        0.10259855538606644
+      ],
+      "force_direction_world": [
+        0.11291597386748291,
+        -0.00012380546452047625,
+        0.9936045327582624
+      ],
+      "reverse_direction": false,
+      "q_start": 0.0,
+      "intended_sign": 1.0,
+      "available_travel": 2.0106192982974673,
+      "target_displacement": 1.407433508808227,
+      "target_kind": "70_percent_available_joint_travel",
+      "personalized_force_n": 0.0010363420405025616,
+      "scale": 0.06256755447716143,
+      "equivalent_density_kg_m3": 3710.5754300457734,
+      "target_total_mass_kg": 0.25,
+      "actual_total_mass_kg": 0.2499999792704557,
+      "links": [
+        {
+          "name": "base",
+          "mass_kg": 9.999999974752427e-07,
+          "local_com_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "local_inertia_kg_m2": [
+            9.999999974752427e-07,
+            9.999999974752427e-07,
+            9.999999974752427e-07
+          ]
+        },
+        {
+          "name": "link_2",
+          "mass_kg": 0.16519606113433838,
+          "local_com_m": [
+            2.301600579812657e-05,
+            -0.006734082009643316,
+            -0.009459218010306358
+          ],
+          "local_inertia_kg_m2": [
+            0.00018489711510483176,
+            0.00018985371571034193,
+            1.6381825844291598e-05
+          ]
+        },
+        {
+          "name": "link_1",
+          "mass_kg": 0.08480291813611984,
+          "local_com_m": [
+            -0.00013564008986577392,
+            0.0075376625172793865,
+            0.051509153097867966
+          ],
+          "local_inertia_kg_m2": [
+            7.372259278781712e-05,
+            7.12293476681225e-05,
+            4.023822384624509e-06
+          ]
+        }
+      ],
+      "effective_inertia_or_mass": 0.00030353927953935333,
+      "cartesian_efficiency": 0.10305752958186579
+    },
+    "45135": {
+      "name": "StorageFurniture",
+      "joint_type": "prismatic",
+      "joint_name": "joint_0",
+      "moving_link": "link_0",
+      "contact_label": "storagefurniture_drawer_handle_center",
+      "contact_local_scaled_m": [
+        0.007691087666898966,
+        0.11948219686746597,
+        0.048913147300481796
+      ],
+      "force_direction_world": [
+        -0.9999999999997224,
+        7.450588331811782e-07,
+        0.0
+      ],
+      "reverse_direction": false,
+      "q_start": 0.0,
+      "intended_sign": 1.0,
+      "available_travel": 0.32832336865464534,
+      "target_displacement": 0.22982635805825172,
+      "target_kind": "70_percent_available_joint_travel",
+      "personalized_force_n": 0.386968812069118,
+      "scale": 0.5862917297404381,
+      "equivalent_density_kg_m3": 627.7401780613142,
+      "target_total_mass_kg": 30.0,
+      "actual_total_mass_kg": 30.00000314576721,
+      "links": [
+        {
+          "name": "base",
+          "mass_kg": 9.999999974752427e-07,
+          "local_com_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "local_inertia_kg_m2": [
+            9.999999974752427e-07,
+            9.999999974752427e-07,
+            9.999999974752427e-07
+          ]
+        },
+        {
+          "name": "link_3",
+          "mass_kg": 13.555577278137207,
+          "local_com_m": [
+            -0.0010638553649187088,
+            0.01549077220261097,
+            -0.06443381309509277
+          ],
+          "local_inertia_kg_m2": [
+            1.4045971632003784,
+            1.4822258949279785,
+            2.0964009761810303
+          ]
+        },
+        {
+          "name": "link_0",
+          "mass_kg": 6.530886173248291,
+          "local_com_m": [
+            0.007749058306217194,
+            0.004644609522074461,
+            -0.1491595059633255
+          ],
+          "local_inertia_kg_m2": [
+            0.18603624403476715,
+            0.45913028717041016,
+            0.33998948335647583
+          ]
+        },
+        {
+          "name": "link_1",
+          "mass_kg": 6.583993911743164,
+          "local_com_m": [
+            0.02262420952320099,
+            0.0023113335482776165,
+            0.30527010560035706
+          ],
+          "local_inertia_kg_m2": [
+            0.1897335946559906,
+            0.4640951454639435,
+            0.3466512858867645
+          ]
+        },
+        {
+          "name": "link_2",
+          "mass_kg": 3.32954478263855,
+          "local_com_m": [
+            -0.009954649023711681,
+            0.01606585830450058,
+            0.3335352838039398
+          ],
+          "local_inertia_kg_m2": [
+            0.07716462016105652,
+            0.21860654652118683,
+            0.15202639997005463
+          ]
+        }
+      ],
+      "effective_inertia_or_mass": 6.530886173248291,
+      "cartesian_efficiency": 1.000000022816446
+    },
+    "100109": {
+      "name": "USB",
+      "joint_type": "revolute",
+      "joint_name": "joint_0",
+      "moving_link": "link_0",
+      "contact_label": "usb_cover_tip",
+      "contact_local_scaled_m": [
+        0.025275349617004395,
+        -0.0029119057580828667,
+        0.030735433101654053
+      ],
+      "force_direction_world": [
+        0.6476640297045942,
+        -0.7619260439057431,
+        9.08017080087518e-05
+      ],
+      "reverse_direction": false,
+      "q_start": 0.0,
+      "intended_sign": 1.0,
+      "available_travel": null,
+      "target_displacement": 1.2217304763960306,
+      "target_kind": "continuous_joint_70_degree_reference",
+      "personalized_force_n": 3.439472022481469e-05,
+      "scale": 0.03025482468405091,
+      "equivalent_density_kg_m3": 1404.5091208868855,
+      "target_total_mass_kg": 0.015,
+      "actual_total_mass_kg": 0.015000000355598786,
+      "links": [
+        {
+          "name": "base",
+          "mass_kg": 9.999999974752427e-07,
+          "local_com_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "local_inertia_kg_m2": [
+            9.999999974752427e-07,
+            9.999999974752427e-07,
+            9.999999974752427e-07
+          ]
+        },
+        {
+          "name": "link_1",
+          "mass_kg": 0.0066625457257032394,
+          "local_com_m": [
+            -0.006970979273319244,
+            9.54017014009878e-06,
+            -0.005273050162941217
+          ],
+          "local_inertia_kg_m2": [
+            1.218290321958193e-06,
+            1.3046759477219894e-06,
+            9.999999974752427e-07
+          ]
+        },
+        {
+          "name": "link_0",
+          "mass_kg": 0.008336454629898071,
+          "local_com_m": [
+            0.013989567756652832,
+            -6.862422014819458e-05,
+            0.014201676473021507
+          ],
+          "local_inertia_kg_m2": [
+            1.1142220728288521e-06,
+            1.1617111113082501e-06,
+            9.999999974752427e-07
+          ]
+        }
+      ],
+      "effective_inertia_or_mass": 4.474583355700166e-06,
+      "cartesian_efficiency": 0.03979312408900842
+    },
+    "103776": {
+      "name": "WashingMachine",
+      "joint_type": "revolute",
+      "joint_name": "joint_0",
+      "moving_link": "link_0",
+      "contact_label": "washingmachine_door_rim_13",
+      "contact_local_scaled_m": [
+        0.0446159765124321,
+        0.004421602003276348,
+        0.3533419966697693
+      ],
+      "force_direction_world": [
+        0.3464318063841152,
+        -1.9269074340469783e-05,
+        0.9380751585849301
+      ],
+      "reverse_direction": false,
+      "q_start": 0.0,
+      "intended_sign": 1.0,
+      "available_travel": 1.4011503235010472,
+      "target_displacement": 0.980805226450733,
+      "target_kind": "70_percent_available_joint_travel",
+      "personalized_force_n": 0.011195025079748533,
+      "scale": 0.5704054938888127,
+      "equivalent_density_kg_m3": 309.7975835837988,
+      "target_total_mass_kg": 70.0,
+      "actual_total_mass_kg": 69.9999958287732,
+      "links": [
+        {
+          "name": "base",
+          "mass_kg": 9.999999974752427e-07,
+          "local_com_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "local_inertia_kg_m2": [
+            9.999999974752427e-07,
+            9.999999974752427e-07,
+            9.999999974752427e-07
+          ]
+        },
+        {
+          "name": "link_4",
+          "mass_kg": 69.60015869140625,
+          "local_com_m": [
+            0.0045773121528327465,
+            -0.0036691075656563044,
+            0.01062445342540741
+          ],
+          "local_inertia_kg_m2": [
+            5.469413757324219,
+            3.2790656089782715,
+            5.2000861167907715
+          ]
+        },
+        {
+          "name": "link_0",
+          "mass_kg": 0.393607497215271,
+          "local_com_m": [
+            0.004624492954462767,
+            0.0006640851497650146,
+            0.17635659873485565
+          ],
+          "local_inertia_kg_m2": [
+            0.0038914955221116543,
+            0.0083391098305583,
+            0.004454138223081827
+          ]
+        },
+        {
+          "name": "link_1",
+          "mass_kg": 0.0051391227170825005,
+          "local_com_m": [
+            1.3813375517202076e-05,
+            0.009696483612060547,
+            0.01915690116584301
+          ],
+          "local_inertia_kg_m2": [
+            9.999999974752427e-07,
+            9.999999974752427e-07,
+            9.999999974752427e-07
+          ]
+        },
+        {
+          "name": "link_2",
+          "mass_kg": 0.0005447598523460329,
+          "local_com_m": [
+            1.0475517228769604e-05,
+            0.007476658560335636,
+            0.014739170670509338
+          ],
+          "local_inertia_kg_m2": [
+            9.999999974752427e-07,
+            9.999999974752427e-07,
+            9.999999974752427e-07
+          ]
+        },
+        {
+          "name": "link_3",
+          "mass_kg": 0.0005447575822472572,
+          "local_com_m": [
+            6.571412541234167e-06,
+            0.007476568687707186,
+            0.014735743403434753
+          ],
+          "local_inertia_kg_m2": [
+            9.999999974752427e-07,
+            9.999999974752427e-07,
+            9.999999974752427e-07
+          ]
+        }
+      ],
+      "effective_inertia_or_mass": 0.016133507996901598,
+      "cartesian_efficiency": 0.3533690082296553
+    }
+  }
+}

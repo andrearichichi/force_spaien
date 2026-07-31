@@ -39,21 +39,13 @@ except ImportError:  # pragma: no cover
 
 try:
     from manual_contact_utils import (
-        candidate_local_points,
         initial_contact_geometry,
-        initial_world_to_local,
         load_overrides,
-        moving_link_vertices as manual_link_vertices,
-        resolve_override,
     )
 except ImportError:  # pragma: no cover
     from scripts.manual_contact_utils import (
-        candidate_local_points,
         initial_contact_geometry,
-        initial_world_to_local,
         load_overrides,
-        moving_link_vertices as manual_link_vertices,
-        resolve_override,
     )
 
 
@@ -439,15 +431,10 @@ def output_folder(output_root: Path, info: dict[str, object]) -> Path:
     name = sanitize_name(str(info.get("object_name") or ""), "object")
     object_id = str(info["object_id"])
     joint_type = sanitize_name(str(info.get("joint_type") or "unknown"), "unknown")
-    mode = str(info.get("force_application_mode") or "generalized_set_qf")
     custom_suffix = info.get("output_suffix")
     if custom_suffix:
         return output_root / f"{name}_{object_id}_{joint_type}_{sanitize_name(str(custom_suffix), 'check')}"
-    if mode == "external_link_force":
-        return output_root / f"{name}_{object_id}_{joint_type}_external_force_physics_check"
-    if mode == "impulse_then_passive_joint_dynamics":
-        return output_root / f"{name}_{object_id}_{joint_type}_impulse_passive_physics_check"
-    return output_root / f"{name}_{object_id}_{joint_type}_general_force_framework_check"
+    return output_root / f"{name}_{object_id}_{joint_type}_production_70pct_zero_friction"
 
 
 def output_completeness(path: Path) -> tuple[bool, list[str]]:
@@ -565,37 +552,14 @@ def prepare_manual_contact(info: dict[str, object], override: dict[str, object],
             f"{object_id}: override selects {joint_name}/{link_name}, expected {info.get('joint_name')}/{info.get('link_name')}"
         )
     mode = str(override.get("contact_mode") or "")
-    geometry: dict[str, object] | None = None
-    if mode == "candidate_id":
-        requested = str(override.get("candidate_id") or "")
-        candidate_files = sorted((REPO_ROOT / "contact_selection").glob(f"{object_id}_*/candidates.json"))
-        if not candidate_files:
-            raise ValueError(f"{object_id}: generate contact_selection candidates before using candidate_id")
-        payload = read_json(candidate_files[0])
-        records = payload.get("candidates", []) if isinstance(payload, dict) else []
-        record = next((item for item in records if isinstance(item, dict) and item.get("candidate_id") == requested), None)
-        if record is None:
-            raise ValueError(f"{object_id}: candidate_id {requested!r} not found in {candidate_files[0]}")
-        local_point = [float(v) for v in record["local_point"]]
-        contact_source = "candidate_id"
-        geometry = {
-            "contact_point_world": record["world_point"],
-            "joint_origin_world": record["joint_origin_world"],
-            "joint_axis_world": record["joint_axis_world"],
-            "lever_arm_perpendicular": record["lever_arm_perpendicular"] or 0.0,
-            "tangent_opening_world": record["tangent_opening_world"],
-        }
-    elif mode == "manual_world_point":
-        world_point = override.get("world_point")
-        if not isinstance(world_point, list) or len(world_point) != 3:
-            raise ValueError(f"{object_id}: manual_world_point requires world_point: [x, y, z]")
-        local_point = initial_world_to_local(model_dir, link_name, [float(v) for v in world_point])
-        contact_source = "manual_override"
-    else:
-        candidates = candidate_local_points(manual_link_vertices(model_dir, link_name), count=20)
-        local_point, contact_source = resolve_override(object_id, override, model_dir, link_name, candidates)
-    if geometry is None:
-        geometry = initial_contact_geometry(model_dir, joint_name, link_name, local_point, list(info["joint_axis"]))
+    if mode != "manual_local_point":
+        raise ValueError(f"{object_id}: production requires manual_local_point contact mode")
+    raw_point = override.get("local_point")
+    if not isinstance(raw_point, list) or len(raw_point) != 3:
+        raise ValueError(f"{object_id}: manual_local_point requires local_point: [x, y, z]")
+    local_point = [float(value) for value in raw_point]
+    contact_source = "validated_production_local_point"
+    geometry = initial_contact_geometry(model_dir, joint_name, link_name, local_point, list(info["joint_axis"]))
     direction_mode = str(override.get("force_direction_mode") or "")
     allowed = {
         "tangent_opening", "tangent_closing", "prismatic_axis", "negative_prismatic_axis",
@@ -633,13 +597,29 @@ def prepare_manual_contact(info: dict[str, object], override: dict[str, object],
     else:
         raise ValueError(f"{object_id}: manual_contact_fixed_force supports revolute/prismatic joints only")
     direction = unit(direction)
-    params = getattr(args, "realistic_params", {}).get(object_id, {}) if args.force_policy == "realistic_response_calibration" else {}
-    actual_force = float(params.get("force_magnitude", args.force_magnitude))
-    if not 1.0 <= actual_force <= 12.0:
-        raise ValueError(f"{object_id}: calibrated force_magnitude {actual_force} outside [1, 12]")
-    damping = float(params.get("joint_damping", args.joint_damping))
-    friction = float(params.get("joint_friction", args.joint_friction))
-    if not 0.3 <= damping <= 3.0 or not 0.03 <= friction <= 0.5:
+    direction_before_reversal = list(direction)
+    reverse_ids = set(getattr(args, "reverse_force_direction_object_ids", []) or [])
+    direction_reversed = object_id in reverse_ids
+    if direction_reversed:
+        direction = [-float(value) for value in direction]
+    direction_reversal_dot = sum(
+        float(before) * float(after)
+        for before, after in zip(direction_before_reversal, direction)
+    )
+    intended_joint_direction_sign = -1.0 if direction_mode in {"tangent_closing", "negative_prismatic_axis"} else 1.0
+    if direction_reversed:
+        intended_joint_direction_sign *= -1.0
+    actual_force = float(args.force_magnitude)
+    damping = float(args.joint_damping)
+    friction = float(args.joint_friction)
+    zero_friction_mode = bool(getattr(args, "require_zero_joint_friction", False))
+    damping_valid = (
+        0.0 <= damping <= 3.0
+        if zero_friction_mode
+        else 0.3 <= damping <= 3.0
+    )
+    friction_valid = abs(friction) <= 1e-15 if zero_friction_mode else 0.03 <= friction <= 0.5
+    if not damping_valid or not friction_valid:
         raise ValueError(f"{object_id}: calibrated damping/friction outside allowed bounds")
     info.update(
         {
@@ -652,20 +632,29 @@ def prepare_manual_contact(info: dict[str, object], override: dict[str, object],
             "manual_contact_world_geometry": geometry,
             "force_direction_mode": direction_mode,
             "manual_force_direction_world": direction,
+            "manual_force_direction_world_before_reversal": direction_before_reversal,
+            "force_direction_reversed": direction_reversed,
+            "direction_reversal_dot_product": direction_reversal_dot,
+            "intended_joint_direction_sign": intended_joint_direction_sign,
             "manual_contact_note": str(override.get("note") or ""),
             "candidate_id": str(override.get("candidate_id") or "") or None,
             "force_policy": args.force_policy,
             "actual_force_magnitude": actual_force,
             "selected_joint_damping": damping,
             "selected_joint_friction": friction,
-            "calibration_reason": str(params.get("reason", "fixed global physics" if args.force_policy in {"fixed_global_physics", "fixed_global_impulse_decay"} else "bounded realism calibration")),
+            "resistance_model": args.resistance_model,
+            "systematic_decay_time_s": args.systematic_decay_time_s,
+            "systematic_friction_ratio": args.systematic_friction_ratio,
+            "object_specific_damping_override": False,
+            "object_specific_friction_override": False,
+            "object_physical_override": None,
+            "moving_link_mass_override_kg": None,
+            "asset_scale_override": None,
+            "physical_override_source": None,
+            "physical_override_rationale": None,
+            "calibration_reason": "resolved personalized pure-viscous production force",
             "clamped_force_magnitude": False,
-            "final_mode": (
-                "realistic_manual_contact_adaptive" if args.force_policy == "realistic_response_calibration"
-                else "manual_contact_global_physics_adaptive" if args.force_policy == "fixed_global_physics"
-                else "manual_contact_global_impulse_decay" if args.force_policy == "fixed_global_impulse_decay"
-                else "manual_contact_fixed_force"
-            ),
+            "final_mode": "personalized_70pct_zero_friction_native_sapien_force",
         }
     )
 
@@ -695,8 +684,8 @@ def renderer_command(info: dict[str, object], run_dir: Path, args: argparse.Name
             Image.new("RGB", (4, 4), (190, 190, 190)).save(image_dir / name)
         model_dir = runtime_dir
     direction = list(info.get("manual_force_direction_world") or force_direction(info))
-    renderer_force_mode = "external_link_force"
-    force_profile = "pulse"
+    renderer_force_mode = args.force_application_mode
+    force_profile = "square_pulse"
     actual_force = float(info["actual_force_magnitude"])
     command = [
         args.python_executable or sys.executable,
@@ -739,6 +728,18 @@ def renderer_command(info: dict[str, object], run_dir: Path, args: argparse.Name
         str(info.get("selected_joint_damping", args.joint_damping)),
         "--joint-dynamic-friction",
         str(info.get("selected_joint_friction", args.joint_friction)),
+        "--link-linear-damping",
+        str(info.get("selected_joint_damping", args.joint_damping)),
+        "--link-angular-damping",
+        str(info.get("selected_joint_damping", args.joint_damping)),
+        "--resistance-model",
+        str(args.resistance_model),
+        "--systematic-decay-time-s",
+        str(args.systematic_decay_time_s),
+        "--systematic-friction-ratio",
+        str(args.systematic_friction_ratio),
+        "--effective-inertia-validation-tolerance",
+        str(args.effective_inertia_validation_tolerance),
         "--settle-velocity-threshold",
         str(args.settle_velocity_threshold),
         "--max-q-fraction-of-limit",
@@ -751,6 +752,12 @@ def renderer_command(info: dict[str, object], run_dir: Path, args: argparse.Name
         str(args.force_policy),
         "--keep-old",
     ]
+    if args.require_zero_joint_friction:
+        command.append("--require-zero-joint-friction")
+    if info.get("moving_link_mass_override_kg") is not None:
+        command += ["--moving-link-mass-kg", str(info["moving_link_mass_override_kg"])]
+    if info.get("asset_scale_override") is not None:
+        command += ["--asset-scale", str(info["asset_scale_override"])]
     if args.adaptive_duration:
         command += [
             "--simulate-until-settled",
@@ -769,7 +776,10 @@ def renderer_command(info: dict[str, object], run_dir: Path, args: argparse.Name
     if joint_type == "prismatic":
         command += ["--joint", joint, "--link", link, "--drawer", drawer_index_from_link(link), "--force", str(actual_force)]
     elif joint_type == "revolute":
-        preferred = "-1" if info.get("force_direction_mode") == "tangent_closing" else "1"
+        preferred_value = -1 if info.get("force_direction_mode") == "tangent_closing" else 1
+        if info.get("force_direction_reversed"):
+            preferred_value *= -1
+        preferred = str(preferred_value)
         command += [
             "--joint",
             joint,
@@ -1117,9 +1127,6 @@ def augment_simulation_json(run_dir: Path, info: dict[str, object], validation_n
             force_mode = sim_config.get("force_application_mode")
     if force_mode == "generalized":
         warning_messages.append("force_application_mode is generalized_set_qf; force point is used for torque/debug, not true external contact")
-    if force_mode == "impulse_then_passive_joint_dynamics":
-        warning_messages.append("true external link force was not used; this is a physics-plausible impulse/passive generalized-force fallback")
-
     force_value = 0.0
     torque_value = 0.0
     projected_value = 0.0
@@ -1175,18 +1182,91 @@ def augment_simulation_json(run_dir: Path, info: dict[str, object], validation_n
 
     scale_verdict = "WARN" if scale_interpretation == "normalized_or_dataset_units" else "PASS"
     q_limit_warning = ""
+    joint_range = None
+    displacement_abs = abs(float(q_end) - float(q_start)) if q_start is not None and q_end is not None else None
+    signed_displacement = float(q_end) - float(q_start) if q_start is not None and q_end is not None else None
+    displacement_percent = None
+    available_travel_in_intended_direction = None
+    displacement_percent_of_available_intended_travel = None
+    intended_joint_direction_sign = float(info.get("intended_joint_direction_sign", 0.0) or 0.0)
+    wrong_motion_direction = (
+        signed_displacement is not None
+        and abs(signed_displacement) > 1e-6
+        and signed_displacement * intended_joint_direction_sign < 0.0
+    )
+    joint_limit_reached = False
     if q_start is not None and q_end is not None and isinstance(info.get("joint_limits"), tuple):
         lower, upper = info["joint_limits"]
+        joint_range = float(upper) - float(lower)
+        if joint_range > 1e-12 and displacement_abs is not None:
+            displacement_percent = 100.0 * displacement_abs / joint_range
+        available_travel_in_intended_direction = (
+            float(upper) - float(q_start)
+            if intended_joint_direction_sign >= 0.0
+            else float(q_start) - float(lower)
+        )
+        if available_travel_in_intended_direction > 1e-12 and signed_displacement is not None:
+            displacement_percent_of_available_intended_travel = (
+                100.0
+                * signed_displacement
+                * intended_joint_direction_sign
+                / available_travel_in_intended_direction
+            )
         if abs(float(q_end) - float(lower)) <= 1e-3 or abs(float(q_end) - float(upper)) <= 1e-3:
+            joint_limit_reached = True
             q_limit_warning = "q reached or nearly reached a joint limit"
             warning_messages.append(q_limit_warning)
+    q_values = [
+        float(sample["q"])
+        for sample in per_frame
+        if isinstance(sample.get("q"), (int, float))
+    ]
+    qdot_values = [
+        abs(float(sample["qdot"]))
+        for sample in per_frame
+        if isinstance(sample.get("qdot"), (int, float))
+    ]
+    qddot_values = [
+        abs(float(sample["qddot"]))
+        for sample in per_frame
+        if isinstance(sample.get("qddot"), (int, float))
+    ]
+    finite_state = all(math.isfinite(value) for value in q_values + qdot_values + qddot_values)
+    maximum_abs_velocity = max(qdot_values, default=0.0)
+    maximum_abs_acceleration = max(qddot_values, default=0.0)
+    maximum_abs_velocity_physics_steps = float(document.get("maximum_abs_velocity_physics_steps", maximum_abs_velocity) or 0.0)
+    maximum_abs_acceleration_physics_steps = float(document.get("maximum_abs_acceleration_physics_steps", maximum_abs_acceleration) or 0.0)
+    excessive_velocity = maximum_abs_velocity_physics_steps > 100.0
+    excessive_acceleration = maximum_abs_acceleration_physics_steps > 10000.0
+    q_jumps = [abs(b - a) for a, b in zip(q_values, q_values[1:])]
+    jump_limit = max(0.25 * joint_range, 0.25) if joint_range is not None else 0.25
+    teleportation_detected = max(q_jumps, default=0.0) > jump_limit
+    physics_explosion_detected = (
+        not finite_state
+        or maximum_abs_velocity > 100.0
+        or maximum_abs_acceleration > 10000.0
+        or teleportation_detected
+    )
+    invalid_contact_detected = not bool(contact_inside) or abs(float(pulse_summary.get("applied_effect_at_pulse") or 0.0)) <= 1e-8
+    interpenetration_detected = any("interpenetr" in message.lower() for message in warning_messages)
+    instability_reasons = []
+    if not finite_state:
+        instability_reasons.append("non-finite joint state")
+    if maximum_abs_velocity > 100.0:
+        instability_reasons.append("maximum absolute joint velocity exceeded 100")
+    if maximum_abs_acceleration > 10000.0:
+        instability_reasons.append("maximum absolute joint acceleration exceeded 10000")
+    if teleportation_detected:
+        instability_reasons.append("frame-to-frame joint displacement jump exceeded stability threshold")
+    if interpenetration_detected:
+        instability_reasons.append("interpenetration warning was reported")
+    if invalid_contact_detected:
+        instability_reasons.append("invalid contact geometry or zero joint-axis effect")
+    instability_detected = bool(instability_reasons)
     dynamics_verdict = str(document.get("dynamics_verdict") or "PASS")
-    if force_mode in {"external_link_force", "impulse_then_passive_joint_dynamics"}:
-        physics_verdict = combine_verdicts(contact_verdict, joint_verdict, dynamics_verdict)
-        if scale_verdict == "WARN" and physics_verdict == "PASS":
-            physics_verdict = "WARN"
-    else:
-        physics_verdict = combine_verdicts(contact_verdict, joint_verdict, scale_verdict)
+    physics_verdict = combine_verdicts(contact_verdict, joint_verdict, dynamics_verdict)
+    if scale_verdict == "WARN" and physics_verdict == "PASS":
+        physics_verdict = "WARN"
 
     core_physical_verdicts = [
         str(pulse_summary.get("force_logging_verdict")),
@@ -1235,13 +1315,25 @@ def augment_simulation_json(run_dir: Path, info: dict[str, object], validation_n
             "force_magnitude": magnitude,
             "actual_force_magnitude": info.get("actual_force_magnitude"),
             "force_policy": info.get("force_policy"),
-            "per_object_force_adaptation": info.get("force_policy") == "realistic_response_calibration",
-            "per_object_damping_adaptation": info.get("force_policy") == "realistic_response_calibration",
-            "per_object_friction_adaptation": info.get("force_policy") == "realistic_response_calibration",
-            "same_physics_for_all_objects": info.get("force_policy") in {"fixed_global_physics", "fixed_global_impulse_decay"},
-            "force_units": "dataset/SAPIEN units",
+            "per_object_force_adaptation": True,
+            "per_object_damping_adaptation": False,
+            "per_object_friction_adaptation": False,
+            "same_physics_for_all_objects": True,
+            "same_force_policy_for_all_objects": True,
+            "physical_override_source": info.get("physical_override_source"),
+            "physical_override_rationale": info.get("physical_override_rationale"),
+            "moving_link_mass_override_kg": info.get("moving_link_mass_override_kg"),
+            "asset_scale_override": info.get("asset_scale_override"),
+            "force_units": "N",
+            "engine_units": "SI_MKS",
+            "force_mode": "force",
             "clamped_force_magnitude": info.get("clamped_force_magnitude"),
             "force_direction_world": direction,
+            "requested_force_direction_world_before_reversal": info.get("manual_force_direction_world_before_reversal"),
+            "requested_force_direction_world": info.get("manual_force_direction_world"),
+            "force_direction_reversed": bool(info.get("force_direction_reversed")),
+            "direction_reversal_dot_product": info.get("direction_reversal_dot_product"),
+            "intended_joint_direction_sign": intended_joint_direction_sign,
             "force_application_point_world": point,
             "torque_about_axis": pulse_summary.get("torque_about_axis_at_pulse"),
             "torque_or_projected_force": actuation,
@@ -1250,13 +1342,21 @@ def augment_simulation_json(run_dir: Path, info: dict[str, object], validation_n
             "object_bbox_size_world": object_bbox_size,
             "object_scale_interpretation": scale_interpretation,
             "force_application_mode": "generalized_set_qf" if force_mode == "generalized" else force_mode,
-            "true_external_force_used": force_mode == "external_link_force",
+            "true_external_force_used": True,
+            "native_sapien_add_force_at_point_used": force_mode == "native_sapien_add_force_at_point",
+            "set_qf_motion_driver_used": False,
+            "set_qf_passive_resistance_used": document.get("set_qf_passive_resistance_used", False),
+            "joint_drive_used": False,
+            "target_motion_used": False,
+            "target_torque_used": False,
             "fallback_used": False,
             "hidden_drive_used": False,
             "manual_q_interpolation_used": False,
             "uses_generalized_set_qf_as_motion_driver": False,
-            "force_units_physical": False,
-            "calibrated_newtons": False,
+            "force_units_physical": True,
+            "calibrated_newtons": True,
+            "asset_scale_verdict": scale_interpretation,
+            "asset_scale_warning": scale_warning or None,
             "final_mode": info.get("final_mode"),
             "candidate_id": info.get("candidate_id"),
             "contact_source": info.get("contact_source"),
@@ -1268,11 +1368,22 @@ def augment_simulation_json(run_dir: Path, info: dict[str, object], validation_n
             "force_direction_world_at_pulse": pulse_summary.get("force_direction_world_at_pulse"),
             "manual_contact_note": info.get("manual_contact_note"),
             "force_duration_s": force_duration_s,
+            "effective_force_n": float(magnitude or 0.0),
+            "pulse_duration_s": force_duration_s,
+            "total_impulse_n_s": float(magnitude or 0.0) * force_duration_s,
+            "force_profile": "square_pulse" if info.get("force_policy") == "native_sapien_force" else document.get("force_profile", "pulse"),
+            "force_ramp_time_s": 0.0 if info.get("force_policy") == "native_sapien_force" else document.get("force_ramp_time_s"),
             "sim_duration_s": document.get("sim_duration_s", metadata.get("timing", {}).get("simulated_seconds") if isinstance(metadata, dict) else None),
             "fps": document.get("fps", metadata.get("timing", {}).get("fps") if isinstance(metadata, dict) else None),
             "timestep_s": document.get("timestep_s", document.get("timestep", metadata.get("timing", {}).get("timestep_s") if isinstance(metadata, dict) else None)),
             "joint_damping": document.get("joint_damping", document.get("damping")),
             "joint_friction": document.get("joint_friction", document.get("friction")),
+            "resistance_model": info.get("resistance_model"),
+            "systematic_decay_time_s": info.get("systematic_decay_time_s"),
+            "systematic_friction_ratio": info.get("systematic_friction_ratio"),
+            "joint_damping_source": "derived generalized viscous resistance c=effective_coordinate_inertia_or_mass/T_decay",
+            "joint_friction_source": "explicitly installed zero native SAPIEN joint friction",
+            "gravity_enabled": False,
             "adaptive_duration": bool(getattr(args, "adaptive_duration", False)),
             "min_sim_duration_s": float(getattr(args, "min_sim_duration_s", args.sim_duration_s)),
             "max_sim_duration_s": float(getattr(args, "max_sim_duration_s", args.sim_duration_s)),
@@ -1289,6 +1400,28 @@ def augment_simulation_json(run_dir: Path, info: dict[str, object], validation_n
             "settle_time_s": document.get("settle_time_s"),
             "final_abs_qdot": document.get("final_abs_qdot"),
             "peak_abs_qdot": document.get("peak_abs_qdot"),
+            "maximum_abs_velocity": maximum_abs_velocity,
+            "maximum_abs_acceleration": maximum_abs_acceleration,
+            "absolute_displacement": displacement_abs,
+            "signed_displacement": signed_displacement,
+            "joint_range": joint_range,
+            "displacement_percent_of_joint_range": displacement_percent,
+            "available_travel_in_intended_direction": available_travel_in_intended_direction,
+            "displacement_percent_of_available_intended_travel": displacement_percent_of_available_intended_travel,
+            "wrong_motion_direction": wrong_motion_direction,
+            "joint_limit_reached": joint_limit_reached,
+            "joint_limit_saturation": joint_limit_reached,
+            "incomplete_pulse": bool(document.get("incomplete_pulse", False)),
+            "excessive_velocity": excessive_velocity,
+            "excessive_acceleration": excessive_acceleration,
+            "failure_to_settle": not bool(document.get("post_release_settled", document.get("settled", False))),
+            "teleportation_detected": teleportation_detected,
+            "physics_explosion_detected": physics_explosion_detected,
+            "interpenetration_detected": interpenetration_detected,
+            "interpenetration_check": "renderer warnings and finite-state trajectory heuristic; no penetration-depth sensor is available",
+            "invalid_contact_detected": invalid_contact_detected,
+            "instability_detected": instability_detected,
+            "stability_reasons": instability_reasons,
             "qdot_decay_ratio": document.get("qdot_decay_ratio"),
             "projected_force_along_axis": pulse_summary.get("raw_projected_force_along_axis_at_pulse"),
             "raw_projected_force_along_axis": pulse_summary.get("raw_projected_force_along_axis_at_pulse"),
@@ -1400,16 +1533,6 @@ def write_summary(output_root: Path, rows: list[dict[str, object]]) -> None:
         writer = csv.DictWriter(f, fieldnames=SUMMARY_FIELDS)
         writer.writeheader()
         writer.writerows(rows)
-    counts = {status: sum(1 for row in rows if row["status"] == status) for status in sorted({str(row["status"]) for row in rows})}
-    lines = ["# ForceSAPIEN Batch Summary", "", f"- Objects: {len(rows)}"]
-    lines.extend(f"- {status}: {count}" for status, count in counts.items())
-    lines += ["", "| object_id | object_name | joint_type | status | delta_q | output_folder | error_message |", "|---|---|---|---|---:|---|---|"]
-    for row in rows:
-        lines.append(
-            f"| {row['object_id']} | {row['object_name']} | {row['joint_type']} | {row['status']} | "
-            f"{'' if row['delta_q'] is None else row['delta_q']} | {row['output_folder']} | {row['error_message']} |"
-        )
-    (output_root / "forcesapien_batch_summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def parse_args() -> argparse.Namespace:
@@ -1426,22 +1549,36 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--sim-duration-s", type=float, default=None)
     parser.add_argument(
         "--force-application-mode",
-        choices=["external_link_force"],
-        default="external_link_force",
+        choices=["native_sapien_add_force_at_point"],
+        default="native_sapien_add_force_at_point",
     )
-    parser.add_argument("--force-policy", choices=["fixed_magnitude", "realistic_response_calibration", "fixed_global_physics", "fixed_global_impulse_decay"], default="fixed_magnitude")
-    parser.add_argument("--realistic-response-params", default=None)
-    parser.add_argument("--force-magnitude", type=float, default=5.0)
+    parser.add_argument("--force-policy", choices=["native_sapien_force"], default="native_sapien_force")
+    parser.add_argument("--force-magnitude", type=float, required=True)
     parser.add_argument("--contact-overrides", default="configs/manual_contact_overrides.yaml")
+    parser.add_argument(
+        "--reverse-force-direction-object-ids",
+        nargs="*",
+        default=[],
+        help="Object IDs whose validated force direction and revolute preferred motion sign are negated.",
+    )
     parser.add_argument("--manual-contact-required", type=parse_bool, default=True)
     parser.add_argument("--preview-contacts-only", action="store_true")
-    parser.add_argument("--force-duration-s", type=float, default=0.2)
-    parser.add_argument("--joint-damping", type=float, default=0.5)
-    parser.add_argument("--joint-friction", type=float, default=0.05)
+    parser.add_argument("--force-duration-s", type=float, default=2.0)
+    parser.add_argument("--joint-damping", type=float, default=0.0)
+    parser.add_argument("--joint-friction", type=float, default=0.0)
+    parser.add_argument("--resistance-model", choices=["systematic_joint_space"], default="systematic_joint_space")
+    parser.add_argument("--systematic-decay-time-s", type=float, default=2.0)
+    parser.add_argument("--systematic-friction-ratio", type=float, default=0.0)
+    parser.add_argument(
+        "--require-zero-joint-friction",
+        action="store_true",
+        help="Install and verify exactly zero native SAPIEN friction; never retain URDF friction.",
+    )
+    parser.add_argument("--effective-inertia-validation-tolerance", type=float, default=0.10)
     parser.add_argument("--settle-velocity-threshold", type=float, default=1e-3)
-    parser.add_argument("--adaptive-duration", type=parse_bool, default=False)
+    parser.add_argument("--adaptive-duration", type=parse_bool, default=True)
     parser.add_argument("--min-sim-duration-s", type=float, default=6.0)
-    parser.add_argument("--max-sim-duration-s", type=float, default=15.0)
+    parser.add_argument("--max-sim-duration-s", type=float, default=20.0)
     parser.add_argument("--settle-qdot-threshold", type=float, default=0.002)
     parser.add_argument("--settle-window-s", type=float, default=0.5)
     parser.add_argument("--post-settle-hold-s", type=float, default=1.0)
@@ -1459,18 +1596,14 @@ def main() -> int:
     if args.force_magnitude <= 0:
         print("ERROR: force magnitude must be positive", file=sys.stderr)
         return 2
+    if args.require_zero_joint_friction and abs(args.systematic_friction_ratio) > 1e-15:
+        print("ERROR: zero-joint-friction mode requires --systematic-friction-ratio 0", file=sys.stderr)
+        return 2
     if args.sim_duration_s is None:
         args.sim_duration_s = args.seconds
     if args.adaptive_duration:
         args.sim_duration_s = args.min_sim_duration_s
         args.settle_velocity_threshold = args.settle_qdot_threshold
-    args.realistic_params = {}
-    if args.force_policy == "realistic_response_calibration":
-        if not args.realistic_response_params and not args.preview_contacts_only:
-            print("ERROR: --realistic-response-params is required for realistic calibration", file=sys.stderr)
-            return 2
-        if args.realistic_response_params:
-            args.realistic_params = load_overrides(Path(args.realistic_response_params).expanduser().resolve())
     dataset_root = Path(args.dataset_root).expanduser().resolve()
     output_root = Path(args.output_root).expanduser().resolve()
     if args.single_debug_object:
@@ -1587,7 +1720,6 @@ def main() -> int:
 
     write_summary(output_root, rows)
     print(f"Wrote {output_root / 'forcesapien_batch_summary.csv'}")
-    print(f"Wrote {output_root / 'forcesapien_batch_summary.md'}")
     return 0 if all(row["status"] in {"success", "warning", "skipped_complete", "run", "repair_incomplete", "rerun_force"} for row in rows) else 1
 
 

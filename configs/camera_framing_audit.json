@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "rows": [
+    {
+      "object_id": "10211",
+      "object": "Laptop",
+      "minimum_occupancy": 0.5092592592592593,
+      "maximum_occupancy": 0.7083333333333334,
+      "camera_distance_m": 0.6383049190044403,
+      "red_axis_projected_length_px_min": 281.3254343282882,
+      "red_axis_projected_length_px_max": 281.3254343282882,
+      "clipping": false,
+      "verdict": "PASS",
+      "note": "occupancy is measured from object-only SAPIEN segmentation; overlays are excluded"
+    },
+    {
+      "object_id": "10905",
+      "object": "Refrigerator",
+      "minimum_occupancy": 0.5833333333333334,
+      "maximum_occupancy": 0.6222222222222222,
+      "camera_distance_m": 3.481974959373474,
+      "red_axis_projected_length_px_min": 398.0050250939051,
+      "red_axis_projected_length_px_max": 398.0050250939051,
+      "clipping": false,
+      "verdict": "PASS",
+      "note": "occupancy is measured from object-only SAPIEN segmentation; overlays are excluded"
+    },
+    {
+      "object_id": "11100",
+      "object": "Scissors",
+      "minimum_occupancy": 0.48072916666666665,
+      "maximum_occupancy": 0.5005208333333333,
+      "camera_distance_m": 0.2670384496450424,
+      "red_axis_projected_length_px_min": 529.0604880351584,
+      "red_axis_projected_length_px_max": 529.0604880351584,
+      "clipping": false,
+      "verdict": "PASS",
+      "note": "occupancy is measured from object-only SAPIEN segmentation; overlays are excluded"
+    },
+    {
+      "object_id": "45135",
+      "object": "StorageFurniture",
+      "minimum_occupancy": 0.6287037037037037,
+      "maximum_occupancy": 0.6287037037037037,
+      "camera_distance_m": 2.074327826499939,
+      "red_axis_projected_length_px_min": 286.96515467910035,
+      "red_axis_projected_length_px_max": 336.964389809962,
+      "clipping": false,
+      "verdict": "PASS",
+      "note": "occupancy is measured from object-only SAPIEN segmentation; overlays are excluded"
+    },
+    {
+      "object_id": "100109",
+      "object": "USB",
+      "minimum_occupancy": 0.44907407407407407,
+      "maximum_occupancy": 0.5911458333333334,
+      "camera_distance_m": 0.07040056213736534,
+      "red_axis_projected_length_px_min": 443.13654780439856,
+      "red_axis_projected_length_px_max": 443.13654780439856,
+      "clipping": false,
+      "verdict": "PASS",
+      "note": "occupancy is measured from object-only SAPIEN segmentation; overlays are excluded"
+    },
+    {
+      "object_id": "101917",
+      "object": "Oven",
+      "minimum_occupancy": 0.5981481481481481,
+      "maximum_occupancy": 0.5981481481481481,
+      "camera_distance_m": 1.0181133151054382,
+      "red_axis_projected_length_px_min": 182.62803727796015,
+      "red_axis_projected_length_px_max": 182.62803727796015,
+      "clipping": false,
+      "verdict": "PASS",
+      "note": "occupancy is measured from object-only SAPIEN segmentation; overlays are excluded"
+    },
+    {
+      "object_id": "102255",
+      "object": "FoldingChair",
+      "minimum_occupancy": 0.7055555555555556,
+      "maximum_occupancy": 0.7055555555555556,
+      "camera_distance_m": 1.6055594086647036,
+      "red_axis_projected_length_px_min": 258.26536740337446,
+      "red_axis_projected_length_px_max": 258.26536740337446,
+      "clipping": false,
+      "verdict": "PASS",
+      "note": "occupancy is measured from object-only SAPIEN segmentation; overlays are excluded"
+    },
+    {
+      "object_id": "103111",
+      "object": "Stapler",
+      "minimum_occupancy": 0.3148148148148148,
+      "maximum_occupancy": 0.7046296296296296,
+      "camera_distance_m": 0.23356945067644122,
+      "red_axis_projected_length_px_min": 260.72207424765554,
+      "red_axis_projected_length_px_max": 260.72207424765554,
+      "clipping": false,
+      "verdict": "PASS",
+      "note": "occupancy is measured from object-only SAPIEN segmentation; overlays are excluded"
+    },
+    {
+      "object_id": "103706",
+      "object": "Knife",
+      "minimum_occupancy": 0.42604166666666665,
+      "maximum_occupancy": 0.7,
+      "camera_distance_m": 0.35943786799907684,
+      "red_axis_projected_length_px_min": 592.6111710050698,
+      "red_axis_projected_length_px_max": 890.1825655448438,
+      "clipping": false,
+      "verdict": "PASS",
+      "note": "occupancy is measured from object-only SAPIEN segmentation; overlays are excluded"
+    },
+    {
+      "object_id": "103776",
+      "object": "WashingMachine",
+      "minimum_occupancy": 0.6481481481481481,
+      "maximum_occupancy": 0.7101851851851851,
+      "camera_distance_m": 1.8478803038597107,
+      "red_axis_projected_length_px_min": 265.452443951831,
+      "red_axis_projected_length_px_max": 265.452443951831,
+      "clipping": false,
+      "verdict": "PASS",
+      "note": "occupancy is measured from object-only SAPIEN segmentation; overlays are excluded"
+    }
+  ]
+}
