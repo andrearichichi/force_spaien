@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Generate and validate the ten-object, physically calibrated ForceSAPIEN dataset with personalized physical forces targeting 70% of available joint travel (70 degrees for the continuous USB joint).
+Generate and validate the ten-object, physically calibrated ForceSAPIEN dataset with personalized physical forces targeting 70% of available joint travel 
 
 ## Minimal structure
 
