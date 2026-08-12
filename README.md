@@ -39,6 +39,28 @@ sbatch scripts/generate_definitive_dataset.sbatch
   --package output
 ```
 
+## Clean RGB and mask export from recorded trajectories
+
+This mode does not step physics: it replays each recorded `samples.force.q`
+coordinate, copies the original annotated video byte-for-byte, and renders clean
+RGB frames plus binary object masks into a separate package.
+
+```bash
+sbatch scripts/export_clean_frames.sbatch
+```
+
+The export root is defined once as `OUTPUT_ROOT = ROOT / "outputs"`; generation
+refuses to overwrite an existing export.
+
+Validate the result and confirm that videos and simulation metadata are identical
+to the source package:
+
+```bash
+/leonardo_work/IscrC_EditGS/andrea/FORCEARTGS/.venv/bin/python scripts/validate_clean_frames.py \
+  --package outputs \
+  --source-package output
+```
+
 ## Definitive index
 
 `output/index.html`
