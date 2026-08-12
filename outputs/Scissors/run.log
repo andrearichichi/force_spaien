@@ -1,0 +1,17 @@
+$ /leonardo_work/IscrC_EditGS/andrea/FORCEARTGS/.venv/bin/python /leonardo_work/IscrC_EditGS/andrea/force_spaien/scripts/render_revolute_video.py --mode render --model-dir /leonardo_work/IscrC_EditGS/andrea/force_spaien/physical_calibration/resolved/adaptive/runtime_dataset/11100 --seconds 6.0 --fps 30 --direction -0.00000000000000000 -0.09768808840250948 0.99521708053281699 --output-root /leonardo_work/IscrC_EditGS/andrea/force_spaien/outputs_70pct_zero_friction_arrow_fix_staging/scissors_11100_revolute_70pct_zero_friction_arrow_fix --json-output /leonardo_work/IscrC_EditGS/andrea/force_spaien/outputs_70pct_zero_friction_arrow_fix_staging/scissors_11100_revolute_70pct_zero_friction_arrow_fix/simulation.json --output /leonardo_work/IscrC_EditGS/andrea/force_spaien/outputs_70pct_zero_friction_arrow_fix_staging/scissors_11100_revolute_70pct_zero_friction_arrow_fix/final_video.mp4 --panel-width 1920 --panel-height 1080 --info-height 0 --plot-height 0 --end-hold-seconds 0.0 --end-hold-mode never --force-application-mode native_sapien_add_force_at_point --force-profile square_pulse --force-duration 2.0 --joint-viscous-damping 0.0 --joint-dynamic-friction 0.0 --link-linear-damping 0.0 --link-angular-damping 0.0 --resistance-model systematic_joint_space --systematic-decay-time-s 2.0 --systematic-friction-ratio 0.0 --effective-inertia-validation-tolerance 0.1 --settle-velocity-threshold 0.002 --max-q-fraction-of-limit 0.98 --contact-overrides /leonardo_work/IscrC_EditGS/andrea/force_spaien/physical_calibration/resolved/adaptive/manual_contact_overrides_scaled.yaml --manual-contact-required true --force-policy native_sapien_force --keep-old --require-zero-joint-friction --simulate-until-settled --max-seconds 20.0 --settle-velocity-threshold 0.002 --settle-window-seconds 0.5 --post-settle-hold-seconds 1.0 --contact-point-strategy scissors_far_handle_or_blade_candidate --contact-point-local 0.08850761226442797 -0.008687707029874986 0.09348153324554902 --joint joint_0 --link link_0 --force 0.00044629674425094445 --closing-force 0.00044629674425094445 --initial-angle 0.0 --preferred-motion-direction -1 --no-auto-direction
+
+Wrote /leonardo_work/IscrC_EditGS/andrea/force_spaien/outputs_70pct_zero_friction_arrow_fix_staging/scissors_11100_revolute_70pct_zero_friction_arrow_fix/final_video.mp4
+Wrote /leonardo_work/IscrC_EditGS/andrea/force_spaien/outputs_70pct_zero_friction_arrow_fix_staging/scissors_11100_revolute_70pct_zero_friction_arrow_fix/simulation.json
+Final angle: -32.91 deg
+
+[clean_frame_export]
+status=SUCCESS
+physics_reexecuted=false
+trajectory_source=simulation.json:samples.force.q
+final_video_action=copied_byte_for_byte
+final_video_sha256=cf5354bd989dfea5ab5574351fad70f09c3688c976d72c97f6e02c16c22ef7b4
+clean_rgb_frames=376
+clean_masks=376
+mask_encoding=uint8_background_0_object_255
+overlays_in_clean_rgb=false
+contact_sheet_source=clean_rgb

@@ -1,0 +1,17 @@
+$ /leonardo_work/IscrC_EditGS/andrea/FORCEARTGS/.venv/bin/python /leonardo_work/IscrC_EditGS/andrea/force_spaien/scripts/render_revolute_video.py --mode render --model-dir /leonardo_work/IscrC_EditGS/andrea/force_spaien/physical_calibration/resolved/adaptive/runtime_dataset/10211 --seconds 6.0 --fps 30 --direction 0.95589999982545915 -0.00000001750542862 -0.29369233958972624 --output-root /leonardo_work/IscrC_EditGS/andrea/force_spaien/outputs_70pct_zero_friction_arrow_fix_staging/laptop_10211_revolute_70pct_zero_friction_arrow_fix --json-output /leonardo_work/IscrC_EditGS/andrea/force_spaien/outputs_70pct_zero_friction_arrow_fix_staging/laptop_10211_revolute_70pct_zero_friction_arrow_fix/simulation.json --output /leonardo_work/IscrC_EditGS/andrea/force_spaien/outputs_70pct_zero_friction_arrow_fix_staging/laptop_10211_revolute_70pct_zero_friction_arrow_fix/final_video.mp4 --panel-width 1920 --panel-height 1080 --info-height 0 --plot-height 0 --end-hold-seconds 0.0 --end-hold-mode never --force-application-mode native_sapien_add_force_at_point --force-profile square_pulse --force-duration 2.0 --joint-viscous-damping 0.0 --joint-dynamic-friction 0.0 --link-linear-damping 0.0 --link-angular-damping 0.0 --resistance-model systematic_joint_space --systematic-decay-time-s 2.0 --systematic-friction-ratio 0.0 --effective-inertia-validation-tolerance 0.1 --settle-velocity-threshold 0.002 --max-q-fraction-of-limit 0.98 --contact-overrides /leonardo_work/IscrC_EditGS/andrea/force_spaien/physical_calibration/resolved/adaptive/manual_contact_overrides_scaled.yaml --manual-contact-required true --force-policy native_sapien_force --keep-old --require-zero-joint-friction --simulate-until-settled --max-seconds 20.0 --settle-velocity-threshold 0.002 --settle-window-seconds 0.5 --post-settle-hold-seconds 1.0 --contact-point-strategy laptop_screen_free_edge --contact-point-local -0.1955679308980373 0.21538202583456367 -0.06617437731163946 --joint joint_1 --link link_1 --force 0.012760504176714375 --closing-force 0.012760504176714375 --initial-angle 0.0 --preferred-motion-direction -1 --no-auto-direction
+
+Wrote /leonardo_work/IscrC_EditGS/andrea/force_spaien/outputs_70pct_zero_friction_arrow_fix_staging/laptop_10211_revolute_70pct_zero_friction_arrow_fix/final_video.mp4
+Wrote /leonardo_work/IscrC_EditGS/andrea/force_spaien/outputs_70pct_zero_friction_arrow_fix_staging/laptop_10211_revolute_70pct_zero_friction_arrow_fix/simulation.json
+Final angle: -73.46 deg
+
+[clean_frame_export]
+status=SUCCESS
+physics_reexecuted=false
+trajectory_source=simulation.json:samples.force.q
+final_video_action=copied_byte_for_byte
+final_video_sha256=0c8ae44a92cda148f892b59c91ffa24c2838feeb3ec0ce6e727f859d123cdf82
+clean_rgb_frames=424
+clean_masks=424
+mask_encoding=uint8_background_0_object_255
+overlays_in_clean_rgb=false
+contact_sheet_source=clean_rgb
