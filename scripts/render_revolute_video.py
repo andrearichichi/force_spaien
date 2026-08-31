@@ -24,6 +24,7 @@ try:
         Resistance,
         compute_force_profile_scale,
         compute_resistance,
+        compute_viscous_generalized_resistance,
         compute_revolute_generalized_torque,
         scaled_force_step as model_scaled_force_step,
         unit,
@@ -47,6 +48,7 @@ except ModuleNotFoundError:
         Resistance,
         compute_force_profile_scale,
         compute_resistance,
+        compute_viscous_generalized_resistance,
         compute_revolute_generalized_torque,
         scaled_force_step as model_scaled_force_step,
         unit,
@@ -1371,10 +1373,12 @@ def sample_to_dict(
         "applied_force_z": float(force_vector[2]),
         "applied_force_norm": force_magnitude,
         "applied_generalized_force": float(force.generalized_torque_nm),
+        "external_generalized_force": float(force.generalized_torque_nm),
         "static_friction_torque_nm": float(resistance.static),
         "dynamic_friction_torque_nm": float(resistance.dynamic),
         "damping_torque_nm": float(resistance.viscous),
         "damping_torque_or_force": float(resistance.viscous),
+        "applied_viscous_generalized_resistance": float(resistance.viscous),
         "friction_torque_or_force": float(resistance.static + resistance.dynamic),
         "torque_resisting_nm": float(resistance.total),
         "net_generalized_force": float(resistance.net),
@@ -2001,6 +2005,7 @@ def main() -> int:
     previous_physics_velocity = float(opening_sim.laptop.get_qvel()[opening_sim.joint_index])
     q_after_force_release_values: list[float] = []
     qdot_after_force_release_values: list[float] = []
+    stage_a_physics_samples: list[dict[str, float]] = []
     with imageio.get_writer(output, fps=args.fps, codec="libx264", quality=8, macro_block_size=1) as writer:
         while True:
             if frame_index >= frame_count:
@@ -2041,12 +2046,22 @@ def main() -> int:
                 )
                 opening_q_before = float(opening_sim.laptop.get_qpos()[opening_sim.joint_index])
                 opening_qvel = float(opening_sim.laptop.get_qvel()[opening_sim.joint_index])
-                opening_resistance = resistance_for_motion(opening_force.generalized_torque_nm, opening_qvel, args)
-                opening_resistance = Resistance(0.0, 0.0, 0.0, 0.0, opening_force.generalized_torque_nm, False)
                 direction_auto_flipped = direction_auto_flipped or opening_force.direction_auto_flipped
                 qf = np.zeros_like(opening_sim.laptop.get_qf(), dtype=np.float32)
+                applied_viscous_resistance = 0.0
                 if systematic_resistance is not None:
-                    qf[opening_sim.joint_index] = -systematic_resistance.damping_coefficient * opening_qvel
+                    applied_viscous_resistance = compute_viscous_generalized_resistance(
+                        systematic_resistance.damping_coefficient, opening_qvel
+                    )
+                    qf[opening_sim.joint_index] = applied_viscous_resistance
+                opening_resistance = Resistance(
+                    0.0,
+                    0.0,
+                    applied_viscous_resistance,
+                    applied_viscous_resistance,
+                    opening_force.generalized_torque_nm + applied_viscous_resistance,
+                    False,
+                )
                 if opening_step.applied_magnitude > 1e-9:
                     opening_sim.screen.add_force_at_point(opening_force.force_vector_world, opening_force.force_application_point_world, "force")
                 if systematic_resistance is not None:
@@ -2054,6 +2069,14 @@ def main() -> int:
                 opening_sim.scene.step()
                 opening_q_after = float(opening_sim.laptop.get_qpos()[opening_sim.joint_index])
                 opening_qvel_after = float(opening_sim.laptop.get_qvel()[opening_sim.joint_index])
+                stage_a_physics_samples.append({"time_s": float(step_time_s + TIMESTEP),
+                    "q": opening_q_after, "qdot": opening_qvel_after,
+                    "force_n": float(opening_step.applied_magnitude),
+                    "qdot_before_step": opening_qvel,
+                    "external_generalized_force": float(opening_force.generalized_torque_nm),
+                    "viscous_generalized_resistance": float(applied_viscous_resistance),
+                    "net_generalized_force": float(opening_resistance.net),
+                    "generalized_force": float(opening_force.generalized_torque_nm)})
                 force_active = opening_step.applied_magnitude > 1e-9
                 if force_active:
                     active_force_physics_steps += 1
@@ -2570,6 +2593,7 @@ def main() -> int:
             "force_world_per_frame": [sample["force_world_per_frame"] for sample in primary_samples],
             "torque_about_axis_per_frame": [sample["torque_about_axis_per_frame"] for sample in primary_samples],
             "q": q_values,
+            "stage_a_physics_samples": stage_a_physics_samples,
             "qdot": qdot_values,
             "qddot": [float(sample["qddot"]) for sample in primary_samples],
             "phase": [str(sample["phase"]) for sample in primary_samples],

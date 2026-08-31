@@ -134,6 +134,14 @@ def compute_resistance(
     )
 
 
+def compute_viscous_generalized_resistance(
+    damping_coefficient: float,
+    velocity: float,
+) -> float:
+    """Return the generalized viscous resistance applied through ``set_qf``."""
+    return -max(0.0, float(damping_coefficient)) * float(velocity)
+
+
 def compute_revolute_generalized_torque(
     joint_axis_world: np.ndarray,
     joint_origin_world: np.ndarray,

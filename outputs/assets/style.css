@@ -1,0 +1,1 @@
+body{font-family:sans-serif;margin:2rem;background:#f4f6f8}main{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:1rem}article{background:white;padding:1rem;border-radius:10px}video,img{width:100%;height:auto}

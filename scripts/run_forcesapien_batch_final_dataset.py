@@ -774,7 +774,9 @@ def renderer_command(info: dict[str, object], run_dir: Path, args: argparse.Name
         "--contact-point-local", *(str(v) for v in list(info["contact_point_local"])),
     ]
     if joint_type == "prismatic":
-        command += ["--joint", joint, "--link", link, "--drawer", drawer_index_from_link(link), "--force", str(actual_force)]
+        initial_position = 0.0 if args.initial_position is None else args.initial_position
+        command += ["--joint", joint, "--link", link, "--drawer", drawer_index_from_link(link), "--force", str(actual_force),
+                    "--initial-position", str(initial_position)]
     elif joint_type == "revolute":
         preferred_value = -1 if info.get("force_direction_mode") == "tangent_closing" else 1
         if info.get("force_direction_reversed"):
@@ -790,7 +792,7 @@ def renderer_command(info: dict[str, object], run_dir: Path, args: argparse.Name
             "--closing-force",
             str(actual_force),
             "--initial-angle",
-            str(default_initial_angle(model_dir, info.get("joint_limits"))),
+            str(args.initial_position if args.initial_position is not None else default_initial_angle(model_dir, info.get("joint_limits"))),
             "--preferred-motion-direction",
             preferred,
             "--no-auto-direction",
@@ -1378,7 +1380,10 @@ def augment_simulation_json(run_dir: Path, info: dict[str, object], validation_n
             "timestep_s": document.get("timestep_s", document.get("timestep", metadata.get("timing", {}).get("timestep_s") if isinstance(metadata, dict) else None)),
             "joint_damping": document.get("joint_damping", document.get("damping")),
             "joint_friction": document.get("joint_friction", document.get("friction")),
-            "resistance_model": info.get("resistance_model"),
+            "resistance_model": (
+                "viscous_damping_only" if args.require_zero_joint_friction
+                else info.get("resistance_model")
+            ),
             "systematic_decay_time_s": info.get("systematic_decay_time_s"),
             "systematic_friction_ratio": info.get("systematic_friction_ratio"),
             "joint_damping_source": "derived generalized viscous resistance c=effective_coordinate_inertia_or_mass/T_decay",
@@ -1554,6 +1559,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--force-policy", choices=["native_sapien_force"], default="native_sapien_force")
     parser.add_argument("--force-magnitude", type=float, required=True)
+    parser.add_argument("--initial-position", type=float, default=None)
     parser.add_argument("--contact-overrides", default="configs/manual_contact_overrides.yaml")
     parser.add_argument(
         "--reverse-force-direction-object-ids",

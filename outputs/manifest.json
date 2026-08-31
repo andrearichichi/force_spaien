@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "objects": [
+    {
+      "object_id": "10211",
+      "object_name": "Laptop",
+      "contact_label": "laptop_screen_edge_03",
+      "joint_type": "revolute",
+      "personalized_force_n": 0.012760504176714375
+    },
+    {
+      "object_id": "10905",
+      "object_name": "Refrigerator",
+      "contact_label": "refrigerator_door_edge_17",
+      "joint_type": "revolute",
+      "personalized_force_n": 0.37568926985166523
+    },
+    {
+      "object_id": "11100",
+      "object_name": "Scissors",
+      "contact_label": "scissors_handle_or_blade_06",
+      "joint_type": "revolute",
+      "personalized_force_n": 0.00044629674425094445
+    },
+    {
+      "object_id": "45135",
+      "object_name": "StorageFurniture",
+      "contact_label": "storagefurniture_drawer_handle_center",
+      "joint_type": "prismatic",
+      "personalized_force_n": 0.386968812069118
+    },
+    {
+      "object_id": "100109",
+      "object_name": "USB",
+      "contact_label": "usb_cover_tip",
+      "joint_type": "revolute",
+      "personalized_force_n": 3.439472022481469e-05
+    },
+    {
+      "object_id": "101917",
+      "object_name": "Oven",
+      "contact_label": "oven_door_edge_03",
+      "joint_type": "revolute",
+      "personalized_force_n": 0.041217047380970075
+    },
+    {
+      "object_id": "102255",
+      "object_name": "FoldingChair",
+      "contact_label": "foldingchair_surface_08",
+      "joint_type": "revolute",
+      "personalized_force_n": 0.014532893333207574
+    },
+    {
+      "object_id": "103111",
+      "object_name": "Stapler",
+      "contact_label": "stapler_lid_front_top_14",
+      "joint_type": "revolute",
+      "personalized_force_n": 0.0010363420405025616
+    },
+    {
+      "object_id": "103706",
+      "object_name": "Knife",
+      "contact_label": "knife_plastic_slider_center",
+      "joint_type": "prismatic",
+      "personalized_force_n": 0.0005516654197921702
+    },
+    {
+      "object_id": "103776",
+      "object_name": "WashingMachine",
+      "contact_label": "washingmachine_door_rim_13",
+      "joint_type": "revolute",
+      "personalized_force_n": 0.011195025079748533
+    }
+  ],
+  "physics": {
+    "timestep_s": 0.004166666666666667,
+    "gravity_enabled": false,
+    "force_duration_s": 2.0,
+    "force_steps": 480,
+    "joint_friction": 0.0,
+    "friction_compensation": false,
+    "resistance_model": "viscous_damping_only",
+    "T_decay_s": 2.0,
+    "minimum_force_n": 1e-07,
+    "maximum_force_n": 150.0,
+    "minimum_duration_s": 6.0,
+    "maximum_duration_s": 20.0,
+    "settle_threshold": 0.002,
+    "settle_window_s": 0.5,
+    "post_settle_hold_s": 1.0
+  },
+  "rendering": {
+    "application_marker": "blue",
+    "historical_trail": "cyan_actual_world_space_samples_through_current_frame",
+    "joint_axis": "red",
+    "force_arrow": "blue_only_elapsed_lt_2s",
+    "direction_arrow": false,
+    "only_video_text": "active_force_magnitude"
+  }
+}

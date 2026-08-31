@@ -77,6 +77,24 @@ def validate_resolved_force(row: dict, physics: dict) -> None:
         raise RuntimeError(f"{row['name']}: resolved force is inconsistent with pure-viscous estimate")
 
 
+def annotate_personalized_actuation(simulation_json: Path, object_id: str, row: dict) -> None:
+    """Record the configured travel target required by package consumers."""
+    document = json.loads(simulation_json.read_text())
+    document["joint_travel_personalized_actuation"] = {
+        "object_id": object_id,
+        "object_name": row["name"],
+        "joint_type": row["joint_type"],
+        "classification": row["target_kind"],
+        "q_start": row["q_start"],
+        "target_displacement": row["target_displacement"],
+        "available_travel": row["available_travel"],
+        "intended_motion_sign": row["intended_sign"],
+        "actual_final_displacement": document.get("absolute_displacement"),
+    }
+    document["resistance_model"] = "viscous_damping_only"
+    simulation_json.write_text(json.dumps(document, indent=2) + "\n")
+
+
 def dry_run(config: dict, dataset_root: Path) -> int:
     print("object_id\tcontact\ttarget\tpersonalized_force_n\tfriction\tT_decay")
     for object_id in config["object_ids"]:
@@ -154,6 +172,10 @@ def main() -> int:
             "--python-executable", str(PYTHON),
         ]
         subprocess.run(command, cwd=ROOT, env=object_env, check=True)
+        matches = list(raw.glob(f"*_{object_id}_*/simulation.json"))
+        if len(matches) != 1:
+            raise RuntimeError(f"{object_id}: expected one completed raw simulation, found {len(matches)}")
+        annotate_personalized_actuation(matches[0], object_id, row)
     subprocess.run([
         str(PYTHON), str(ROOT / "scripts/package_definitive_dataset.py"),
         "--raw-root", str(raw), "--output-root", str(output_root),
@@ -161,6 +183,10 @@ def main() -> int:
     subprocess.run([
         str(PYTHON), str(ROOT / "scripts/validate_definitive_dataset.py"),
         "--package", str(output_root),
+    ], cwd=ROOT, env=env, check=True)
+    subprocess.run([
+        str(PYTHON), str(ROOT / "scripts/validate_viscous_physics.py"),
+        "--root", str(output_root),
     ], cwd=ROOT, env=env, check=True)
     shutil.rmtree(work)
     return 0

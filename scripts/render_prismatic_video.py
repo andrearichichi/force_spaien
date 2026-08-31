@@ -25,6 +25,7 @@ try:
         compute_force_profile_scale,
         compute_prismatic_generalized_force,
         compute_resistance,
+        compute_viscous_generalized_resistance,
         scaled_force_step as model_scaled_force_step,
     )
     from simulation_json import (
@@ -47,6 +48,7 @@ except ModuleNotFoundError:
         compute_force_profile_scale,
         compute_prismatic_generalized_force,
         compute_resistance,
+        compute_viscous_generalized_resistance,
         scaled_force_step as model_scaled_force_step,
     )
     from scripts.simulation_json import (
@@ -997,10 +999,12 @@ def sample_to_dict(
         "applied_linear_force_n": float(abs(generalized_force)),
         "applied_force_norm": float(np.linalg.norm(applied_force)),
         "applied_generalized_force": float(generalized_force),
+        "external_generalized_force": float(generalized_force),
         "static_friction_force_n": float(resistance.static),
         "dynamic_friction_force_n": float(resistance.dynamic),
         "damping_force_n": float(resistance.viscous),
         "damping_torque_or_force": float(resistance.viscous),
+        "applied_viscous_generalized_resistance": float(resistance.viscous),
         "friction_torque_or_force": float(resistance.static + resistance.dynamic),
         "opposing_linear_friction_n": float(abs(resistance.dynamic)),
         "net_force_n": float(resistance.net),
@@ -1221,6 +1225,7 @@ def main() -> int:
     parser.add_argument("--joint", default="joint_1")
     parser.add_argument("--link", default="link_1")
     parser.add_argument("--force", "--force-magnitude", dest="force", type=float, default=0.5)
+    parser.add_argument("--initial-position", type=float, default=0.0)
     parser.add_argument("--seconds", "--sim-duration-s", dest="seconds", type=float, default=4.0)
     parser.add_argument("--motion-source", choices=["physical_force"], default="physical_force")
     parser.add_argument(
@@ -1329,6 +1334,11 @@ def main() -> int:
         installed_link_angular_damping,
         not args.enable_gravity,
     )
+    for simulation in (still_sim, pulling_sim):
+        if simulation is not None:
+            qpos = simulation.cabinet.get_qpos().copy()
+            qpos[simulation.joint_index] = args.initial_position
+            simulation.cabinet.set_qpos(qpos)
     native_joint = pulling_sim.cabinet.get_active_joints()[pulling_sim.joint_index]
     imported_friction = float(native_joint.get_friction())
     effective_joint_friction_installed = imported_friction
@@ -1436,6 +1446,7 @@ def main() -> int:
     maximum_force_application_tracking_error_m = 0.0
     q_after_force_release_values: list[float] = []
     qdot_after_force_release_values: list[float] = []
+    stage_a_physics_samples: list[dict[str, float]] = []
     with imageio.get_writer(output, fps=args.fps, codec="libx264", quality=8, macro_block_size=1) as writer:
         while True:
             if frame_index >= frame_count:
@@ -1466,13 +1477,23 @@ def main() -> int:
                     pulling_sim.positive_pull_dir_world,
                     force * force_step.scale,
                 )
-                resistance = resistance_for_motion(signed_generalized_force, float(pulling_sim.cabinet.get_qvel()[pulling_sim.joint_index]), args)
-                resistance = Resistance(0.0, 0.0, 0.0, 0.0, signed_generalized_force, False)
                 q_before = float(pulling_sim.cabinet.get_qpos()[pulling_sim.joint_index])
                 qf = np.zeros_like(pulling_sim.cabinet.get_qf(), dtype=np.float32)
+                qvel_before = float(pulling_sim.cabinet.get_qvel()[pulling_sim.joint_index])
+                applied_viscous_resistance = 0.0
                 if systematic_resistance is not None:
-                    qvel_before = float(pulling_sim.cabinet.get_qvel()[pulling_sim.joint_index])
-                    qf[pulling_sim.joint_index] = -systematic_resistance.damping_coefficient * qvel_before
+                    applied_viscous_resistance = compute_viscous_generalized_resistance(
+                        systematic_resistance.damping_coefficient, qvel_before
+                    )
+                    qf[pulling_sim.joint_index] = applied_viscous_resistance
+                resistance = Resistance(
+                    0.0,
+                    0.0,
+                    applied_viscous_resistance,
+                    applied_viscous_resistance,
+                    signed_generalized_force + applied_viscous_resistance,
+                    False,
+                )
                 last_physics_application_point = application_point_world(pulling_sim)
                 last_force_application_tracking_error_m = 0.0
                 if force_step.applied_magnitude > 1e-9:
@@ -1489,9 +1510,6 @@ def main() -> int:
                         maximum_force_application_tracking_error_m,
                         last_force_application_tracking_error_m,
                     )
-                    qf[pulling_sim.joint_index] = resistance.total
-                else:
-                    qf[pulling_sim.joint_index] = resistance.net
                 if args.force_application_mode != "native_sapien_add_force_at_point" or systematic_resistance is not None:
                     pulling_sim.cabinet.set_qf(qf)
                 if still_sim is not None:
@@ -1499,6 +1517,14 @@ def main() -> int:
                 pulling_sim.scene.step()
                 q_after = float(pulling_sim.cabinet.get_qpos()[pulling_sim.joint_index])
                 qvel_after = float(pulling_sim.cabinet.get_qvel()[pulling_sim.joint_index])
+                stage_a_physics_samples.append({"time_s": float(step_time_s + TIMESTEP),
+                    "q": q_after, "qdot": qvel_after,
+                    "force_n": float(force_step.applied_magnitude),
+                    "qdot_before_step": qvel_before,
+                    "external_generalized_force": float(signed_generalized_force),
+                    "viscous_generalized_resistance": float(applied_viscous_resistance),
+                    "net_generalized_force": float(resistance.net),
+                    "generalized_force": float(signed_generalized_force)})
                 force_active = force_step.applied_magnitude > 1e-9
                 if force_active:
                     active_force_physics_steps += 1
@@ -1793,7 +1819,7 @@ def main() -> int:
         "viscous_damping": args.joint_viscous_damping,
     }
     validation = validation_for_motion(
-        initial_position=0.0,
+        initial_position=args.initial_position,
         final_position=float(primary_samples[-1]["position_m"]),
         final_velocity=float(primary_samples[-1]["velocity_m_s"]),
         limits=pulling_sim.cabinet.get_active_joints()[pulling_sim.joint_index].get_limit().tolist(),
@@ -1811,7 +1837,7 @@ def main() -> int:
         motion_type="prismatic",
         metadata=metadata,
         sample_series=samples,
-        initial_state={"position_m": 0.0},
+        initial_state={"position_m": args.initial_position},
         final_state={
             "position_m": float(primary_samples[-1]["position_m"]),
             "velocity_m_s": float(primary_samples[-1]["velocity_m_s"]),
@@ -1914,6 +1940,7 @@ def main() -> int:
             ],
             "moving_link_pose_per_frame": [sample["moving_link_pose"] for sample in primary_samples],
             "q": [float(sample["q"]) for sample in primary_samples],
+            "stage_a_physics_samples": stage_a_physics_samples,
             "qdot": [float(sample["qdot"]) for sample in primary_samples],
             "qddot": [float(sample["qddot"]) for sample in primary_samples],
             "maximum_abs_velocity_physics_steps": float(maximum_abs_velocity_physics_steps),
